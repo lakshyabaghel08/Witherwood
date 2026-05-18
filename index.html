@@ -1255,7 +1255,7 @@ function updateRainSound() {
       ctx,
       gain,
       enabled: false,
-      baseVolume: 0.03,
+      baseVolume: 0.12,
       pause() {
         this.enabled = false;
         this.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 1.4);
