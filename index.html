@@ -115,6 +115,10 @@
     0 0 24px rgba(14, 165, 233, 0.16);
 }
 </style>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f7f4ea">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 </head>
 <body class="min-h-screen bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 text-slate-800">
 <div id="rainOverlay" class="rain-overlay hidden"></div>
@@ -1704,6 +1708,14 @@ function bindEvents() {
 
 bindEvents();
 render();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js');
+  });
+}
 </script>
 </body>
 </html>
