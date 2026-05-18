@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Witherwood</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@keyframes rainfall {
+  from {
+    transform: translate3d(0, -120vh, 0) rotate(12deg);
+  }
+  to {
+    transform: translate3d(-120px, 120vh, 0) rotate(12deg);
+  }
+}
+.rain-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 2147483647;
+}
+.rain-drop {
+  position: absolute;
+  top: -20%; 
+  width: 4.5px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(220,238,255,0.95)
+  );
+  box-shadow: 0 0 7px rgba(180,220,255,0.4);
+  animation: rainfall linear infinite;
+  will-change: transform;
+}
+
+@keyframes shootingStar {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(25deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(320px, 180px, 0) rotate(25deg);
+    opacity: 0;
+  }
+}
+
+.shooting-star {
+  position: absolute;
+  width: 140px;
+  height: 2px;
+  border-radius: 9999px;
+  background: linear-gradient(to right, rgba(255,255,255,0.95), rgba(255,255,255,0));
+  box-shadow: 0 0 10px rgba(255,255,255,0.7);
+  animation: shootingStar 2.4s ease-out forwards;
+}
+
+.brand-title {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  text-shadow:
+    0 2px 8px rgba(16, 24, 40, 0.08),
+    0 0 20px rgba(16, 185, 129, 0.08);
+}
+
+.brand-title-night {
+  text-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.45),
+    0 0 24px rgba(167, 139, 250, 0.22);
+}
+
+.brand-title-rain {
+  text-shadow:
+    0 2px 10px rgba(15, 23, 42, 0.12),
+    0 0 24px rgba(14, 165, 233, 0.16);
+}
+</style>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#065f46">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+
+</head>
+<body class="min-h-screen bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 text-slate-800">
+<div id="rainOverlay" class="rain-overlay hidden"></div>
+<div id="nightOverlay" class="rain-overlay hidden"></div>
+
+<div class="min-h-screen p-4 md:p-8 pb-10 md:pb-16">
+  <div id="appRoot" class="min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 p-6">
+    <div class="w-full max-w-none space-y-6">
+      <header class="flex items-start justify-between gap-4 w-full px-1 md:px-2">
+        <div class="flex-1 min-w-0">
+          <h1 id="brandTitle" class="brand-title text-4xl md:text-6xl">🌲 Witherwood</h1>
+          <p class="text-slate-600 mt-2">Every 10 minutes of focus plants a tree.</p>
+        </div>
+        <button id="fullscreenBtn" class="px-4 py-3 rounded-2xl border bg-white/85 flex-shrink-0 self-start" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">
+          ⛶
+        </button>
+      </header>
+
+      <nav id="nav" class="flex flex-wrap gap-2"></nav>
+
+      <section id="focusPage" class="rounded-3xl bg-white/85 border shadow-lg p-6 max-w-3xl mx-auto mb-8 md:mb-12 lg:mb-16">
+        <div class="max-w-lg mx-auto text-center">
+          <div id="phaseLabel" class="text-sm uppercase tracking-wide text-emerald-700">Focus Session</div>
+
+          <div class="mt-3 flex justify-center">
+            <div class="relative w-64 h-64 md:w-72 md:h-72">
+              <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
+                <circle cx="70" cy="70" r="60" fill="none" stroke="#d1fae5" stroke-width="8" />
+                <circle
+                  id="progressRing"
+                  cx="70"
+                  cy="70"
+                  r="60"
+                  fill="none"
+                  stroke="#10b981"
+                  stroke-width="8"
+                  stroke-linecap="round"
+                  stroke-dasharray="376.99"
+                  stroke-dashoffset="0"
+                />
+              </svg>
+
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <div id="timer" class="text-6xl md:text-7xl font-mono font-bold">25:00</div>
+                <div id="progressLabel" class="mt-2 text-sm text-slate-500"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="focusControls" class="mt-4 flex items-center justify-center gap-3">
+            <label>Focus (min)</label>
+            <input
+              id="focusMinutesInput"
+              type="number"
+              min="10"
+              max="180"
+              value="25"
+              class="w-24 rounded-xl border px-3 py-2"
+            />
+          </div>
+
+          <div id="saplings" class="mt-4 text-lg font-medium"></div>
+
+          <div class="flex flex-wrap justify-center gap-3 mt-4">
+            <button id="startPauseBtn" class="px-5 py-3 rounded-2xl bg-emerald-500 text-white font-semibold">Start</button>
+            <button id="witherBtn" class="px-5 py-3 rounded-2xl bg-amber-500 text-white font-semibold">🍂 Wither Tree</button>
+            <button id="resetBtn" class="px-5 py-3 rounded-2xl border bg-white">Reset</button>
+          </div>
+
+          <p id="message" class="mt-5 italic text-slate-500">“A calm mind nurtures strong roots.”</p>
+        </div>
+      </section>
+
+      <section id="forestPage" class="hidden rounded-3xl bg-white/85 border shadow-lg p-6">
+        <h2 class="text-2xl font-semibold mb-2">Your Forest</h2>
+        <div id="forestSummary" class="text-slate-500 mb-4"></div>
+        <div id="forestGrid" class="flex flex-wrap gap-1 text-xl"></div>
+      </section>
+
+      <section id="dashboardPage" class="hidden">
+        <div id="dashboardGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </section>
+
+      <section id="settingsPage" class="hidden rounded-3xl bg-white/85 border shadow-lg p-6 max-w-xl mx-auto space-y-4">
+        <h2 class="text-2xl font-semibold">Settings</h2>
+
+        <label class="block">
+          <span>Break Minutes</span>
+          <input
+            id="breakMinutesInput"
+            type="number"
+            min="1"
+            max="60"
+            value="5"
+            class="w-full mt-2 rounded-xl border px-3 py-2"
+          />
+        </label>
+
+        <label class="flex items-center gap-3">
+          <input id="ambientSoundToggle" type="checkbox" />
+          <span>Enable Ambient Sound</span>
+        </label>
+
+        <label class="block">
+          <div class="flex items-center justify-between">
+            <span>Ambient Volume</span>
+            <span id="ambientVolumeLabel" class="text-sm text-slate-500">50%</span>
+          </div>
+          <input
+            id="ambientVolumeInput"
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value="50"
+            class="w-full mt-2"
+          />
+        </label>
+
+        <label class="block">
+          <span>Theme</span>
+          <select id="themeSelect" class="w-full mt-2 rounded-xl border px-3 py-2">
+            <option value="forest">🌲 Forest Theme</option>
+            <option value="night">🌙 Night Theme</option>
+            <option value="rain">🌧️ Rain Theme</option>
+          </select>
+        </label>
+
+        <div class="pt-2 border-t border-slate-200/60 space-y-3">
+          <h3 class="font-semibold">Reset Data</h3>
+          <div>
+            <button id="resetAllBtn" class="px-4 py-2 rounded-2xl bg-rose-500 text-white hover:bg-rose-600 transition">
+              Reset All Data
+            </button>
+          </div>
+          <p class="text-sm text-slate-500">Permanently clears your forest and all saved statistics.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'witherwood-single-file-v3';
+const DEFAULTS = {
+  focusMinutes: 25,
+  breakMinutes: 5,
+  theme: 'forest',
+  ambientSoundEnabled: false,
+  ambientVolume: 50,
+  livingTrees: 0,
+  deadTrees: 0,
+  totalFocusMinutes: 0,
+};
+
+let data;
+try {
+  data = { ...DEFAULTS, ...(JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || {}) };
+} catch {
+  data = { ...DEFAULTS };
+}
+
+let page = 'focus';
+let phase = 'focus';
+let isRunning = false;
+let intervalId = null;
+let audioUnlocked = false;
+let rainAudio = null;
+let nightAudio = null;
+let forestAudio = null;
+let secondsLeft = data.focusMinutes * 60;
+let healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
+
+const pages = ['focus', 'forest', 'dashboard', 'settings'];
+const labels = {
+  focus: '⏱ Focus',
+  forest: '🌲 Forest',
+  dashboard: '📊 Dashboard',
+  settings: '⚙️ Settings',
+};
+
+const themes = {
+  forest: ['from-emerald-50', 'via-lime-50', 'to-teal-100'],
+  night: ['from-slate-950', 'via-slate-900', 'to-indigo-950'],
+  rain: ['from-sky-100', 'via-slate-200', 'to-blue-300'],
+};
+
+function el(id) {
+  return document.getElementById(id);
+}
+
+function getVolumeMultiplier() {
+  // 50 = current baseline volume.
+  // 100 = 4x louder than the original baseline.
+  return Math.max(0, Math.min(4, (data.ambientVolume ?? 50) / 25));
+}
+
+function applyAudioVolumes() {
+  const volume = getVolumeMultiplier();
+
+  if (rainAudio?.gain) {
+    rainAudio.baseVolume = 0.014;
+    rainAudio.gain.gain.value = rainAudio.enabled ? rainAudio.baseVolume * volume : 0;
+  }
+
+  if (nightAudio?.master) {
+    nightAudio.master.gain.value = nightAudio.enabled ? volume : 0;
+  }
+
+  if (forestAudio?.master) {
+    forestAudio.master.gain.value = forestAudio.enabled ? volume : 0;
+  }
+}
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function fmt(seconds) {
+  return (
+    String(Math.floor(seconds / 60)).padStart(2, '0') +
+    ':' +
+    String(seconds % 60).padStart(2, '0')
+  );
+}
+
+function getIcons() {
+  if (data.theme === 'rain') return { sapling: '💧', living: '💧', dead: '☁️' };
+  if (data.theme === 'night') return { sapling: '⭐', living: '⭐', dead: '🌑' };
+  return { sapling: '🌱', living: '🌲', dead: '🪵' };
+}
+
+function setMessage(text) {
+  const message = el('message');
+  if (message) message.textContent = `“${text}”`;
+}
+
+function witherTree() {
+  if (!isRunning || phase !== 'focus') return;
+  healthyTrees = Math.max(0, healthyTrees - 1);
+  data.deadTrees += 1;
+  save();
+  setMessage('A gust passed through your forest.');
+  render();
+}
+
+function renderNav() {
+  const nav = el('nav');
+  if (!nav) return;
+
+  nav.innerHTML = '';
+  for (const p of pages) {
+    const button = document.createElement('button');
+    button.className =
+      'px-4 py-2 rounded-2xl border shadow-sm ' +
+      (page === p ? 'bg-emerald-500 text-white' : 'bg-white/85');
+    button.textContent = labels[p];
+    button.onclick = () => {
+      page = p;
+      render();
+    };
+    nav.appendChild(button);
+  }
+}
+
+function renderFocus() {
+  const icons = getIcons();
+
+  if (el('phaseLabel')) el('phaseLabel').textContent = phase === 'focus' ? 'Focus Session' : 'Break Time';
+  if (el('timer')) el('timer').textContent = fmt(secondsLeft);
+  if (el('saplings')) el('saplings').textContent = `${icons.sapling} ${healthyTrees} saplings`;
+  if (el('progressLabel')) el('progressLabel').textContent = `${icons.sapling} ${healthyTrees} saplings to protect`;
+  if (el('startPauseBtn')) el('startPauseBtn').textContent = isRunning ? 'Pause' : 'Start';
+
+  const controls = el('focusControls');
+  if (controls) controls.style.display = !isRunning && phase === 'focus' ? 'flex' : 'none';
+
+  const ring = el('progressRing');
+  if (ring) {
+    const total = (phase === 'focus' ? data.focusMinutes : data.breakMinutes) * 60;
+    const circumference = 376.99;
+    ring.style.strokeDashoffset = circumference * (1 - secondsLeft / Math.max(1, total));
+  }
+}
+
+function renderForest() {
+  const icons = getIcons();
+
+  if (el('forestSummary')) {
+    el('forestSummary').textContent = `${data.livingTrees} living trees • ${data.deadTrees} withered trees`;
+  }
+
+  const grid = el('forestGrid');
+  if (!grid) return;
+
+  grid.innerHTML = '';
+
+  for (let i = 0; i < Math.min(120, data.livingTrees); i++) {
+    const span = document.createElement('span');
+    span.textContent = icons.living;
+    grid.appendChild(span);
+  }
+
+  for (let i = 0; i < Math.min(30, data.deadTrees); i++) {
+    const span = document.createElement('span');
+    span.textContent = icons.dead;
+    span.className = 'opacity-50';
+    grid.appendChild(span);
+  }
+}
+
+function renderDashboard() {
+  const grid = el('dashboardGrid');
+  if (!grid) return;
+
+  grid.innerHTML = `
+    <div class="rounded-3xl bg-white/85 border shadow-lg p-5">
+      <div class="text-sm uppercase">Focus Hours</div>
+      <div class="text-3xl font-bold mt-2">${(data.totalFocusMinutes / 60).toFixed(1)}</div>
+    </div>
+    <div class="rounded-3xl bg-white/85 border shadow-lg p-5">
+      <div class="text-sm uppercase">Living Trees</div>
+      <div class="text-3xl font-bold mt-2">${data.livingTrees}</div>
+    </div>
+    <div class="rounded-3xl bg-white/85 border shadow-lg p-5">
+      <div class="text-sm uppercase">Withered Trees</div>
+      <div class="text-3xl font-bold mt-2">${data.deadTrees}</div>
+    </div>
+  `;
+}
+
+function updateNightSky() {
+  const overlay = el('nightOverlay');
+  if (!overlay) return;
+
+  if (data.theme !== 'night') {
+    overlay.classList.add('hidden');
+    overlay.innerHTML = '';
+    return;
+  }
+
+  overlay.classList.remove('hidden');
+
+  if (overlay.children.length > 0) return;
+
+  const createStar = () => {
+    if (data.theme !== 'night') return;
+
+    const star = document.createElement('div');
+    star.className = 'shooting-star';
+    star.style.left = Math.random() * 70 + '%';
+    star.style.top = Math.random() * 35 + '%';
+    star.style.transform = 'rotate(25deg)';
+    overlay.appendChild(star);
+
+    setTimeout(() => {
+      star.remove();
+    }, 2500);
+
+    const nextDelay = 8000 + Math.random() * 15000;
+    setTimeout(createStar, nextDelay);
+  };
+
+  const initialDelay = 3000 + Math.random() * 7000;
+  setTimeout(createStar, initialDelay);
+}
+
+function updateRain() {
+  const overlay = el('rainOverlay');
+  if (!overlay) return;
+
+  // Ensure the overlay is attached to <body> so it remains visible even
+  // when #appRoot enters fullscreen mode.
+  const fullscreenRoot = document.fullscreenElement;
+  const desiredParent = fullscreenRoot || document.body;
+  if (overlay.parentElement !== desiredParent) {
+    desiredParent.appendChild(overlay);
+  }
+
+  if (data.theme !== 'rain') {
+    overlay.classList.add('hidden');
+    overlay.innerHTML = '';
+    return;
+  }
+
+  if (overlay.children.length === 0) {
+    for (let i = 0; i < 140; i++) {
+      const drop = document.createElement('div');
+      drop.className = 'rain-drop';
+      drop.style.left = Math.random() * 100 + '%';
+      drop.style.height = 28 + Math.random() * 36 + 'px';
+      drop.style.animationDuration = 1.8 + Math.random() * 1.8 + 's';
+      drop.style.animationDelay = '-' + Math.random() * 4 + 's';
+      drop.style.opacity = 0.22 + Math.random() * 0.24;
+      overlay.appendChild(drop);
+    }
+  }
+
+  overlay.classList.remove('hidden');
+}
+
+function updateNightSound() {
+  if (data.theme !== 'night' || !data.ambientSoundEnabled) {
+    if (nightAudio) nightAudio.pause();
+    return;
+  }
+
+  if (!nightAudio) {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+
+    const ctx = new AudioCtx();
+    const master = ctx.createGain();
+    master.gain.value = 0;
+    master.connect(ctx.destination);
+
+    function playChime() {
+      if (data.theme !== 'night' || !nightAudio?.enabled) return;
+
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      const notes = [523.25, 659.25, 783.99, 1046.5];
+      osc.frequency.value = notes[Math.floor(Math.random() * notes.length)];
+      osc.type = 'sine';
+
+      filter.type = 'lowpass';
+      filter.frequency.value = 1800;
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.018, now + 0.2);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.5);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(master);
+
+      osc.start(now);
+      osc.stop(now + 3.6);
+
+      setTimeout(playChime, 8000 + Math.random() * 18000);
+    }
+
+    // Rare comet whoosh sound.
+    function playCometWhoosh() {
+      if (data.theme !== 'night' || !nightAudio?.enabled) return;
+
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(1200, now);
+      osc.frequency.exponentialRampToValueAtTime(180, now + 1.2);
+
+      filter.type = 'lowpass';
+      filter.frequency.value = 900;
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.0025, now + 0.15);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.3);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(master);
+
+      osc.start(now);
+      osc.stop(now + 1.35);
+
+      setTimeout(playCometWhoosh, 180000 + Math.random() * 300000);
+    }
+
+    // Very rare distant aurora-like shimmer.
+    function playAuroraShimmer() {
+      if (data.theme !== 'night' || !nightAudio?.enabled) return;
+
+      const now = ctx.currentTime;
+      const notes = [392, 523.25, 659.25, 783.99];
+
+      notes.forEach((freq, i) => {
+        const start = now + i * 0.8;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(0.003, start + 0.2);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 4.5);
+
+        osc.connect(gain);
+        gain.connect(master);
+
+        osc.start(start);
+        osc.stop(start + 4.6);
+      });
+
+      setTimeout(playAuroraShimmer, 420000 + Math.random() * 480000);
+    }
+
+    nightAudio = {
+      ctx,
+      master,
+      enabled: false,
+      pause() {
+        this.enabled = false;
+        this.master.gain.value = 0;
+      },
+      play() {
+        this.enabled = true;
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        this.master.gain.value = getVolumeMultiplier();
+
+        if (!this.started) {
+          this.started = true;
+          setTimeout(playChime, 3000 + Math.random() * 6000);
+          setTimeout(playCometWhoosh, 90000 + Math.random() * 120000);
+          setTimeout(playAuroraShimmer, 240000 + Math.random() * 180000);
+        }
+
+        return Promise.resolve();
+      }
+    };
+  }
+
+  if (audioUnlocked) {
+    nightAudio.play().catch(() => {});
+  }
+}
+
+function updateForestSound() {
+  if (data.theme !== 'forest' || !data.ambientSoundEnabled) {
+    if (forestAudio) forestAudio.pause();
+    return;
+  }
+
+  if (!forestAudio) {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+
+    const ctx = new AudioCtx();
+    const master = ctx.createGain();
+    master.gain.value = 0;
+    master.connect(ctx.destination);
+
+    // --- Rich wind and leaf ambience --- 
+    const bufferSize = ctx.sampleRate * 2;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const output = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = (Math.random() * 2 - 1) * 0.35;
+    }
+
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    noise.loop = true;
+
+    const lowpass = ctx.createBiquadFilter();
+    lowpass.type = 'lowpass';
+    lowpass.frequency.value = 1400;
+
+    const highpass = ctx.createBiquadFilter();
+    highpass.type = 'highpass';
+    highpass.frequency.value = 70;
+
+    const windGain = ctx.createGain();
+    windGain.gain.value = 0.018;
+
+    // Slow gust modulation.
+    const gustLfo = ctx.createOscillator();
+    gustLfo.type = 'sine';
+    gustLfo.frequency.value = 0.045;
+
+    const gustDepth = ctx.createGain();
+    gustDepth.gain.value = 0.010;
+
+    gustLfo.connect(gustDepth);
+    gustDepth.connect(windGain.gain);
+
+    noise.connect(lowpass);
+    lowpass.connect(highpass);
+    highpass.connect(windGain);
+    windGain.connect(master);
+
+    noise.start();
+    gustLfo.start();
+
+    function playBirdChirp() {
+      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+
+      const now = ctx.currentTime;
+      const chirps = 2 + Math.floor(Math.random() * 4);
+      const base = 1500 + Math.random() * 1400;
+
+      for (let i = 0; i < chirps; i++) {
+        const start = now + i * (0.1 + Math.random() * 0.08);
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = Math.random() > 0.5 ? 'sine' : 'triangle';
+        osc.frequency.setValueAtTime(base, start);
+        osc.frequency.exponentialRampToValueAtTime(base * (1.25 + Math.random() * 0.45), start + 0.05);
+        osc.frequency.exponentialRampToValueAtTime(base * 0.82, start + 0.18);
+
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(0.012 + Math.random() * 0.01, start + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.22);
+
+        osc.connect(gain);
+        gain.connect(master);
+
+        osc.start(start);
+        osc.stop(start + 0.24);
+      }
+
+      setTimeout(playBirdChirp, 7000 + Math.random() * 16000);
+    }
+
+    function playWoodpecker() {
+      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+
+      const now = ctx.currentTime;
+      const taps = 4 + Math.floor(Math.random() * 5);
+
+      for (let i = 0; i < taps; i++) {
+        const start = now + i * 0.075;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'square';
+        osc.frequency.value = 700;
+
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(0.0035, start + 0.003);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.028);
+
+        osc.connect(gain);
+        gain.connect(master);
+
+        osc.start(start);
+        osc.stop(start + 0.03);
+      }
+
+      setTimeout(playWoodpecker, 30000 + Math.random() * 60000);
+    }
+
+    function playWindChime() {
+      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+
+      const now = ctx.currentTime;
+      const notes = [523.25, 659.25, 783.99, 987.77, 1174.66];
+      const hits = 2 + Math.floor(Math.random() * 3);
+
+      for (let i = 0; i < hits; i++) {
+        const start = now + i * (0.4 + Math.random() * 0.3);
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+
+        osc.type = 'sine';
+        osc.frequency.value = notes[Math.floor(Math.random() * notes.length)];
+
+        filter.type = 'lowpass';
+        filter.frequency.value = 2200;
+
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(0.006, start + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 3.5);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(master);
+
+        osc.start(start);
+        osc.stop(start + 3.6);
+      }
+
+      setTimeout(playWindChime, 45000 + Math.random() * 90000);
+    }
+
+    function playFrog() {
+      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.exponentialRampToValueAtTime(180, now + 0.35);
+
+      filter.type = 'lowpass';
+      filter.frequency.value = 700;
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.003, now + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(master);
+
+      osc.start(now);
+      osc.stop(now + 0.55);
+
+      setTimeout(playFrog, 120000 + Math.random() * 240000);
+    }
+
+    function playCricket() {
+      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+
+      const now = ctx.currentTime;
+      const chirps = 3 + Math.floor(Math.random() * 4);
+
+      for (let i = 0; i < chirps; i++) {
+        const start = now + i * 0.08;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'square';
+        osc.frequency.value = 4200 + Math.random() * 1200;
+
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(0.0015, start + 0.004);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.03);
+
+        osc.connect(gain);
+        gain.connect(master);
+
+        osc.start(start);
+        osc.stop(start + 0.035);
+      }
+
+      setTimeout(playCricket, 180000 + Math.random() * 300000);
+    }
+
+    function playStream() {
+      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(520, now);
+      osc.frequency.exponentialRampToValueAtTime(460, now + 4);
+
+      filter.type = 'lowpass';
+      filter.frequency.value = 1200;
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.0025, now + 0.5);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 5);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(master);
+
+      osc.start(now);
+      osc.stop(now + 5.1);
+
+      setTimeout(playStream, 240000 + Math.random() * 360000);
+    }
+
+    function playFoxCall() {
+      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(680, now);
+      osc.frequency.exponentialRampToValueAtTime(420, now + 0.8);
+
+      filter.type = 'lowpass';
+      filter.frequency.value = 1400;
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.002, now + 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(master);
+
+      osc.start(now);
+      osc.stop(now + 1.2);
+
+      setTimeout(playFoxCall, 360000 + Math.random() * 480000);
+    }
+
+    function playDistantOwl() {
+      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(420, now);
+      osc.frequency.exponentialRampToValueAtTime(360, now + 0.9);
+
+      filter.type = 'lowpass';
+      filter.frequency.value = 900;
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.006, now + 0.2);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.4);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(master);
+
+      osc.start(now);
+      osc.stop(now + 1.5);
+
+      setTimeout(playDistantOwl, 90000 + Math.random() * 180000);
+    }
+
+    forestAudio = {
+      ctx,
+      master,
+      enabled: false,
+      pause() {
+        this.enabled = false;
+        this.master.gain.value = 0;
+      },
+      play() {
+        this.enabled = true;
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        this.master.gain.value = getVolumeMultiplier();
+
+        if (!this.started) {
+          this.started = true;
+          setTimeout(playBirdChirp, 2000 + Math.random() * 4000);
+          setTimeout(playWoodpecker, 15000 + Math.random() * 20000);
+          setTimeout(playWindChime, 30000 + Math.random() * 30000);
+          setTimeout(playDistantOwl, 60000 + Math.random() * 60000);
+          setTimeout(playFrog, 90000 + Math.random() * 120000);
+          setTimeout(playCricket, 150000 + Math.random() * 120000);
+          setTimeout(playStream, 180000 + Math.random() * 180000);
+          setTimeout(playFoxCall, 240000 + Math.random() * 240000);
+        }
+
+        return Promise.resolve();
+      }
+    };
+  }
+
+  if (audioUnlocked) {
+    forestAudio.play().catch(() => {});
+  }
+}
+
+function updateRainSound() {
+  if (data.theme !== 'rain' || !data.ambientSoundEnabled) {
+    if (rainAudio) {
+      rainAudio.pause();
+      rainAudio.currentTime = 0;
+    }
+    return;
+  }
+
+  // Create an offline rain-like ambience using Web Audio API.
+  // This works even when opening the HTML file directly from disk.
+  if (!rainAudio) {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+
+    const ctx = new AudioCtx();
+
+    // White noise buffer.
+    const bufferSize = ctx.sampleRate * 2;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const output = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+
+    // Shape the noise into soft rain.
+    const lowpass = ctx.createBiquadFilter();
+    lowpass.type = 'lowpass';
+    lowpass.frequency.value = 2400;
+
+    const highpass = ctx.createBiquadFilter();
+    highpass.type = 'highpass';
+    highpass.frequency.value = 200;
+
+    const gain = ctx.createGain();
+    gain.gain.value = 0.014;
+
+    source.connect(lowpass);
+    lowpass.connect(highpass);
+    highpass.connect(gain);
+    gain.connect(ctx.destination);
+
+    source.start();
+
+    rainAudio = {
+      ctx,
+      gain,
+      pause() {
+        this.enabled = false;
+        this.gain.gain.value = 0;
+      },
+      play() {
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume(); 
+        }
+        this.enabled = true;
+        this.baseVolume = 0.014;
+        this.gain.gain.value = this.baseVolume * getVolumeMultiplier();
+        return Promise.resolve(); 
+      },
+      set currentTime(_) {}
+    };
+  }
+
+  if (audioUnlocked) {
+    rainAudio.play().catch(() => {});
+  }
+}
+
+function applyTheme() {
+  const root = el('appRoot');
+  if (!root) return;
+
+  const gradient = themes[data.theme] || themes.forest;
+  const isNight = data.theme === 'night';
+
+  document.body.className =
+    'min-h-screen bg-gradient-to-b ' +
+    gradient.join(' ') +
+    ' ' +
+    (isNight ? 'text-slate-100' : 'text-slate-800');
+
+  root.className =
+    'min-h-[calc(100vh-2rem)] md:min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b ' +
+    gradient.join(' ') +
+    ' p-6';
+
+  // Theme-matched card styles
+  const cardClass = isNight
+    ? 'bg-gradient-to-br from-slate-900/92 via-slate-900/88 to-indigo-950/90 border border-indigo-300/20 shadow-2xl backdrop-blur-xl'
+    : 'bg-white/85 border shadow-lg';
+
+  ['focusPage', 'forestPage', 'settingsPage'].forEach((id) => {
+    const section = el(id);
+    if (!section) return;
+
+    const hidden = section.classList.contains('hidden');
+    const sizeClasses = Array.from(section.classList).filter((cls) =>
+      ['rounded-3xl', 'p-6', 'max-w-3xl', 'max-w-xl', 'mx-auto', 'space-y-4', 'mb-8', 'md:mb-12', 'lg:mb-16'].includes(cls)
+    );
+
+    section.className = [...sizeClasses, cardClass].join(' ');
+    if (hidden) section.classList.add('hidden');
+  });
+
+  // Dashboard cards
+  const dashboardCards = document.querySelectorAll('#dashboardGrid > div');
+  dashboardCards.forEach((card) => {
+    if (isNight) {
+      card.className = 'rounded-3xl bg-gradient-to-br from-slate-900/92 via-slate-900/88 to-indigo-950/90 border border-indigo-300/20 shadow-2xl backdrop-blur-xl p-5';
+    } else {
+      card.className = 'rounded-3xl bg-white/85 border shadow-lg p-5';
+    }
+  });
+
+  // Improve readability of key text elements in night theme
+  const timer = el('timer');
+  if (timer) {
+    timer.className = 'text-6xl md:text-7xl font-mono font-bold ' + (isNight ? 'text-violet-50 drop-shadow-[0_0_18px_rgba(167,139,250,0.45)]' : 'text-slate-800');
+  }
+
+  const ring = el('progressRing');
+  if (ring) {
+    ring.setAttribute('stroke', isNight ? '#a78bfa' : data.theme === 'rain' ? '#0ea5e9' : '#10b981');
+    if (isNight) {
+      ring.style.filter = 'drop-shadow(0 0 10px rgba(167,139,250,0.55))';
+    } else {
+      ring.style.filter = 'none';
+    }
+  }
+
+  const startPauseBtn = el('startPauseBtn');
+  if (startPauseBtn) {
+    startPauseBtn.className = isNight
+      ? 'px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 text-white font-semibold shadow-xl shadow-violet-900/40 hover:brightness-110 transition'
+      : data.theme === 'rain'
+        ? 'px-5 py-3 rounded-2xl bg-sky-500 text-white font-semibold hover:bg-sky-600 transition'
+        : 'px-5 py-3 rounded-2xl bg-emerald-500 text-white font-semibold hover:bg-emerald-600 transition';
+  }
+
+  const phaseLabel = el('phaseLabel');
+  if (phaseLabel) phaseLabel.className =
+    'text-sm uppercase tracking-[0.18em] font-semibold ' + (isNight ? 'text-violet-200' : 'text-emerald-700');
+
+  const progressLabel = el('progressLabel');
+  if (progressLabel) progressLabel.className =
+    'mt-2 text-sm ' + (isNight ? 'text-slate-300' : 'text-slate-500');
+
+  const brandTitle = el('brandTitle');
+  if (brandTitle) {
+    brandTitle.className = 'brand-title text-4xl md:text-6xl';
+    if (isNight) {
+      brandTitle.classList.add('brand-title-night', 'text-violet-50');
+    } else if (data.theme === 'rain') {
+      brandTitle.classList.add('brand-title-rain', 'text-slate-800');
+    } else {
+      brandTitle.classList.add('text-emerald-900');
+    }
+  }
+
+  const subtitle = document.querySelector('header p');
+  if (subtitle) {
+    subtitle.className = 'mt-2 ' + (isNight ? 'text-slate-300' : 'text-slate-600');
+  }
+
+  const message = el('message');
+  if (message) message.className =
+    'mt-5 italic ' + (isNight ? 'text-slate-300' : 'text-slate-500');
+
+  const navButtons = document.querySelectorAll('#nav button');
+  navButtons.forEach((button) => {
+    const isActive = button.classList.contains('text-white');
+    if (isNight) {
+      button.className = isActive
+        ? 'px-4 py-2 rounded-2xl border border-violet-400/40 bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-lg shadow-violet-900/30'
+        : 'px-4 py-2 rounded-2xl border border-indigo-300/15 bg-slate-900/60 text-slate-200 shadow-sm hover:bg-slate-800/80';
+    }
+  });
+
+  const fullscreenBtn = el('fullscreenBtn');
+  if (fullscreenBtn) {
+    fullscreenBtn.className = isNight
+      ? 'w-11 h-11 flex items-center justify-center rounded-2xl border border-indigo-300/20 bg-slate-900/70 text-slate-100 text-xl shadow-lg hover:bg-slate-800/80 transition'
+      : 'w-11 h-11 flex items-center justify-center rounded-2xl border bg-white/85 text-xl hover:bg-white transition';
+  }
+
+  // Theme-aware styling for remaining controls
+  const witherBtn = el('witherBtn');
+  if (witherBtn) {
+    witherBtn.className = isNight
+      ? 'px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white font-semibold shadow-xl shadow-orange-900/35 hover:brightness-110 transition'
+      : data.theme === 'rain'
+        ? 'px-5 py-3 rounded-2xl bg-gradient-to-r from-slate-500 to-slate-600 text-white font-semibold shadow-lg hover:brightness-110 transition'
+        : 'px-5 py-3 rounded-2xl bg-amber-500 text-white font-semibold hover:bg-amber-600 transition';
+  }
+
+  const resetBtn = el('resetBtn');
+  if (resetBtn) {
+    resetBtn.className = isNight
+      ? 'px-5 py-3 rounded-2xl border border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-lg hover:bg-slate-800/80 transition'
+      : data.theme === 'rain'
+        ? 'px-5 py-3 rounded-2xl border border-sky-200 bg-white/90 text-slate-700 hover:bg-sky-50 transition'
+        : 'px-5 py-3 rounded-2xl border bg-white hover:bg-emerald-50 transition';
+  }
+
+  const focusLabel = document.querySelector('#focusControls label');
+  if (focusLabel) {
+    focusLabel.className = isNight
+      ? 'text-slate-300 font-medium'
+      : data.theme === 'rain'
+        ? 'text-slate-600 font-medium'
+        : 'text-slate-600 font-medium';
+  }
+
+  const focusInput = el('focusMinutesInput');
+  if (focusInput) {
+    focusInput.className = isNight
+      ? 'w-24 rounded-xl border border-indigo-300/20 bg-slate-900/70 text-slate-100 text-center px-3 py-2 shadow-inner focus:outline-none focus:ring-2 focus:ring-violet-400/50'
+      : data.theme === 'rain'
+        ? 'w-24 rounded-xl border border-sky-200 bg-white/90 text-slate-800 text-center px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-300/50'
+        : 'w-24 rounded-xl border border-emerald-200 bg-white text-slate-800 text-center px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-300/50';
+  }
+
+  const breakInput = el('breakMinutesInput');
+  if (breakInput) {
+    breakInput.className = isNight
+      ? 'w-full mt-2 rounded-xl border border-indigo-300/20 bg-slate-900/70 text-slate-100 px-3 py-2 shadow-inner focus:outline-none focus:ring-2 focus:ring-violet-400/50'
+      : data.theme === 'rain'
+        ? 'w-full mt-2 rounded-xl border border-sky-200 bg-white/90 text-slate-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-300/50'
+        : 'w-full mt-2 rounded-xl border border-emerald-200 bg-white text-slate-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-300/50';
+  }
+
+  const themeSelect = el('themeSelect');
+  if (themeSelect) {
+    themeSelect.className = isNight
+      ? 'w-full mt-2 rounded-xl border border-indigo-300/20 bg-slate-900/70 text-slate-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400/50'
+      : data.theme === 'rain'
+        ? 'w-full mt-2 rounded-xl border border-sky-200 bg-white/90 text-slate-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-300/50'
+        : 'w-full mt-2 rounded-xl border border-emerald-200 bg-white text-slate-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-300/50';
+  }
+
+  updateRain();
+  updateNightSky();
+  updateForestSound();
+  updateNightSound();
+  updateRainSound();
+  applyAudioVolumes();
+}
+
+function render() {
+  renderNav();
+  renderFocus();
+  renderForest();
+  renderDashboard();
+
+  for (const p of pages) {
+    const section = el(p + 'Page');
+    if (section) section.classList.toggle('hidden', page !== p);
+  }
+
+  if (el('focusMinutesInput')) el('focusMinutesInput').value = data.focusMinutes;
+  if (el('breakMinutesInput')) el('breakMinutesInput').value = data.breakMinutes;
+  if (el('themeSelect')) el('themeSelect').value = data.theme;
+  if (el('ambientSoundToggle')) el('ambientSoundToggle').checked = data.ambientSoundEnabled;
+  if (el('ambientVolumeInput')) el('ambientVolumeInput').value = data.ambientVolume ?? 50;
+  if (el('ambientVolumeLabel')) {
+    const percent = data.ambientVolume ?? 50;
+    el('ambientVolumeLabel').textContent = `${percent}%`;
+  } 
+  if (el('fullscreenBtn')) {
+    el('fullscreenBtn').textContent = '⛶';
+    el('fullscreenBtn').title = document.fullscreenElement ? 'Exit Fullscreen' : 'Enter Fullscreen';
+    el('fullscreenBtn').setAttribute('aria-label', document.fullscreenElement ? 'Exit Fullscreen' : 'Enter Fullscreen');
+  }
+
+  applyTheme();
+}
+
+function startTimer() {
+  if (isRunning) return;
+
+  isRunning = true;
+  intervalId = setInterval(() => {
+    secondsLeft -= 1;
+
+    if (secondsLeft <= 0) {
+      clearInterval(intervalId);
+      isRunning = false;
+
+      if (phase === 'focus') {
+        data.livingTrees += healthyTrees;
+        data.totalFocusMinutes += data.focusMinutes;
+        save();
+
+        phase = 'break';
+        secondsLeft = data.breakMinutes * 60;
+        setMessage('Your forest grew peacefully today.');
+      } else {
+        phase = 'focus';
+        healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
+        secondsLeft = data.focusMinutes * 60;
+        setMessage('New saplings are ready to grow.');
+      }
+    }
+
+    render();
+  }, 1000);
+
+  render();
+}
+
+function pauseTimer() {
+  isRunning = false;
+  clearInterval(intervalId);
+  render();
+}
+
+function resetAllData() {
+  if (!confirm('Reset ALL saved data? This will permanently remove your forest and all statistics.')) return;
+
+  const theme = data.theme;
+  const ambientSoundEnabled = data.ambientSoundEnabled;
+  const ambientVolume = data.ambientVolume;
+  const focusMinutes = data.focusMinutes;
+  const breakMinutes = data.breakMinutes;
+
+  data = {
+    ...DEFAULTS,
+    theme,
+    ambientSoundEnabled,
+    ambientVolume,
+    focusMinutes,
+    breakMinutes,
+  };
+
+  save(); 
+  resetTimer();
+  page = 'focus';
+  setMessage('A new forest begins.');
+  render();
+}
+
+function resetTimer() {
+  pauseTimer();
+  phase = 'focus';
+  healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
+  secondsLeft = data.focusMinutes * 60;
+  setMessage('A calm mind nurtures strong roots.');
+  render();
+}
+
+function bindEvents() {
+  el('startPauseBtn')?.addEventListener('click', () => {
+    isRunning ? pauseTimer() : startTimer();
+  });
+
+  el('witherBtn')?.addEventListener('click', witherTree);
+  el('resetBtn')?.addEventListener('click', resetTimer);
+    el('resetAllBtn')?.addEventListener('click', resetAllData);
+
+  el('focusMinutesInput')?.addEventListener('input', (e) => {
+    data.focusMinutes = Math.max(10, Number(e.target.value) || 25);
+    healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
+    if (!isRunning && phase === 'focus') {
+      secondsLeft = data.focusMinutes * 60;
+    }
+    save();
+    render();
+  });
+
+  el('breakMinutesInput')?.addEventListener('input', (e) => {
+    data.breakMinutes = Math.max(1, Number(e.target.value) || 5);
+    save();
+    render();
+  });
+
+  el('themeSelect')?.addEventListener('change', (e) => {
+    data.theme = e.target.value;
+    save();
+    render();
+  });
+
+  el('ambientSoundToggle')?.addEventListener('change', (e) => {
+    data.ambientSoundEnabled = e.target.checked;
+    save();
+    render();
+  });
+
+  el('ambientVolumeInput')?.addEventListener('input', (e) => {
+    data.ambientVolume = Math.max(0, Math.min(100, Number(e.target.value) || 0));
+    save();
+    applyAudioVolumes();
+    render();
+  });
+
+  el('fullscreenBtn')?.addEventListener('click', async () => {
+    const root = el('appRoot');
+    if (!root) return;
+
+    if (!document.fullscreenElement) {
+      await root.requestFullscreen().catch(() => {});
+    } else {
+      await document.exitFullscreen().catch(() => {});
+    }
+
+    render();
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' && isRunning && phase === 'focus') {
+      e.preventDefault();
+      witherTree();
+    }
+  });
+
+  document.addEventListener('click', () => {
+    // Unlock browser audio after the first user interaction.
+    // This enables both the rain ambience and the night-theme chimes,
+    // even when the HTML file is opened directly from disk.
+    audioUnlocked = true;
+    updateForestSound();
+    updateRainSound();
+    updateNightSound();
+  });
+
+  document.addEventListener('fullscreenchange', render);
+}
+
+bindEvents();
+render();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js');
+  });
+}
+</script>
+
+</body>
+</html>
