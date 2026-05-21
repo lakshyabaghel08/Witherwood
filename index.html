@@ -696,7 +696,7 @@ function updateNightSound() {
       osc.stop(now + 2.0);
 
       // Exceptionally rare: once every 20–60 minutes.
-      setTimeout(playCometWhoosh, 1200000 + Math.random() * 2400000);
+      setTimeout(playCometWhoosh, 900000 + Math.random() * 1800000);
     }
 
     // Very rare distant aurora-like shimmer.
@@ -744,7 +744,7 @@ function updateNightSound() {
         if (!this.started) {
           this.started = true;
           setTimeout(playChime, 3000 + Math.random() * 6000);
-          setTimeout(playCometWhoosh, 900000 + Math.random() * 1800000);
+          setTimeout(playCometWhoosh, 675000 + Math.random() * 1350000);
           setTimeout(playAuroraShimmer, 240000 + Math.random() * 180000);
         }
 
@@ -1152,27 +1152,27 @@ function updateForestSound() {
           this.started = true;
 
           // Common ambient wildlife (still infrequent).
-          scheduleRareForestEvent(playBirdChirp, 180000, 600000);        // 3–10 min
+          scheduleRareForestEvent(playBirdChirp, 135000, 450000);        // 3–10 min
           scheduleRareForestEvent(playLeafRustle, 90000, 240000);        // 1.5–4 min
-          scheduleRareForestEvent(playWoodpecker, 120000, 360000);       // 2–6 min
-          scheduleRareForestEvent(playWindChime, 180000, 480000);        // 3–8 min
-          scheduleRareForestEvent(playDistantOwl, 240000, 720000);       // 4–12 min
-          scheduleRareForestEvent(playFrog, 300000, 900000);             // 5–15 min
-          scheduleRareForestEvent(playCricket, 360000, 1080000);         // 6–18 min
-          scheduleRareForestEvent(playStream, 480000, 1440000);          // 8–24 min
-          scheduleRareForestEvent(playFoxCall, 720000, 2160000);         // 12–36 min
+          scheduleRareForestEvent(playWoodpecker, 90000, 270000);       // 2–6 min
+          scheduleRareForestEvent(playWindChime, 135000, 360000);        // 3–8 min
+          scheduleRareForestEvent(playDistantOwl, 180000, 540000);       // 4–12 min
+          scheduleRareForestEvent(playFrog, 225000, 675000);             // 5–15 min
+          scheduleRareForestEvent(playCricket, 270000, 810000);         // 6–18 min
+          scheduleRareForestEvent(playStream, 360000, 1080000);          // 8–24 min
+          scheduleRareForestEvent(playFoxCall, 540000, 1620000);         // 12–36 min
 
           // 10 extra easter eggs — intentionally rare discoveries.
-          scheduleRareForestEvent(playRobinSong, 600000, 1800000);       // 10–30 min
-          scheduleRareForestEvent(playCuckooCall, 720000, 2400000);      // 12–40 min
-          scheduleRareForestEvent(playFallingLeaves, 840000, 2700000);   // 14–45 min
-          scheduleRareForestEvent(playDistantBrook, 960000, 3000000);    // 16–50 min
-          scheduleRareForestEvent(playTreeCreak, 1080000, 3300000);      // 18–55 min
-          scheduleRareForestEvent(playForestBreeze, 1200000, 3600000);   // 20–60 min
-          scheduleRareForestEvent(playBullfrog, 1320000, 3900000);       // 22–65 min
-          scheduleRareForestEvent(playKatydid, 1440000, 4200000);        // 24–70 min
-          scheduleRareForestEvent(playHootEcho, 1560000, 4500000);       // 26–75 min
-          scheduleRareForestEvent(playRustlingBranches, 1680000, 4800000); // 28–80 min
+          scheduleRareForestEvent(playRobinSong, 450000, 1350000);       // 10–30 min
+          scheduleRareForestEvent(playCuckooCall, 540000, 1800000);      // 12–40 min
+          scheduleRareForestEvent(playFallingLeaves, 630000, 2025000);   // 14–45 min
+          scheduleRareForestEvent(playDistantBrook, 720000, 2250000);    // 16–50 min
+          scheduleRareForestEvent(playTreeCreak, 810000, 2475000);      // 18–55 min
+          scheduleRareForestEvent(playForestBreeze, 900000, 2700000);   // 20–60 min
+          scheduleRareForestEvent(playBullfrog, 990000, 2925000);       // 22–65 min
+          scheduleRareForestEvent(playKatydid, 1080000, 3150000);        // 24–70 min
+          scheduleRareForestEvent(playHootEcho, 1170000, 3375000);       // 26–75 min
+          scheduleRareForestEvent(playRustlingBranches, 1260000, 3600000); // 28–80 min
         }
 
         return Promise.resolve();
