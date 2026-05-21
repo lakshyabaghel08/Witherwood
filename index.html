@@ -329,6 +329,7 @@ let page = 'focus';
 let phase = 'focus';
 let isRunning = false;
 let intervalId = null;
+let scheduledAmbientTimeouts = [];
 let audioUnlocked = false;
 let rainAudio = null;
 let nightAudio = null;
@@ -757,10 +758,21 @@ function updateNightSound() {
   }
 }
 
+
+function registerAmbientTimeout(id) {
+  scheduledAmbientTimeouts.push(id);
+  return id;
+}
+
+function clearAmbientTimeouts() {
+  scheduledAmbientTimeouts.forEach(clearTimeout);
+  scheduledAmbientTimeouts = [];
+}
+
 function scheduleRareForestEvent(fn, minDelayMs, maxDelayMs) {
   const run = () => {
     if (data.theme !== 'forest' || !forestAudio?.enabled) {
-      setTimeout(run, 60000 + Math.random() * 120000);
+      registerAmbientTimeout(setTimeout(run, 60000 + Math.random() * 120000));
       return;
     }
 
@@ -771,11 +783,11 @@ function scheduleRareForestEvent(fn, minDelayMs, maxDelayMs) {
     }
 
     const nextDelay = minDelayMs + Math.random() * (maxDelayMs - minDelayMs);
-    setTimeout(run, nextDelay);
+    registerAmbientTimeout(setTimeout(run, nextDelay));
   };
 
   const firstDelay = minDelayMs + Math.random() * (maxDelayMs - minDelayMs);
-  setTimeout(run, firstDelay);
+  registerAmbientTimeout(setTimeout(run, firstDelay));
 }
 
 function updateForestSound() {
@@ -1692,13 +1704,29 @@ function bindEvents() {
   });
 
   el('themeSelect')?.addEventListener('change', (e) => {
+    clearAmbientTimeouts();
+
     data.theme = e.target.value;
+
+    if (forestAudio) forestAudio.started = false;
+    if (nightAudio) nightAudio.started = false;
+    if (rainAudio) rainAudio.started = false;
+
     save();
     render();
   });
 
   el('ambientSoundToggle')?.addEventListener('change', (e) => {
     data.ambientSoundEnabled = e.target.checked;
+
+    if (!data.ambientSoundEnabled) {
+      clearAmbientTimeouts();
+
+      if (forestAudio) forestAudio.started = false;
+      if (nightAudio) nightAudio.started = false;
+      if (rainAudio) rainAudio.started = false;
+    }
+
     save();
     render();
   });
@@ -1743,14 +1771,44 @@ function bindEvents() {
   document.addEventListener('fullscreenchange', render);
 }
 
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && !isRunning) {
+    clearAmbientTimeouts();
+
+    if (forestAudio) forestAudio.started = false;
+    if (nightAudio) nightAudio.started = false;
+    if (rainAudio) rainAudio.started = false;
+  }
+});
+
+
 bindEvents();
 render();
 </script>
 
 <script>
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js');
+  window.addEventListener('load', async () => {
+    try {
+      const registration = await navigator.serviceWorker.register('./service-worker.js');
+
+      // Always check for updates immediately.
+      registration.update();
+
+      // Auto-reload when a new service worker takes control.
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
+      });
+
+      // Periodically check for updates every 60 seconds.
+      setInterval(() => {
+        registration.update();
+      }, 60000);
+
+    } catch (err) {
+      console.warn('Service worker registration failed:', err);
+    }
   });
 }
 </script>
