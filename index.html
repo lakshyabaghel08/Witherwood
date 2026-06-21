@@ -867,7 +867,7 @@ function updateForestSound() {
     master.connect(ctx.destination);
 
     let lastWildlifeSound = 0;
-    const WILDLIFE_COOLDOWN_MS = 180000;
+    const WILDLIFE_COOLDOWN_MS = 120000;
     function wildlifeAllowed(){ const n=Date.now(); if(n-lastWildlifeSound < WILDLIFE_COOLDOWN_MS) return false; lastWildlifeSound=n; return true; }
 
     // --- Rich wind and leaf ambience --- 
@@ -891,7 +891,7 @@ function updateForestSound() {
     highpass.frequency.value = 70;
 
     const windGain = ctx.createGain();
-    windGain.gain.value = 0.018;
+    windGain.gain.value = 0.011;
 
     // Slow gust modulation.
     const gustLfo = ctx.createOscillator();
@@ -1244,13 +1244,13 @@ function updateForestSound() {
 
           // Common ambient wildlife (still infrequent).
           scheduleRareForestEvent(playBirdChirp, 300000, 720000);        // 3–10 min
-          scheduleRareForestEvent(playLeafRustle, 90000, 240000);        // 1.5–4 min
+          scheduleRareForestEvent(playLeafRustle, 60000, 180000);        // 1.5–4 min
           scheduleRareForestEvent(playWoodpecker, 600000, 1200000);       // 2–6 min
-          scheduleRareForestEvent(playWindChime, 480000, 1080000);        // 3–8 min
+          scheduleRareForestEvent(playWindChime, 300000, 720000);        // 3–8 min
           scheduleRareForestEvent(playDistantOwl, 1200000, 2400000);       // 4–12 min
           scheduleRareForestEvent(playFrog, 900000, 1800000);             // 5–15 min
           scheduleRareForestEvent(playCricket, 900000, 1800000);         // 6–18 min
-          scheduleRareForestEvent(playStream, 1200000, 2400000);          // 8–24 min
+          scheduleRareForestEvent(playStream, 480000, 900000);          // 8–24 min
           scheduleRareForestEvent(playFoxCall, 1800000, 3600000);         // 12–36 min
 
           // 10 extra easter eggs — intentionally rare discoveries.
