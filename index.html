@@ -294,6 +294,19 @@
             </button>
           </div>
           <p class="text-sm text-slate-500">Permanently clears your forest and all saved statistics.</p>
+          <div class="pt-2 border-t border-slate-200/60 space-y-3">
+            <h3 class="font-semibold">Backup & Restore</h3>
+            <div class="flex gap-2 flex-wrap">
+              <button id="exportDataBtn" class="px-4 py-2 rounded-2xl bg-emerald-500 text-white">
+                📤 Export Backup
+              </button>
+              <button id="importDataBtn" class="px-4 py-2 rounded-2xl bg-sky-500 text-white">
+                📥 Import Backup
+              </button>
+              <input id="importFileInput" type="file" accept=".json" style="display:none" />
+            </div>
+          </div>
+
         </div>
       </section>
     </div>
@@ -301,7 +314,7 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'witherwood-single-file-v3';
+const STORAGE_KEY = 'witherwood-data';
 const DEFAULTS = {
   focusMinutes: 25,
   breakMinutes: 5,
@@ -381,6 +394,48 @@ function applyAudioVolumes() {
 function save() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
+
+function exportBackup() {
+  const backup = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    data
+  };
+
+  const blob = new Blob([JSON.stringify(backup, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Witherwood_Backup_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importBackup(file) {
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    try {
+      const backup = JSON.parse(reader.result);
+
+      if (!backup.data) throw new Error('Invalid backup');
+
+      data = {
+        ...DEFAULTS,
+        ...backup.data
+      };
+
+      save();
+      resetTimer();
+      render();
+      alert('Backup restored successfully!');
+    } catch (e) {
+      alert('Invalid backup file.');
+    }
+  };
+
+  reader.readAsText(file);
+}
+
 
 function fmt(seconds) {
   return (
@@ -1803,6 +1858,19 @@ function bindEvents() {
     updateRainSound();
     updateNightSound();
   });
+
+  
+  el('exportDataBtn')?.addEventListener('click', exportBackup);
+
+  el('importDataBtn')?.addEventListener('click', () => {
+    el('importFileInput')?.click();
+  });
+
+  el('importFileInput')?.addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    if (file) importBackup(file);
+  });
+
 
   document.addEventListener('fullscreenchange', render);
 }
