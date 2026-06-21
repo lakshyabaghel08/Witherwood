@@ -867,7 +867,7 @@ function updateForestSound() {
     master.connect(ctx.destination);
 
     let lastWildlifeSound = 0;
-    const WILDLIFE_COOLDOWN_MS = 120000;
+    const WILDLIFE_COOLDOWN_MS = 90000;
     function wildlifeAllowed(){ const n=Date.now(); if(n-lastWildlifeSound < WILDLIFE_COOLDOWN_MS) return false; lastWildlifeSound=n; return true; }
 
     // --- Rich wind and leaf ambience --- 
@@ -994,7 +994,7 @@ function updateForestSound() {
         filter.frequency.value = 2200;
 
         gain.gain.setValueAtTime(0.0001, start);
-        gain.gain.exponentialRampToValueAtTime(0.006, start + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.012, start + 0.03);
         gain.gain.exponentialRampToValueAtTime(0.0001, start + 3.5);
 
         osc.connect(filter);
@@ -1243,7 +1243,7 @@ function updateForestSound() {
           this.started = true;
 
           // Common ambient wildlife (still infrequent).
-          scheduleRareForestEvent(playBirdChirp, 300000, 720000);        // 3–10 min
+          scheduleRareForestEvent(playBirdChirp, 180000, 480000);        // 3–10 min
           scheduleRareForestEvent(playLeafRustle, 60000, 180000);        // 1.5–4 min
           scheduleRareForestEvent(playWoodpecker, 600000, 1200000);       // 2–6 min
           scheduleRareForestEvent(playWindChime, 300000, 720000);        // 3–8 min
@@ -1254,7 +1254,7 @@ function updateForestSound() {
           scheduleRareForestEvent(playFoxCall, 1800000, 3600000);         // 12–36 min
 
           // 10 extra easter eggs — intentionally rare discoveries.
-          scheduleRareForestEvent(playRobinSong, 480000, 1080000);       // 10–30 min
+          scheduleRareForestEvent(playRobinSong, 300000, 720000);       // 10–30 min
           scheduleRareForestEvent(playCuckooCall, 900000, 1800000);      // 12–40 min
           scheduleRareForestEvent(playFallingLeaves, 630000, 2025000);   // 14–45 min
           scheduleRareForestEvent(playDistantBrook, 720000, 2250000);    // 16–50 min
