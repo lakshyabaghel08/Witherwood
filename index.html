@@ -187,24 +187,24 @@ input[type=range]::-webkit-slider-runnable-track {
 <meta name="theme-color" content="#f7f4ea">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 </head>
-<body class="min-h-screen bg-emerald-50 text-slate-800 transition-colors duration-500 flex flex-col items-center">
+<body class="min-h-screen flex flex-col items-center">
 
 <div id="toastContainer"></div>
 
 <!-- Confirm Reset Modal -->
 <div id="confirmModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[9999] hidden flex items-center justify-center opacity-0 transition-opacity duration-200">
-  <div data-theme-target="modal" data-base-class="rounded-3xl border p-6 max-w-sm mx-4 transform scale-95 transition-transform duration-200" class="bg-white rounded-3xl border p-6 max-w-sm mx-4 transform scale-95 transition-transform duration-200 shadow-2xl">
-    <h3 data-theme-target="text" data-base-class="text-xl font-bold mb-2">Reset All Data?</h3>
-    <p data-theme-target="subtext" data-base-class="mb-6">This will permanently remove your forest and all statistics.</p>
+  <div data-theme-target="modal" class="rounded-3xl border p-6 max-w-sm mx-4 transform scale-95 transition-all duration-200 shadow-2xl">
+    <h3 data-theme-target="text" class="text-xl font-bold mb-2 transition-colors duration-500">Reset All Data?</h3>
+    <p data-theme-target="subtext" class="mb-6 transition-colors duration-500">This will permanently remove your forest and all statistics.</p>
     <div class="flex justify-end gap-3">
-      <button id="confirmCancel" data-theme-target="btnSecondary" data-base-class="btn-interactive px-4 py-2 rounded-xl font-medium border">Cancel</button>
-      <button id="confirmYes" data-theme-target="btnDanger" data-base-class="btn-interactive px-4 py-2 rounded-xl font-medium border">Reset</button>
+      <button id="confirmCancel" data-theme-target="btnSecondary" class="btn-interactive px-4 py-2 rounded-xl font-medium border transition-colors duration-500">Cancel</button>
+      <button id="confirmYes" data-theme-target="btnDanger" class="btn-interactive px-4 py-2 rounded-xl font-medium border transition-colors duration-500">Reset</button>
     </div>
   </div>
 </div>
 
 <div class="w-full flex-1 flex flex-col items-center transition-all duration-500">
-  <div id="appRoot" class="w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-emerald-50 p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center shadow-2xl mt-4 mb-4">
+  <div id="appRoot" class="w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center shadow-2xl mt-4 mb-4">
     
     <!-- Unified Visual Effects Layer -->
     <div id="visualEffectsLayer"></div>
@@ -215,27 +215,28 @@ input[type=range]::-webkit-slider-runnable-track {
     <div class="w-full max-w-4xl space-y-8 relative z-10 flex flex-col items-center shrink-0 py-4 md:py-8">
       <header class="flex flex-col items-center text-center gap-4 w-full relative">
         <div class="absolute right-0 top-0 flex gap-2 z-20">
-          <button id="pipBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl" title="Mini Player" aria-label="Mini Player">
+          <button id="pipBtn" data-theme-target="btnSecondary" class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl transition-colors duration-500" title="Mini Player" aria-label="Mini Player">
             ◱
           </button>
-          <button id="fullscreenBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">
+          <button id="fullscreenBtn" data-theme-target="btnSecondary" class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl transition-colors duration-500" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">
             ⛶
           </button>
         </div>
         <div class="mt-14 md:mt-0 px-12">
-          <h1 id="brandTitle" data-theme-target="title" data-base-class="brand-title text-6xl">🌲 Witherwood</h1>
-          <p data-theme-target="subtext" data-base-class="mt-2 text-lg">Every 10 minutes of focus plants a tree.</p>
+          <!-- FIXED TYPOGRAPHY -->
+          <h1 id="brandTitle" data-theme-target="title" class="brand-title text-6xl transition-colors duration-500">🌲 Witherwood</h1>
+          <p data-theme-target="subtext" class="mt-2 text-lg transition-colors duration-500">Every 10 minutes of focus plants a tree.</p>
         </div>
       </header>
 
       <nav id="nav" class="flex flex-wrap justify-center gap-3 w-full"></nav>
 
       <div class="w-full relative flex justify-center">
-        <!-- Default State: Focus is visible, everything else is strictly hidden -->
+        <!-- Default State: Focus is visible, everything else is hidden -->
         
-        <section id="focusPage" data-theme-target="card" data-base-class="page-section w-full rounded-3xl border p-6 max-w-3xl mb-4 md:mb-8" class="page-section w-full rounded-3xl border p-6 max-w-3xl mb-4 md:mb-8">
+        <section id="focusPage" data-theme-target="card" class="page-section w-full rounded-3xl border p-6 max-w-3xl mb-4 md:mb-8 transition-colors duration-500 shadow-xl">
           <div class="max-w-lg mx-auto text-center">
-            <div id="phaseLabel" data-theme-target="label" data-base-class="text-sm uppercase tracking-wide font-semibold">Focus Session</div>
+            <div id="phaseLabel" data-theme-target="label" class="text-sm uppercase tracking-wide font-semibold transition-colors duration-500">Focus Session</div>
 
             <div class="mt-4 flex justify-center">
               <div class="relative w-80 h-80">
@@ -257,14 +258,15 @@ input[type=range]::-webkit-slider-runnable-track {
                 </svg>
 
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <div id="timer" data-theme-target="timer" data-base-class="text-[6rem] leading-none font-mono font-bold tracking-tighter">25:00</div>
-                  <div id="progressLabel" data-theme-target="subtext" data-base-class="mt-4 text-base font-medium"></div>
+                  <!-- FIXED TYPOGRAPHY -->
+                  <div id="timer" data-theme-target="timer" class="text-[6rem] leading-none font-mono font-bold tracking-tighter transition-colors duration-500">25:00</div>
+                  <div id="progressLabel" data-theme-target="subtext" class="mt-4 text-base font-medium transition-colors duration-500"></div>
                 </div>
               </div>
             </div>
 
             <div id="focusControls" class="mt-6 flex items-center justify-center gap-3">
-              <label data-theme-target="label" data-base-class="font-medium">Focus (min)</label>
+              <label data-theme-target="label" class="font-medium transition-colors duration-500">Focus (min)</label>
               <input
                 id="focusMinutesInput"
                 type="number"
@@ -272,42 +274,43 @@ input[type=range]::-webkit-slider-runnable-track {
                 max="180"
                 value="25"
                 data-theme-target="input"
-                data-base-class="w-24 text-center rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 cursor-pointer"
+                class="w-24 text-center rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500"
               />
             </div>
 
-            <div id="saplings" data-theme-target="text" data-base-class="mt-5 text-lg font-medium"></div>
+            <div id="saplings" data-theme-target="text" class="mt-5 text-lg font-medium transition-colors duration-500"></div>
 
             <div class="flex flex-wrap justify-center gap-4 mt-6">
-              <button id="startPauseBtn" data-theme-target="btnPrimary" data-base-class="btn-interactive px-6 py-3 rounded-2xl font-semibold border">Start</button>
-              <button id="witherBtn" data-theme-target="btnWarning" data-base-class="btn-interactive px-6 py-3 rounded-2xl font-semibold border">🍂 Wither Tree</button>
-              <button id="resetBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive px-6 py-3 rounded-2xl font-medium border">Reset</button>
+              <button id="startPauseBtn" data-theme-target="btnPrimary" class="btn-interactive px-6 py-3 rounded-2xl font-semibold border-transparent transition-colors duration-500">Start</button>
+              <button id="witherBtn" data-theme-target="btnWarning" class="btn-interactive px-6 py-3 rounded-2xl font-semibold border-transparent transition-colors duration-500">🍂 Wither Tree</button>
+              <button id="resetBtn" data-theme-target="btnSecondary" class="btn-interactive px-6 py-3 rounded-2xl font-medium border transition-colors duration-500">Reset</button>
             </div>
 
-            <p id="message" data-theme-target="subtext" data-base-class="mt-6 italic">“A calm mind nurtures strong roots.”</p>
+            <p id="message" data-theme-target="subtext" class="mt-6 italic transition-colors duration-500">“A calm mind nurtures strong roots.”</p>
           </div>
         </section>
 
-        <section id="forestPage" data-theme-target="card" data-base-class="page-section w-full rounded-3xl border p-6 max-w-3xl" class="page-section hidden page-hidden w-full rounded-3xl border p-6 max-w-3xl">
-          <h2 data-theme-target="text" data-base-class="text-2xl font-semibold mb-2">Your Forest</h2>
-          <div id="forestSummary" data-theme-target="subtext" data-base-class="mb-6"></div>
+        <!-- Other pages actively start with hidden + page-hidden -->
+        <section id="forestPage" data-theme-target="card" class="page-section hidden page-hidden w-full rounded-3xl border p-6 max-w-3xl transition-colors duration-500 shadow-xl">
+          <h2 data-theme-target="text" class="text-2xl font-semibold mb-2 transition-colors duration-500">Your Forest</h2>
+          <div id="forestSummary" data-theme-target="subtext" class="mb-6 transition-colors duration-500"></div>
           <div id="forestGrid" class="flex flex-wrap gap-1 text-xl justify-center md:justify-start"></div>
         </section>
 
-        <section id="dashboardPage" class="page-section hidden page-hidden w-full max-w-4xl">
+        <section id="dashboardPage" class="page-section hidden page-hidden w-full max-w-4xl transition-colors duration-500">
           <div id="dashboardGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
-        <section id="settingsPage" data-theme-target="card" data-base-class="page-section w-full rounded-3xl border p-6 max-w-xl space-y-5" class="page-section hidden page-hidden w-full rounded-3xl border p-6 max-w-xl space-y-5">
-          <h2 data-theme-target="text" data-base-class="text-2xl font-semibold mb-2">Settings</h2>
+        <section id="settingsPage" data-theme-target="card" class="page-section hidden page-hidden w-full rounded-3xl border p-6 max-w-xl space-y-5 transition-colors duration-500 shadow-xl">
+          <h2 data-theme-target="text" class="text-2xl font-semibold mb-2 transition-colors duration-500">Settings</h2>
 
           <label class="flex items-center gap-3 cursor-pointer">
-            <input id="breaksEnabledToggle" type="checkbox" data-theme-target="accent" data-base-class="w-5 h-5 rounded border" />
-            <span data-theme-target="label" data-base-class="font-medium">Enable Break Sessions</span>
+            <input id="breaksEnabledToggle" type="checkbox" data-theme-target="accent" class="w-5 h-5 rounded border transition-colors duration-500" />
+            <span data-theme-target="label" class="font-medium transition-colors duration-500">Enable Break Sessions</span>
           </label>
 
           <label class="block">
-            <span data-theme-target="label" data-base-class="font-medium">Break Minutes</span>
+            <span data-theme-target="label" class="font-medium transition-colors duration-500">Break Minutes</span>
             <input
               id="breakMinutesInput"
               type="number"
@@ -315,20 +318,20 @@ input[type=range]::-webkit-slider-runnable-track {
               max="60"
               value="5"
               data-theme-target="input"
-              data-base-class="w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer"
+              class="w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500"
             />
           </label>
 
           <div class="pt-4 border-t border-slate-200/60">
             <label class="flex items-center gap-3 cursor-pointer mb-4">
-              <input id="ambientSoundToggle" type="checkbox" data-theme-target="accent" data-base-class="w-5 h-5 rounded border" />
-              <span data-theme-target="label" data-base-class="font-medium">Enable Ambient Sound</span>
+              <input id="ambientSoundToggle" type="checkbox" data-theme-target="accent" class="w-5 h-5 rounded border transition-colors duration-500" />
+              <span data-theme-target="label" class="font-medium transition-colors duration-500">Enable Ambient Sound</span>
             </label>
 
             <label class="block">
               <div class="flex items-center justify-between mb-2">
-                <span data-theme-target="label" data-base-class="font-medium">Ambient Volume</span>
-                <span id="ambientVolumeLabel" data-theme-target="subtext" data-base-class="text-sm font-medium">50%</span>
+                <span data-theme-target="label" class="font-medium transition-colors duration-500">Ambient Volume</span>
+                <span id="ambientVolumeLabel" data-theme-target="subtext" class="text-sm font-medium transition-colors duration-500">50%</span>
               </div>
               <input
                 id="ambientVolumeInput"
@@ -338,23 +341,23 @@ input[type=range]::-webkit-slider-runnable-track {
                 step="1"
                 value="50"
                 data-theme-target="accent"
-                data-base-class="w-full h-2 bg-black/10 rounded-lg appearance-none cursor-pointer"
+                class="w-full h-2 bg-black/10 rounded-lg appearance-none cursor-pointer transition-colors duration-500"
               />
             </label>
           </div>
 
           <div class="space-y-5 pt-4 border-t border-slate-200/60">
             <label class="block">
-              <span data-theme-target="label" data-base-class="font-medium">Visual Theme</span>
-              <select id="themeSelect" data-theme-target="input" data-base-class="w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer">
+              <span data-theme-target="label" class="font-medium transition-colors duration-500">Visual Theme</span>
+              <select id="themeSelect" data-theme-target="input" class="w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500">
                 <option value="forest">🌲 Forest</option>
                 <option value="night">🌙 Night</option>
                 <option value="rain">🌧️ Rain</option>
               </select>
             </label>
             <label class="block">
-              <span data-theme-target="label" data-base-class="font-medium">Soundscape</span>
-              <select id="soundscapeSelect" data-theme-target="input" data-base-class="w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer">
+              <span data-theme-target="label" class="font-medium transition-colors duration-500">Soundscape</span>
+              <select id="soundscapeSelect" data-theme-target="input" class="w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500">
                 <option value="woodland">🍃 Woodland</option>
                 <option value="fireside">🔥 Fireside</option>
                 <option value="rainfall">🌧️ Rainfall</option>
@@ -364,12 +367,12 @@ input[type=range]::-webkit-slider-runnable-track {
 
           <div class="pt-6 border-t border-slate-200/60 space-y-4">
             <div>
-              <h3 data-theme-target="label" data-base-class="font-semibold mb-2">Data Management</h3>
+              <h3 data-theme-target="label" class="font-semibold mb-2 transition-colors duration-500">Data Management</h3>
               <div class="flex flex-wrap gap-3">
-                <button id="exportDataBtn" data-theme-target="btnPrimary" data-base-class="btn-interactive px-5 py-2.5 rounded-xl font-medium border">
+                <button id="exportDataBtn" data-theme-target="btnPrimary" class="btn-interactive px-5 py-2.5 rounded-xl font-medium border-transparent transition-colors duration-500">
                   📤 Export Backup
                 </button>
-                <button id="importDataBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive px-5 py-2.5 rounded-xl font-medium border">
+                <button id="importDataBtn" data-theme-target="btnSecondary" class="btn-interactive px-5 py-2.5 rounded-xl font-medium border transition-colors duration-500">
                   📥 Import Backup
                 </button>
                 <input id="importFileInput" type="file" accept=".json" style="display:none" />
@@ -377,8 +380,8 @@ input[type=range]::-webkit-slider-runnable-track {
             </div>
             <div class="pt-4 border-t border-slate-200/60">
               <h3 class="font-semibold text-rose-500 mb-2">Danger Zone</h3>
-              <p data-theme-target="subtext" data-base-class="text-sm mb-3">Permanently clears your forest and all saved statistics.</p>
-              <button id="resetAllBtn" data-theme-target="btnDanger" data-base-class="btn-interactive px-5 py-2.5 rounded-xl font-medium border">
+              <p data-theme-target="subtext" class="text-sm mb-3 transition-colors duration-500">Permanently clears your forest and all saved statistics.</p>
+              <button id="resetAllBtn" data-theme-target="btnDanger" class="btn-interactive px-5 py-2.5 rounded-xl font-medium border-transparent transition-colors duration-500">
                 Reset All Data
               </button>
             </div>
@@ -430,7 +433,7 @@ let healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
 
 let pipWindow = null;
 let pipElements = {};
-let isNavigating = false; // Prevents race conditions during transitions
+let isNavigating = false; // Lock to prevent overlapping transitions
 
 const pages = ['focus', 'forest', 'dashboard', 'settings'];
 const labels = {
@@ -440,65 +443,78 @@ const labels = {
   settings: '⚙️ Settings',
 };
 
+// PURE THEME DICTIONARY - Only explicit colors, shadows, and filters.
 const THEME_DEFS = {
   forest: {
     bg: 'from-emerald-50 via-lime-50 to-teal-100',
     text: 'text-slate-800',
-    card: 'bg-white/85 border-slate-200 shadow-xl',
+    card: 'bg-white/85 border-slate-200',
     input: 'border-emerald-200 bg-white text-slate-800 focus:ring-emerald-300/50',
-    btnPrimary: 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-md border-transparent',
+    btnPrimary: 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-md',
     btnSecondary: 'bg-white/85 hover:bg-white text-slate-700 border-slate-200 shadow-sm',
-    btnNavActive: 'bg-emerald-500 text-white shadow-md border-transparent',
-    btnWarning: 'bg-amber-500 hover:bg-amber-600 text-white shadow-md border-transparent',
-    btnDanger: 'bg-rose-500 hover:bg-rose-600 text-white shadow-md border-transparent',
+    btnNavActive: 'bg-emerald-500 text-white shadow-md',
+    btnWarning: 'bg-amber-500 hover:bg-amber-600 text-white shadow-md',
+    btnDanger: 'bg-rose-500 hover:bg-rose-600 text-white shadow-md',
     ring: '#10b981',
     title: 'text-emerald-900',
     label: 'text-emerald-700',
     subtext: 'text-slate-500',
     timer: 'text-slate-800',
-    modal: 'bg-white text-slate-800 border-slate-200 shadow-2xl',
+    modal: 'bg-white text-slate-800 border-slate-200',
     toast: 'bg-emerald-50 text-emerald-900 border-emerald-200',
     accent: 'accent-emerald-500 text-emerald-500 focus:ring-emerald-500'
   },
   night: {
     bg: 'from-slate-950 via-slate-900 to-indigo-950',
     text: 'text-slate-100',
-    card: 'bg-gradient-to-br from-slate-900/92 via-slate-900/88 to-indigo-950/90 border-indigo-300/20 shadow-2xl backdrop-blur-xl',
+    card: 'bg-gradient-to-br from-slate-900/92 via-slate-900/88 to-indigo-950/90 border-indigo-300/20 backdrop-blur-xl',
     input: 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-inner focus:ring-violet-400/50',
-    btnPrimary: 'bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 shadow-xl shadow-violet-900/40 hover:brightness-110 text-white border-transparent',
+    btnPrimary: 'bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 shadow-xl shadow-violet-900/40 hover:brightness-110 text-white',
     btnSecondary: 'bg-slate-800/80 hover:bg-slate-700/90 text-slate-300 border-slate-700/50 shadow-sm hover:shadow-indigo-900/20',
-    btnNavActive: 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.4)] border-transparent',
-    btnWarning: 'bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 shadow-xl shadow-orange-900/35 hover:brightness-110 text-white border-transparent',
-    btnDanger: 'bg-gradient-to-r from-rose-500 to-red-600 shadow-xl shadow-rose-900/30 hover:brightness-110 text-white border-transparent',
+    btnNavActive: 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.4)]',
+    btnWarning: 'bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 shadow-xl shadow-orange-900/35 hover:brightness-110 text-white',
+    btnDanger: 'bg-gradient-to-r from-rose-500 to-red-600 shadow-xl shadow-rose-900/30 hover:brightness-110 text-white',
     ring: '#a78bfa',
     title: 'text-violet-50 brand-title-night',
     label: 'text-violet-200',
     subtext: 'text-slate-300',
     timer: 'text-violet-50 drop-shadow-[0_0_18px_rgba(167,139,250,0.45)]',
-    modal: 'bg-slate-900 text-slate-100 border-indigo-500/30 shadow-2xl shadow-indigo-900/50',
-    toast: 'bg-slate-900 text-slate-100 border-indigo-500/30 shadow-2xl',
+    modal: 'bg-slate-900 text-slate-100 border-indigo-500/30 shadow-indigo-900/50',
+    toast: 'bg-slate-900 text-slate-100 border-indigo-500/30',
     accent: 'accent-violet-500 text-violet-500 focus:ring-violet-500'
   },
   rain: {
     bg: 'from-sky-100 via-slate-200 to-blue-300',
     text: 'text-slate-800',
-    card: 'bg-white/85 border-sky-200 shadow-xl',
+    card: 'bg-white/85 border-sky-200',
     input: 'border-sky-200 bg-white/90 text-slate-800 focus:ring-sky-300/50',
-    btnPrimary: 'bg-sky-500 hover:bg-sky-600 text-white shadow-md border-transparent',
+    btnPrimary: 'bg-sky-500 hover:bg-sky-600 text-white shadow-md',
     btnSecondary: 'bg-white/90 hover:bg-sky-50 text-slate-700 border-sky-200 shadow-sm',
-    btnNavActive: 'bg-sky-500 text-white shadow-md border-transparent',
-    btnWarning: 'bg-gradient-to-r from-slate-500 to-slate-600 shadow-lg hover:brightness-110 text-white border-transparent',
-    btnDanger: 'bg-rose-500 hover:bg-rose-600 text-white shadow-md border-transparent',
+    btnNavActive: 'bg-sky-500 text-white shadow-md',
+    btnWarning: 'bg-gradient-to-r from-slate-500 to-slate-600 shadow-lg hover:brightness-110 text-white',
+    btnDanger: 'bg-rose-500 hover:bg-rose-600 text-white shadow-md',
     ring: '#0ea5e9',
     title: 'text-slate-800 brand-title-rain',
     label: 'text-sky-700',
     subtext: 'text-slate-600',
     timer: 'text-slate-800',
-    modal: 'bg-white text-slate-800 border-sky-200 shadow-2xl',
+    modal: 'bg-white text-slate-800 border-sky-200',
     toast: 'bg-sky-50 text-sky-900 border-sky-200',
     accent: 'accent-sky-500 text-sky-500 focus:ring-sky-500'
   }
 };
+
+// Generates an exact Set of all dynamically applied theme classes
+const ALL_THEME_CLASSES = new Set();
+Object.values(THEME_DEFS).forEach(themeObj => {
+  Object.values(themeObj).forEach(classString => {
+    if (typeof classString === 'string') {
+      classString.split(' ').forEach(cls => {
+        if (cls.trim()) ALL_THEME_CLASSES.add(cls.trim());
+      });
+    }
+  });
+});
 
 const AUDIO_CONFIG = {
   woodland: {
@@ -1041,18 +1057,18 @@ function witherTree() {
 }
 
 // ----------------------------------------------------
-// ATOMIC VISIBILITY CONTROLLER
+// ATOMIC VISIBILITY ENGINE
+// Guarantees only one page exists in the DOM at any given time.
 // ----------------------------------------------------
-function enforceVisibility(activePageId) {
+function enforceVisibility() {
   pages.forEach(p => {
     const section = el(p + 'Page');
     if (!section) return;
     
-    if (p === activePageId) {
-      section.classList.remove('hidden', 'page-hidden');
-      // Trigger a browser reflow to guarantee CSS transitions activate 
-      // when stepping out of 'display: none'
-      void section.offsetWidth; 
+    if (p === page) {
+      section.classList.remove('hidden');
+      void section.offsetWidth; // Force rapid browser reflow
+      section.classList.remove('page-hidden');
     } else {
       section.classList.add('hidden', 'page-hidden');
     }
@@ -1066,19 +1082,16 @@ async function switchPage(newPage) {
   const oldEl = el(page + 'Page');
   
   if(oldEl) {
-    // Initiate visual fade out
     oldEl.classList.add('page-hidden');
   }
   
-  // Wait precisely for the CSS transition to complete
+  // Wait strictly for the CSS opacity transition to resolve
   await new Promise(r => setTimeout(r, 200));
   
   page = newPage;
-  
-  // Hard-sync all DOM elements to the strict 'page' variable truth
-  enforceVisibility(page);
-  
+  enforceVisibility();
   renderNav();
+  
   isNavigating = false;
 }
 
@@ -1092,7 +1105,7 @@ function renderNav() {
   for (const p of pages) {
     const button = document.createElement('button');
     const isActive = page === p;
-    button.className = `btn-interactive px-5 py-2.5 rounded-2xl font-medium transition-all duration-200 border ${isActive ? def.btnNavActive : def.btnSecondary}`;
+    button.className = `btn-interactive px-5 py-2.5 rounded-2xl font-medium transition-colors duration-500 border ${isActive ? def.btnNavActive : def.btnSecondary}`;
     button.textContent = labels[p];
     button.onclick = () => switchPage(p);
     nav.appendChild(button);
@@ -1285,12 +1298,14 @@ function renderForest() {
 function renderDashboard() {
   const grid = el('dashboardGrid');
   if (!grid) return;
+  
+  // Dashboard uses identical themed targets dynamically, we rebuild cards with static structure.
   const def = THEME_DEFS[data.theme] || THEME_DEFS.forest;
   
   const makeCard = (title, val) => `
-    <div class="rounded-3xl border p-5 transition-colors duration-500 ${def.card}">
-      <div class="text-sm uppercase transition-colors duration-500 ${def.label}">${title}</div>
-      <div class="text-3xl font-bold mt-2 transition-colors duration-500 ${def.text}">${val}</div>
+    <div data-theme-target="card" class="rounded-3xl border p-5 transition-colors duration-500 ${def.card}">
+      <div data-theme-target="label" class="text-sm uppercase font-medium transition-colors duration-500 ${def.label}">${title}</div>
+      <div data-theme-target="text" class="text-3xl font-bold mt-2 transition-colors duration-500 ${def.text}">${val}</div>
     </div>
   `;
 
@@ -1400,12 +1415,12 @@ function applyVisualEffects(theme) {
 }
 
 // ----------------------------------------------------
-// SMART THEME SWAPPER: STRICT BASE-CLASS LOCKING
+// SURGICAL THEME APPLIER
+// Manipulates strictly colors. Never erases structure.
 // ----------------------------------------------------
 function applyTheme() {
   const def = THEME_DEFS[data.theme] || THEME_DEFS.forest;
   const isNight = data.theme === 'night';
-  
   const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
 
   document.body.className = `min-h-screen bg-gradient-to-b ${def.bg} ${def.text} transition-colors duration-500 flex flex-col items-center ${isFs ? 'overflow-hidden' : ''}`;
@@ -1414,25 +1429,23 @@ function applyTheme() {
   if(isFs) {
     root.className = `w-full max-w-none min-h-screen bg-gradient-to-b ${def.bg} flex flex-col items-center transition-all duration-500 relative overflow-y-auto overflow-x-hidden`;
   } else {
-    root.className = `w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b ${def.bg} transition-all duration-500 relative overflow-hidden flex flex-col items-center shadow-2xl mt-4 mb-4`;
+    root.className = `w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b ${def.bg} p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center shadow-2xl mt-4 mb-4`;
   }
 
-  // Iterate over all themable elements and safely update them atomically
+  // Iterate over themed elements and surgically apply only dynamic color classes
   document.querySelectorAll('[data-theme-target]').forEach(el => {
     const targetType = el.getAttribute('data-theme-target');
-    const baseClass = el.getAttribute('data-base-class');
     
-    if (baseClass !== null && def[targetType]) {
-      // 1. Capture exact runtime visibility state before destroying classes
-      const isHidden = el.classList.contains('hidden');
-      const isPageHidden = el.classList.contains('page-hidden');
+    if (def[targetType]) {
+      // Step 1: Purge ONLY classes associated with our dynamic theme sets
+      ALL_THEME_CLASSES.forEach(cls => {
+        el.classList.remove(cls);
+      });
       
-      // 2. Perform a hard reset using ONLY guaranteed structural layout classes + injected theme definitions
-      el.className = `${baseClass} ${def[targetType]} transition-colors duration-500`;
-      
-      // 3. Immediately restore critical runtime state to prevent overlapping visibility bugs
-      if (isHidden) el.classList.add('hidden');
-      if (isPageHidden) el.classList.add('page-hidden');
+      // Step 2: Inject ONLY the new theme colors
+      def[targetType].split(' ').forEach(cls => {
+        if (cls.trim()) el.classList.add(cls.trim());
+      });
     }
   });
 
@@ -1452,10 +1465,9 @@ function render() {
   renderForest();
   renderDashboard();
 
-  // If a resize, fullscreen, or theme change triggered a render, 
-  // ONLY force visibility checks if an animation isn't already running.
+  // Always force atomic visibility if not mid-animation to prevent ghost DOM overlap
   if (!isNavigating) {
-    enforceVisibility(page);
+    enforceVisibility();
   }
 
   if (el('focusMinutesInput')) el('focusMinutesInput').value = data.focusMinutes;
@@ -1695,7 +1707,6 @@ document.addEventListener('visibilitychange', () => {
 
 bindEvents();
 render();
-
 </script>
 
 <script>
