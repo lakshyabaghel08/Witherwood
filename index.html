@@ -23,7 +23,7 @@
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: 2147483647;
+  z-index: 2147483645;
 }
 .rain-drop {
   position: absolute;
@@ -42,40 +42,38 @@
 
 @keyframes shootingStar {
   0% {
-    transform: translate3d(0, 0, 0) rotate(25deg);
+    transform: translate3d(0, 0, 0) rotate(var(--star-angle));
     opacity: 0;
   }
   8% {
-    opacity: 1;
+    opacity: var(--star-opacity);
   }
   65% {
-    opacity: 1;
+    opacity: var(--star-opacity);
   }
   100% {
-    transform: translate3d(320px, 180px, 0) rotate(25deg);
+    transform: translate3d(var(--star-travel-x), var(--star-travel-y), 0) rotate(var(--star-angle));
     opacity: 0;
   }
 }
 
 .shooting-star {
   position: absolute;
-  width: 140px;
+  width: var(--star-width, 140px);
   height: 3px;
   border-radius: 9999px;
-  /* Bright head leads the motion (right side), tail trails behind (left side). */
   background: linear-gradient(
     to right,
-    rgba(255,255,255,0),
-    rgba(255,255,255,0.08) 20%,
-    rgba(255,255,255,0.35) 55%,
-    rgba(255,255,255,0.95) 88%,
-    rgba(255,255,255,1) 100%
+    rgba(var(--star-color),0),
+    rgba(var(--star-color),calc(var(--star-opacity) * 0.1)) 20%,
+    rgba(var(--star-color),calc(var(--star-opacity) * 0.4)) 55%,
+    rgba(var(--star-color),var(--star-opacity)) 100%
   );
   box-shadow:
-    0 0 6px rgba(255,255,255,0.45),
-    0 0 14px rgba(255,255,255,0.65),
-    0 0 24px rgba(196,181,253,0.35);
-  animation: shootingStar 2.4s ease-out forwards;
+    0 0 calc(var(--star-glow) * 0.5) rgba(var(--star-color),calc(var(--star-opacity) * 0.5)),
+    0 0 var(--star-glow) rgba(var(--star-color),calc(var(--star-opacity) * 0.8)),
+    0 0 calc(var(--star-glow) * 1.5) rgba(196,181,253,calc(var(--star-opacity) * 0.45));
+  animation: shootingStar var(--star-duration, 2.4s) ease-out forwards;
 }
 
 .shooting-star::after {
@@ -83,15 +81,16 @@
   position: absolute;
   right: -1px;
   top: 50%;
-  width: 6px;
-  height: 6px;
+  width: calc(var(--star-glow) * 0.6);
+  height: calc(var(--star-glow) * 0.6);
+  min-width: 4px;
+  min-height: 4px;
   border-radius: 9999px;
   transform: translateY(-50%);
-  background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 45%, rgba(255,255,255,0) 100%);
+  background: radial-gradient(circle, rgba(var(--star-color),1) 0%, rgba(var(--star-color),var(--star-opacity)) 45%, rgba(var(--star-color),0) 100%);
   box-shadow:
-    0 0 8px rgba(255,255,255,0.9),
-    0 0 18px rgba(255,255,255,0.7),
-    0 0 30px rgba(196,181,253,0.45);
+    0 0 var(--star-glow) rgba(var(--star-color),var(--star-opacity)),
+    0 0 calc(var(--star-glow) * 2) rgba(196,181,253,calc(var(--star-opacity) * 0.7));
 }
 
 .brand-title {
@@ -148,6 +147,55 @@
   user-select: none;
 }
 
+/* Soundscape Particles */
+#soundscapeParticles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2147483646;
+  overflow: hidden;
+}
+
+.particle-ember {
+  position: absolute;
+  border-radius: 50%;
+  background: #ff7b00;
+  box-shadow: 0 0 6px #ff7b00, 0 0 10px #ff3c00;
+  animation: floatEmber var(--dur) ease-in infinite;
+}
+@keyframes floatEmber {
+  0% { transform: translate3d(0, 110vh, 0) scale(var(--s)); opacity: 0; }
+  10% { opacity: var(--op); }
+  75% { opacity: var(--op); }
+  100% { transform: translate3d(var(--tx), -10vh, 0) scale(calc(var(--s) * 0.5)); opacity: 0; }
+}
+
+.particle-leaf {
+  position: absolute;
+  background: #8bc34a;
+  width: 5px;
+  height: 5px;
+  border-radius: 50% 0 50% 0;
+  animation: floatLeaf var(--dur) linear infinite;
+}
+@keyframes floatLeaf {
+  0% { transform: translate3d(var(--sx), -10vh, 0) rotate(0deg); opacity: 0; }
+  10% { opacity: var(--op); }
+  90% { opacity: var(--op); }
+  100% { transform: translate3d(var(--ex), 110vh, 0) rotate(var(--rot)); opacity: 0; }
+}
+
+.mist-layer {
+  position: absolute;
+  inset: -50% -50%;
+  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.015) 0%, transparent 60%);
+  animation: floatMist var(--dur) ease-in-out infinite alternate;
+  filter: blur(12px);
+}
+@keyframes floatMist {
+  0% { transform: scale(1) translate3d(0, 0, 0); }
+  100% { transform: scale(1.15) translate3d(3%, 3%, 0); }
+}
 </style>
 
 <link rel="manifest" href="manifest.json">
@@ -157,6 +205,7 @@
 <body class="min-h-screen bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 text-slate-800">
 <div id="rainOverlay" class="rain-overlay hidden"></div>
 <div id="nightOverlay" class="rain-overlay hidden"></div>
+<div id="soundscapeParticles"></div>
 
 <div class="min-h-screen p-4 md:p-8 pb-10 md:pb-16">
   <div id="appRoot" class="min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 p-6">
@@ -241,11 +290,11 @@
 
         <label class="flex items-center gap-3">
           <input id="breaksEnabledToggle" type="checkbox" />
-          <span>Enable Break Sessions</span>
+          <span class="font-medium settings-label">Enable Break Sessions</span>
         </label>
 
         <label class="block">
-          <span>Break Minutes</span>
+          <span class="font-medium settings-label">Break Minutes</span>
           <input
             id="breakMinutesInput"
             type="number"
@@ -258,12 +307,12 @@
 
         <label class="flex items-center gap-3">
           <input id="ambientSoundToggle" type="checkbox" />
-          <span>Enable Ambient Sound</span>
+          <span class="font-medium settings-label">Enable Ambient Sound</span>
         </label>
 
         <label class="block">
           <div class="flex items-center justify-between">
-            <span>Ambient Volume</span>
+            <span class="font-medium settings-label">Ambient Volume</span>
             <span id="ambientVolumeLabel" class="text-sm text-slate-500">50%</span>
           </div>
           <input
@@ -277,17 +326,27 @@
           />
         </label>
 
-        <label class="block">
-          <span>Theme</span>
-          <select id="themeSelect" class="w-full mt-2 rounded-xl border px-3 py-2">
-            <option value="forest">🌲 Forest Theme</option>
-            <option value="night">🌙 Night Theme</option>
-            <option value="rain">🌧️ Rain Theme</option>
-          </select>
-        </label>
+        <div class="space-y-4 py-2">
+          <label class="block">
+            <span class="font-medium settings-label">Visual Theme</span>
+            <select id="themeSelect" class="w-full mt-2 rounded-xl border px-3 py-2">
+              <option value="forest">🌲 Forest</option>
+              <option value="night">🌙 Night</option>
+              <option value="rain">🌧️ Rain</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="font-medium settings-label">Soundscape</span>
+            <select id="soundscapeSelect" class="w-full mt-2 rounded-xl border px-3 py-2">
+              <option value="woodland">🍃 Woodland</option>
+              <option value="fireside">🔥 Fireside</option>
+              <option value="rainfall">🌧️ Rainfall</option>
+            </select>
+          </label>
+        </div>
 
         <div class="pt-2 border-t border-slate-200/60 space-y-3">
-          <h3 class="font-semibold">Reset Data</h3>
+          <h3 class="font-semibold settings-label">Reset Data</h3>
           <div>
             <button id="resetAllBtn" class="px-4 py-2 rounded-2xl bg-rose-500 text-white hover:bg-rose-600 transition">
               Reset All Data
@@ -295,7 +354,7 @@
           </div>
           <p class="text-sm text-slate-500">Permanently clears your forest and all saved statistics.</p>
           <div class="pt-2 border-t border-slate-200/60 space-y-3">
-            <h3 class="font-semibold">Backup & Restore</h3>
+            <h3 class="font-semibold settings-label">Backup & Restore</h3>
             <div class="flex gap-2 flex-wrap">
               <button id="exportDataBtn" class="px-4 py-2 rounded-2xl bg-emerald-500 text-white">
                 📤 Export Backup
@@ -306,7 +365,6 @@
               <input id="importFileInput" type="file" accept=".json" style="display:none" />
             </div>
           </div>
-
         </div>
       </section>
     </div>
@@ -319,6 +377,7 @@ const DEFAULTS = {
   focusMinutes: 25,
   breakMinutes: 5,
   theme: 'forest',
+  soundscape: 'woodland',
   ambientSoundEnabled: false,
   ambientVolume: 50,
   livingTrees: 0,
@@ -334,6 +393,7 @@ const DEFAULTS = {
 let data;
 try {
   data = { ...DEFAULTS, ...(JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || {}) };
+  if (!data.soundscape) data.soundscape = 'woodland';
 } catch {
   data = { ...DEFAULTS };
 }
@@ -345,7 +405,7 @@ let intervalId = null;
 let scheduledAmbientTimeouts = [];
 let audioUnlocked = false;
 let rainAudio = null;
-let nightAudio = null;
+let firesideAudio = null;
 let forestAudio = null;
 let secondsLeft = data.focusMinutes * 60;
 let healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
@@ -369,8 +429,6 @@ function el(id) {
 }
 
 function getVolumeMultiplier() {
-  // 50 = current baseline volume.
-  // 100 = 4x louder than the original baseline.
   return Math.max(0, Math.min(4, (data.ambientVolume ?? 50) / 25));
 }
 
@@ -379,15 +437,24 @@ function applyAudioVolumes() {
 
   if (rainAudio?.gain) {
     rainAudio.baseVolume = 0.014;
-    rainAudio.gain.gain.value = rainAudio.enabled ? rainAudio.baseVolume * volume : 0;
+    const target = rainAudio.enabled ? rainAudio.baseVolume * volume : 0;
+    const now = rainAudio.ctx.currentTime;
+    rainAudio.gain.gain.cancelScheduledValues(now);
+    rainAudio.gain.gain.setTargetAtTime(target, now, 0.5);
   }
 
-  if (nightAudio?.master) {
-    nightAudio.master.gain.value = nightAudio.enabled ? volume : 0;
+  if (firesideAudio?.master) {
+    const target = firesideAudio.enabled ? volume : 0;
+    const now = firesideAudio.ctx.currentTime;
+    firesideAudio.master.gain.cancelScheduledValues(now);
+    firesideAudio.master.gain.setTargetAtTime(target, now, 0.5);
   }
 
   if (forestAudio?.master) {
-    forestAudio.master.gain.value = forestAudio.enabled ? volume : 0;
+    const target = forestAudio.enabled ? volume : 0;
+    const now = forestAudio.ctx.currentTime;
+    forestAudio.master.gain.cancelScheduledValues(now);
+    forestAudio.master.gain.setTargetAtTime(target, now, 0.5);
   }
 }
 
@@ -423,6 +490,7 @@ function importBackup(file) {
         ...DEFAULTS,
         ...backup.data
       };
+      if (!data.soundscape) data.soundscape = 'woodland';
 
       save();
       resetTimer();
@@ -435,7 +503,6 @@ function importBackup(file) {
 
   reader.readAsText(file);
 }
-
 
 function fmt(seconds) {
   return (
@@ -609,6 +676,57 @@ function renderDashboard() {
   `;
 }
 
+function updateSoundscapeParticles() {
+  const container = el('soundscapeParticles');
+  if (!container) return;
+
+  const fullscreenRoot = document.fullscreenElement;
+  const desiredParent = fullscreenRoot || document.body;
+  if (container.parentElement !== desiredParent) {
+    desiredParent.appendChild(container);
+  }
+
+  if (container.dataset.soundscape === data.soundscape) return;
+  container.innerHTML = '';
+  container.dataset.soundscape = data.soundscape;
+
+  if (data.soundscape === 'fireside') {
+    for (let i = 0; i < 20; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle-ember';
+      p.style.left = (Math.random() * 100) + '%';
+      p.style.setProperty('--dur', (10 + Math.random() * 15) + 's');
+      p.style.setProperty('--s', (0.3 + Math.random() * 0.7));
+      p.style.setProperty('--op', (0.15 + Math.random() * 0.45));
+      p.style.setProperty('--tx', ((Math.random() - 0.5) * 30) + 'vw');
+      p.style.animationDelay = (Math.random() * -20) + 's';
+      container.appendChild(p);
+    }
+  } else if (data.soundscape === 'woodland') {
+    for (let i = 0; i < 12; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle-leaf';
+      p.style.setProperty('--sx', (Math.random() * 100) + 'vw');
+      p.style.setProperty('--ex', ((Math.random() - 0.5) * 100) + 'vw');
+      p.style.setProperty('--dur', (20 + Math.random() * 25) + 's');
+      p.style.setProperty('--op', (0.2 + Math.random() * 0.4));
+      p.style.setProperty('--rot', (360 + Math.random() * 720) + 'deg');
+      p.style.animationDelay = (Math.random() * -30) + 's';
+      container.appendChild(p);
+    }
+  } else if (data.soundscape === 'rainfall') {
+    for (let i = 0; i < 3; i++) {
+      const p = document.createElement('div');
+      p.className = 'mist-layer';
+      p.style.left = (Math.random() * 30) + '%';
+      p.style.top = (Math.random() * 30) + '%';
+      p.style.setProperty('--dur', (12 + Math.random() * 10) + 's');
+      p.style.animationDelay = (Math.random() * -15) + 's';
+      container.appendChild(p);
+    }
+  }
+}
+
 function updateNightSky() {
   const overlay = el('nightOverlay');
   if (!overlay) return;
@@ -622,41 +740,87 @@ function updateNightSky() {
   if (data.theme !== 'night') {
     overlay.classList.add('hidden');
     overlay.innerHTML = '';
+    if (overlay.dataset.timeoutId) {
+        clearTimeout(Number(overlay.dataset.timeoutId));
+        overlay.dataset.timeoutId = '';
+    }
+    overlay.dataset.running = '';
     return;
   }
 
   overlay.classList.remove('hidden');
 
-  if (overlay.children.length > 0) return;
+  if (!overlay.dataset.running) {
+    overlay.dataset.running = 'true';
+    const createStar = () => {
+      if (data.theme !== 'night') {
+          overlay.dataset.running = '';
+          return;
+      }
 
-  const createStar = () => {
-    if (data.theme !== 'night') return;
+      const star = document.createElement('div');
+      star.className = 'shooting-star';
+      
+      const r = Math.random();
+      let width, duration, glow, opacity, color;
+      
+      if (r < 0.65) {
+          // Small dim fast
+          width = 30 + Math.random() * 40;
+          duration = 0.4 + Math.random() * 0.4;
+          glow = 1 + Math.random() * 2;
+          opacity = 0.1 + Math.random() * 0.15;
+          color = '255, 255, 255';
+      } else if (r < 0.95) {
+          // Medium
+          width = 80 + Math.random() * 60;
+          duration = 0.8 + Math.random() * 0.6;
+          glow = 4 + Math.random() * 4;
+          opacity = 0.3 + Math.random() * 0.25;
+          color = '220, 230, 255'; 
+      } else {
+          // Large cinematic rare
+          width = 180 + Math.random() * 150;
+          duration = 1.6 + Math.random() * 1.4;
+          glow = 15 + Math.random() * 10;
+          opacity = 0.8 + Math.random() * 0.2;
+          color = '255, 230, 200'; 
+      }
 
-    const star = document.createElement('div');
-    star.className = 'shooting-star';
-    star.style.left = Math.random() * 70 + '%';
-    star.style.top = Math.random() * 35 + '%';
-    star.style.transform = 'rotate(25deg)';
-    overlay.appendChild(star);
+      const angle = 10 + Math.random() * 35;
+      const distance = 800 + Math.random() * 400; 
 
-    setTimeout(() => {
-      star.remove();
-    }, 2500);
+      star.style.setProperty('--star-width', `${width}px`);
+      star.style.setProperty('--star-duration', `${duration}s`);
+      star.style.setProperty('--star-glow', `${glow}px`);
+      star.style.setProperty('--star-opacity', opacity);
+      star.style.setProperty('--star-angle', `${angle}deg`);
+      star.style.setProperty('--star-travel-x', `${distance * Math.cos(angle * Math.PI/180)}px`);
+      star.style.setProperty('--star-travel-y', `${distance * Math.sin(angle * Math.PI/180)}px`);
+      star.style.setProperty('--star-color', color);
 
-    const nextDelay = 8000 + Math.random() * 15000;
-    setTimeout(createStar, nextDelay);
-  };
+      star.style.left = (Math.random() * 90 - 10) + '%';
+      star.style.top = (Math.random() * 50 - 10) + '%';
 
-  const initialDelay = 3000 + Math.random() * 7000;
-  setTimeout(createStar, initialDelay);
+      overlay.appendChild(star);
+
+      setTimeout(() => {
+        if(star.parentNode) star.remove();
+      }, duration * 1000 + 200);
+
+      const nextDelay = 15000 + Math.random() * 10000;
+      overlay.dataset.timeoutId = setTimeout(createStar, nextDelay);
+    };
+
+    const initialDelay = 1000 + Math.random() * 2000;
+    overlay.dataset.timeoutId = setTimeout(createStar, initialDelay);
+  }
 }
 
 function updateRain() {
   const overlay = el('rainOverlay');
   if (!overlay) return;
 
-  // Ensure the overlay is attached to <body> so it remains visible even
-  // when #appRoot enters fullscreen mode.
   const fullscreenRoot = document.fullscreenElement;
   const desiredParent = fullscreenRoot || document.body;
   if (overlay.parentElement !== desiredParent) {
@@ -685,13 +849,13 @@ function updateRain() {
   overlay.classList.remove('hidden');
 }
 
-function updateNightSound() {
-  if (data.theme !== 'night' || !data.ambientSoundEnabled) {
-    if (nightAudio) nightAudio.pause();
+function updateFiresideSound() {
+  if (data.soundscape !== 'fireside' || !data.ambientSoundEnabled) {
+    if (firesideAudio) firesideAudio.pause();
     return;
   }
 
-  if (!nightAudio) {
+  if (!firesideAudio) {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) return;
 
@@ -700,125 +864,127 @@ function updateNightSound() {
     master.gain.value = 0;
     master.connect(ctx.destination);
 
-    function playChime() {
-      if (data.theme !== 'night' || !nightAudio?.enabled) return;
-
-      const now = ctx.currentTime;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const filter = ctx.createBiquadFilter();
-
-      const notes = [523.25, 659.25, 783.99, 1046.5];
-      osc.frequency.value = notes[Math.floor(Math.random() * notes.length)];
-      osc.type = 'sine';
-
-      filter.type = 'lowpass';
-      filter.frequency.value = 1800;
-
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.018, now + 0.2);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.5);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(master);
-
-      osc.start(now);
-      osc.stop(now + 3.6);
-
-      setTimeout(playChime, 8000 + Math.random() * 18000);
+    // Continuous fire bed
+    const bufferSize = ctx.sampleRate * 2;
+    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    let b0 = 0, b1 = 0, b2 = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.96900 * b2 + white * 0.1538520;
+      output[i] = (b0 + b1 + b2 + white * 0.02) * 0.1;
     }
 
-    // Very rare and subtle comet whoosh sound.
-    function playCometWhoosh() {
-      if (data.theme !== 'night' || !nightAudio?.enabled) return;
+    const fireNoise = ctx.createBufferSource();
+    fireNoise.buffer = noiseBuffer;
+    fireNoise.loop = true;
+    
+    const fireFilter = ctx.createBiquadFilter();
+    fireFilter.type = 'lowpass';
+    fireFilter.frequency.value = 180;
+    
+    const fireAmp = ctx.createGain();
+    fireAmp.gain.value = 1.2;
 
+    fireNoise.connect(fireFilter).connect(fireAmp).connect(master);
+    fireNoise.start();
+
+    // Chimney airflow
+    const windNoise = ctx.createBufferSource();
+    windNoise.buffer = noiseBuffer;
+    windNoise.loop = true;
+    const windFilter = ctx.createBiquadFilter();
+    windFilter.type = 'lowpass';
+    windFilter.frequency.value = 300;
+    const windGain = ctx.createGain();
+    windGain.gain.value = 0.15;
+    
+    const gustLfo = ctx.createOscillator();
+    gustLfo.type = 'sine';
+    gustLfo.frequency.value = 0.02; // Very slow
+    const gustGain = ctx.createGain();
+    gustGain.gain.value = 0.1;
+    gustLfo.connect(gustGain).connect(windGain.gain);
+
+    windNoise.connect(windFilter).connect(windGain).connect(master);
+    windNoise.start();
+    gustLfo.start();
+
+    function playEmberPop() {
+      if (data.soundscape !== 'fireside' || !firesideAudio?.enabled) return;
       const now = ctx.currentTime;
+      
+      const popOsc = ctx.createOscillator();
+      const popGain = ctx.createGain();
+      const popFilter = ctx.createBiquadFilter();
+
+      popOsc.type = 'sine';
+      popOsc.frequency.setValueAtTime(1000 + Math.random() * 1500, now);
+      popOsc.frequency.exponentialRampToValueAtTime(100, now + 0.03); 
+
+      popFilter.type = 'bandpass';
+      popFilter.frequency.value = 2000;
+
+      popGain.gain.setValueAtTime(0, now);
+      popGain.gain.linearRampToValueAtTime(0.5 + Math.random() * 0.5, now + 0.005); 
+      popGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+
+      popOsc.connect(popFilter).connect(popGain).connect(master);
+      popOsc.start(now);
+      popOsc.stop(now + 0.05);
+
+      setTimeout(playEmberPop, 200 + Math.random() * 3000); 
+    }
+
+    function playWoodSettling() {
+      if (data.soundscape !== 'fireside' || !firesideAudio?.enabled) return;
+      const now = ctx.currentTime;
+      
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      const filter = ctx.createBiquadFilter();
-
+      
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(900, now);
-      osc.frequency.exponentialRampToValueAtTime(220, now + 1.8);
-
-      filter.type = 'lowpass';
-      filter.frequency.value = 650;
-
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.0009, now + 0.25);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.9);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(master);
-
+      osc.frequency.setValueAtTime(80, now);
+      osc.frequency.exponentialRampToValueAtTime(20, now + 0.2);
+      
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.3 + Math.random() * 0.2, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
+      
+      osc.connect(gain).connect(master);
       osc.start(now);
-      osc.stop(now + 2.0);
+      osc.stop(now + 0.5);
 
-      // Exceptionally rare: once every 20–60 minutes.
-      setTimeout(playCometWhoosh, 900000 + Math.random() * 1800000);
+      setTimeout(playWoodSettling, 8000 + Math.random() * 20000); 
     }
 
-    // Very rare distant aurora-like shimmer.
-    function playAuroraShimmer() {
-      if (data.theme !== 'night' || !nightAudio?.enabled) return;
-
-      const now = ctx.currentTime;
-      const notes = [392, 523.25, 659.25, 783.99];
-
-      notes.forEach((freq, i) => {
-        const start = now + i * 0.8;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-
-        osc.type = 'sine';
-        osc.frequency.value = freq;
-
-        gain.gain.setValueAtTime(0.0001, start);
-        gain.gain.exponentialRampToValueAtTime(0.003, start + 0.2);
-        gain.gain.exponentialRampToValueAtTime(0.0001, start + 4.5);
-
-        osc.connect(gain);
-        gain.connect(master);
-
-        osc.start(start);
-        osc.stop(start + 4.6);
-      });
-
-      setTimeout(playAuroraShimmer, 420000 + Math.random() * 480000);
-    }
-
-    nightAudio = {
+    firesideAudio = {
       ctx,
       master,
       enabled: false,
       pause() {
         this.enabled = false;
-        this.master.gain.value = 0;
+        // Fade handled by applyAudioVolumes
       },
       play() {
         this.enabled = true;
         if (this.ctx.state === 'suspended') this.ctx.resume();
-        this.master.gain.value = getVolumeMultiplier();
-
         if (!this.started) {
           this.started = true;
-          setTimeout(playChime, 3000 + Math.random() * 6000);
-          setTimeout(playCometWhoosh, 675000 + Math.random() * 1350000);
-          setTimeout(playAuroraShimmer, 240000 + Math.random() * 180000);
+          setTimeout(playEmberPop, 1000 + Math.random() * 2000);
+          setTimeout(playWoodSettling, 3000 + Math.random() * 8000);
         }
-
         return Promise.resolve();
       }
     };
   }
 
   if (audioUnlocked) {
-    nightAudio.play().catch(() => {});
+    firesideAudio.play().catch(() => {});
   }
 }
-
 
 function registerAmbientTimeout(id) {
   scheduledAmbientTimeouts.push(id);
@@ -832,27 +998,20 @@ function clearAmbientTimeouts() {
 
 function scheduleRareForestEvent(fn, minDelayMs, maxDelayMs) {
   const run = () => {
-    if (data.theme !== 'forest' || !forestAudio?.enabled) {
+    if (data.soundscape !== 'woodland' || !forestAudio?.enabled) {
       registerAmbientTimeout(setTimeout(run, 60000 + Math.random() * 120000));
       return;
     }
-
-    try {
-      fn();
-    } catch (e) {
-      console.warn('Forest easter egg failed:', e);
-    }
-
+    try { fn(); } catch (e) { console.warn('Forest easter egg failed:', e); }
     const nextDelay = minDelayMs + Math.random() * (maxDelayMs - minDelayMs);
     registerAmbientTimeout(setTimeout(run, nextDelay));
   };
-
   const firstDelay = minDelayMs + Math.random() * (maxDelayMs - minDelayMs);
   registerAmbientTimeout(setTimeout(run, firstDelay));
 }
 
 function updateForestSound() {
-  if (data.theme !== 'forest' || !data.ambientSoundEnabled) {
+  if (data.soundscape !== 'woodland' || !data.ambientSoundEnabled) {
     if (forestAudio) forestAudio.pause();
     return;
   }
@@ -870,7 +1029,6 @@ function updateForestSound() {
     const WILDLIFE_COOLDOWN_MS = 90000;
     function wildlifeAllowed(){ const n=Date.now(); if(n-lastWildlifeSound < WILDLIFE_COOLDOWN_MS) return false; lastWildlifeSound=n; return true; }
 
-    // --- Rich wind and leaf ambience --- 
     const bufferSize = ctx.sampleRate * 2;
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const output = buffer.getChannelData(0);
@@ -893,7 +1051,6 @@ function updateForestSound() {
     const windGain = ctx.createGain();
     windGain.gain.value = 0.011;
 
-    // Slow gust modulation.
     const gustLfo = ctx.createOscillator();
     gustLfo.type = 'sine';
     gustLfo.frequency.value = 0.045;
@@ -914,7 +1071,7 @@ function updateForestSound() {
 
     function playBirdChirp() {
       if (!wildlifeAllowed()) return;
-      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+      if (data.soundscape !== 'woodland' || !forestAudio?.enabled) return;
 
       const now = ctx.currentTime;
       const chirps = 2 + Math.floor(Math.random() * 4);
@@ -940,13 +1097,11 @@ function updateForestSound() {
         osc.start(start);
         osc.stop(start + 0.24);
       }
-
-      // Scheduling is handled by scheduleRareForestEvent().
     }
 
     function playWoodpecker() {
       if (!wildlifeAllowed()) return;
-      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+      if (data.soundscape !== 'woodland' || !forestAudio?.enabled) return;
 
       const now = ctx.currentTime;
       const taps = 4 + Math.floor(Math.random() * 5);
@@ -969,13 +1124,11 @@ function updateForestSound() {
         osc.start(start);
         osc.stop(start + 0.03);
       }
-
-      // Scheduling is handled by scheduleRareForestEvent().
     }
 
     function playWindChime() {
       if (!wildlifeAllowed()) return;
-      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+      if (data.soundscape !== 'woodland' || !forestAudio?.enabled) return;
 
       const now = ctx.currentTime;
       const notes = [523.25, 659.25, 783.99, 987.77, 1174.66];
@@ -1004,13 +1157,11 @@ function updateForestSound() {
         osc.start(start);
         osc.stop(start + 3.6);
       }
-
-      // Scheduling is handled by scheduleRareForestEvent().
     }
 
     function playFrog() {
       if (!wildlifeAllowed()) return;
-      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+      if (data.soundscape !== 'woodland' || !forestAudio?.enabled) return;
 
       const now = ctx.currentTime;
       const osc = ctx.createOscillator();
@@ -1034,13 +1185,11 @@ function updateForestSound() {
 
       osc.start(now);
       osc.stop(now + 0.55);
-
-      // Scheduling is handled by scheduleRareForestEvent().
     }
 
     function playCricket() {
       if (!wildlifeAllowed()) return;
-      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+      if (data.soundscape !== 'woodland' || !forestAudio?.enabled) return;
 
       const now = ctx.currentTime;
       const chirps = 3 + Math.floor(Math.random() * 4);
@@ -1063,13 +1212,11 @@ function updateForestSound() {
         osc.start(start);
         osc.stop(start + 0.035);
       }
-
-      // Scheduling is handled by scheduleRareForestEvent().
     }
 
     function playStream() {
       if (!wildlifeAllowed()) return;
-      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+      if (data.soundscape !== 'woodland' || !forestAudio?.enabled) return;
 
       const now = ctx.currentTime;
       const osc = ctx.createOscillator();
@@ -1093,13 +1240,11 @@ function updateForestSound() {
 
       osc.start(now);
       osc.stop(now + 5.1);
-
-      // Scheduling is handled by scheduleRareForestEvent().
     }
 
     function playFoxCall() {
       if (!wildlifeAllowed()) return;
-      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+      if (data.soundscape !== 'woodland' || !forestAudio?.enabled) return;
 
       const now = ctx.currentTime;
       const osc = ctx.createOscillator();
@@ -1123,13 +1268,11 @@ function updateForestSound() {
 
       osc.start(now);
       osc.stop(now + 1.2);
-
-      // Scheduling is handled by scheduleRareForestEvent().
     }
 
     function playDistantOwl() {
       if (!wildlifeAllowed()) return;
-      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+      if (data.soundscape !== 'woodland' || !forestAudio?.enabled) return;
 
       const now = ctx.currentTime;
       const osc = ctx.createOscillator();
@@ -1153,13 +1296,10 @@ function updateForestSound() {
 
       osc.start(now);
       osc.stop(now + 1.5);
-
-      // Scheduling is handled by scheduleRareForestEvent().
     }
 
-    // Gentle falling leaves ambience: soft rustles drifting through the canopy.
     function playLeafRustle() {
-      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+      if (data.soundscape !== 'woodland' || !forestAudio?.enabled) return;
 
       const now = ctx.currentTime;
       const rustles = 3 + Math.floor(Math.random() * 4);
@@ -1170,7 +1310,6 @@ function updateForestSound() {
         const buffer = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.7), ctx.sampleRate);
         const channel = buffer.getChannelData(0);
         for (let j = 0; j < channel.length; j++) {
-          // Short burst of filtered noise with natural decay.
           channel[j] = (Math.random() * 2 - 1) * Math.exp(-j / (ctx.sampleRate * 0.18)) * 0.18;
         }
 
@@ -1196,13 +1335,11 @@ function updateForestSound() {
       }
     }
 
-    // Additional natural forest easter eggs (variants of existing generators)
-    function playRobinSong() {
-      if (!wildlifeAllowed()) return; playBirdChirp(); }
+    function playRobinSong() { if (!wildlifeAllowed()) return; playBirdChirp(); }
 
     function playCuckooCall() {
       if (!wildlifeAllowed()) return;
-      if (data.theme !== 'forest' || !forestAudio?.enabled) return;
+      if (data.soundscape !== 'woodland' || !forestAudio?.enabled) return;
       const now = ctx.currentTime;
       [0,0.8].forEach((offset)=>{
         const osc=ctx.createOscillator();
@@ -1217,6 +1354,7 @@ function updateForestSound() {
         osc.start(now+offset); osc.stop(now+offset+0.65);
       });
     }
+
     const playFallingLeaves = playLeafRustle;
     const playDistantBrook = playStream;
     const playTreeCreak = playWoodpecker;
@@ -1232,40 +1370,33 @@ function updateForestSound() {
       enabled: false,
       pause() {
         this.enabled = false;
-        this.master.gain.value = 0;
+        // Fade handled by applyAudioVolumes
       },
       play() {
         this.enabled = true;
         if (this.ctx.state === 'suspended') this.ctx.resume();
-        this.master.gain.value = getVolumeMultiplier();
-
         if (!this.started) {
           this.started = true;
-
-          // Common ambient wildlife (still infrequent).
-          scheduleRareForestEvent(playBirdChirp, 180000, 480000);        // 3–10 min
-          scheduleRareForestEvent(playLeafRustle, 60000, 180000);        // 1.5–4 min
-          scheduleRareForestEvent(playWoodpecker, 600000, 1200000);       // 2–6 min
-          scheduleRareForestEvent(playWindChime, 300000, 720000);        // 3–8 min
-          scheduleRareForestEvent(playDistantOwl, 1200000, 2400000);       // 4–12 min
-          scheduleRareForestEvent(playFrog, 900000, 1800000);             // 5–15 min
-          scheduleRareForestEvent(playCricket, 900000, 1800000);         // 6–18 min
-          scheduleRareForestEvent(playStream, 480000, 900000);          // 8–24 min
-          scheduleRareForestEvent(playFoxCall, 1800000, 3600000);         // 12–36 min
-
-          // 10 extra easter eggs — intentionally rare discoveries.
-          scheduleRareForestEvent(playRobinSong, 300000, 720000);       // 10–30 min
-          scheduleRareForestEvent(playCuckooCall, 900000, 1800000);      // 12–40 min
-          scheduleRareForestEvent(playFallingLeaves, 630000, 2025000);   // 14–45 min
-          scheduleRareForestEvent(playDistantBrook, 720000, 2250000);    // 16–50 min
-          scheduleRareForestEvent(playTreeCreak, 810000, 2475000);      // 18–55 min
-          scheduleRareForestEvent(playForestBreeze, 900000, 2700000);   // 20–60 min
-          scheduleRareForestEvent(playBullfrog, 990000, 2925000);       // 22–65 min
-          scheduleRareForestEvent(playKatydid, 1080000, 3150000);        // 24–70 min
-          scheduleRareForestEvent(playHootEcho, 1170000, 3375000);       // 26–75 min
-          scheduleRareForestEvent(playRustlingBranches, 1260000, 3600000); // 28–80 min
+          scheduleRareForestEvent(playBirdChirp, 180000, 480000);        
+          scheduleRareForestEvent(playLeafRustle, 60000, 180000);        
+          scheduleRareForestEvent(playWoodpecker, 600000, 1200000);       
+          scheduleRareForestEvent(playWindChime, 300000, 720000);        
+          scheduleRareForestEvent(playDistantOwl, 1200000, 2400000);       
+          scheduleRareForestEvent(playFrog, 900000, 1800000);             
+          scheduleRareForestEvent(playCricket, 900000, 1800000);         
+          scheduleRareForestEvent(playStream, 480000, 900000);          
+          scheduleRareForestEvent(playFoxCall, 1800000, 3600000);         
+          scheduleRareForestEvent(playRobinSong, 300000, 720000);       
+          scheduleRareForestEvent(playCuckooCall, 900000, 1800000);      
+          scheduleRareForestEvent(playFallingLeaves, 630000, 2025000);   
+          scheduleRareForestEvent(playDistantBrook, 720000, 2250000);    
+          scheduleRareForestEvent(playTreeCreak, 810000, 2475000);      
+          scheduleRareForestEvent(playForestBreeze, 900000, 2700000);   
+          scheduleRareForestEvent(playBullfrog, 990000, 2925000);       
+          scheduleRareForestEvent(playKatydid, 1080000, 3150000);        
+          scheduleRareForestEvent(playHootEcho, 1170000, 3375000);       
+          scheduleRareForestEvent(playRustlingBranches, 1260000, 3600000); 
         }
-
         return Promise.resolve();
       }
     };
@@ -1277,11 +1408,8 @@ function updateForestSound() {
 }
 
 function updateRainSound() {
-  if (data.theme !== 'rain' || !data.ambientSoundEnabled) {
-    if (rainAudio) {
-      rainAudio.pause();
-      rainAudio.currentTime = 0;
-    }
+  if (data.soundscape !== 'rainfall' || !data.ambientSoundEnabled) {
+    if (rainAudio) rainAudio.pause();
     return;
   }
 
@@ -1291,7 +1419,6 @@ function updateRainSound() {
 
     const ctx = new AudioCtx();
 
-    // Gentle pink-noise drizzle.
     const bufferSize = ctx.sampleRate * 6;
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const output = buffer.getChannelData(0);
@@ -1343,9 +1470,8 @@ function updateRainSound() {
     source.start();
     lfo.start();
 
-    // Rare lightning rumble.
     function playLightning() {
-      if (data.theme !== 'rain' || !rainAudio?.enabled) return;
+      if (data.soundscape !== 'rainfall' || !rainAudio?.enabled) return;
 
       const now = ctx.currentTime;
       const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 3, ctx.sampleRate);
@@ -1376,9 +1502,8 @@ function updateRainSound() {
       setTimeout(playLightning, 180000 + Math.random() * 360000);
     }
 
-    // Very rare cloudburst swell.
     function playCloudburst() {
-      if (data.theme !== 'rain' || !rainAudio?.enabled) return;
+      if (data.soundscape !== 'rainfall' || !rainAudio?.enabled) return;
 
       const now = ctx.currentTime;
       const original = rainAudio.baseVolume;
@@ -1395,31 +1520,23 @@ function updateRainSound() {
       ctx,
       gain,
       enabled: false,
-      baseVolume: 0.12,
+      baseVolume: 0.014,
       pause() {
         this.enabled = false;
-        this.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 1.4);
+        // Fade handled by applyAudioVolumes
       },
       play() {
+        this.enabled = true;
         if (this.ctx.state === 'suspended') {
           this.ctx.resume();
         }
-        this.enabled = true;
-        this.gain.gain.setTargetAtTime(
-          this.baseVolume * getVolumeMultiplier(),
-          this.ctx.currentTime,
-          1.8
-        );
-
         if (!this.started) {
           this.started = true;
           setTimeout(playLightning, 90000 + Math.random() * 180000);
           setTimeout(playCloudburst, 240000 + Math.random() * 300000);
         }
-
         return Promise.resolve();
-      },
-      set currentTime(_) {}
+      }
     };
   }
 
@@ -1446,7 +1563,6 @@ function applyTheme() {
     gradient.join(' ') +
     ' p-6';
 
-  // Theme-matched card styles
   const cardClass = isNight
     ? 'bg-gradient-to-br from-slate-900/92 via-slate-900/88 to-indigo-950/90 border border-indigo-300/20 shadow-2xl backdrop-blur-xl'
     : 'bg-white/85 border shadow-lg';
@@ -1464,7 +1580,6 @@ function applyTheme() {
     if (hidden) section.classList.add('hidden');
   });
 
-  // Dashboard cards
   const dashboardCards = document.querySelectorAll('#dashboardGrid > div');
   dashboardCards.forEach((card) => {
     if (isNight) {
@@ -1474,7 +1589,6 @@ function applyTheme() {
     }
   });
 
-  // Improve readability of key text elements in night theme
   const timer = el('timer');
   if (timer) {
     timer.className = 'text-6xl md:text-7xl font-mono font-bold ' + (isNight ? 'text-violet-50 drop-shadow-[0_0_18px_rgba(167,139,250,0.45)]' : 'text-slate-800');
@@ -1545,7 +1659,6 @@ function applyTheme() {
       : 'w-11 h-11 flex items-center justify-center rounded-2xl border bg-white/85 text-xl hover:bg-white transition';
   }
 
-  // Theme-aware styling for remaining controls
   const witherBtn = el('witherBtn');
   if (witherBtn) {
     witherBtn.className = isNight
@@ -1568,10 +1681,13 @@ function applyTheme() {
   if (focusLabel) {
     focusLabel.className = isNight
       ? 'text-slate-300 font-medium'
-      : data.theme === 'rain'
-        ? 'text-slate-600 font-medium'
-        : 'text-slate-600 font-medium';
+      : 'text-slate-600 font-medium';
   }
+
+  const settingsLabels = document.querySelectorAll('#settingsPage span.settings-label');
+  settingsLabels.forEach((label) => {
+    label.className = 'font-medium settings-label ' + (isNight ? 'text-slate-300' : 'text-slate-700');
+  });
 
   const focusInput = el('focusMinutesInput');
   if (focusInput) {
@@ -1600,10 +1716,20 @@ function applyTheme() {
         : 'w-full mt-2 rounded-xl border border-emerald-200 bg-white text-slate-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-300/50';
   }
 
+  const soundscapeSelect = el('soundscapeSelect');
+  if (soundscapeSelect) {
+    soundscapeSelect.className = isNight
+      ? 'w-full mt-2 rounded-xl border border-indigo-300/20 bg-slate-900/70 text-slate-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400/50'
+      : data.theme === 'rain'
+        ? 'w-full mt-2 rounded-xl border border-sky-200 bg-white/90 text-slate-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-300/50'
+        : 'w-full mt-2 rounded-xl border border-emerald-200 bg-white text-slate-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-300/50';
+  }
+
   updateRain();
   updateNightSky();
+  updateSoundscapeParticles();
   updateForestSound();
-  updateNightSound();
+  updateFiresideSound();
   updateRainSound();
   applyAudioVolumes();
 }
@@ -1623,6 +1749,7 @@ function render() {
   if (el('breakMinutesInput')) el('breakMinutesInput').value = data.breakMinutes;
   if (el('breaksEnabledToggle')) el('breaksEnabledToggle').checked = data.breaksEnabled;
   if (el('themeSelect')) el('themeSelect').value = data.theme;
+  if (el('soundscapeSelect')) el('soundscapeSelect').value = data.soundscape;
   if (el('ambientSoundToggle')) el('ambientSoundToggle').checked = data.ambientSoundEnabled;
   if (el('ambientVolumeInput')) el('ambientVolumeInput').value = data.ambientVolume ?? 50;
   if (el('ambientVolumeLabel')) {
@@ -1692,6 +1819,7 @@ function resetAllData() {
   if (!confirm('Reset ALL saved data? This will permanently remove your forest and all statistics.')) return;
 
   const theme = data.theme;
+  const soundscape = data.soundscape;
   const ambientSoundEnabled = data.ambientSoundEnabled;
   const ambientVolume = data.ambientVolume;
   const focusMinutes = data.focusMinutes;
@@ -1701,6 +1829,7 @@ function resetAllData() {
   data = {
     ...DEFAULTS,
     theme,
+    soundscape,
     ambientSoundEnabled,
     ambientVolume,
     focusMinutes,
@@ -1731,20 +1860,13 @@ function bindEvents() {
 
   el('witherBtn')?.addEventListener('click', witherTree);
   el('resetBtn')?.addEventListener('click', resetTimer);
-    el('resetAllBtn')?.addEventListener('click', resetAllData);
+  el('resetAllBtn')?.addEventListener('click', resetAllData);
 
   el('focusMinutesInput')?.addEventListener('input', (e) => {
     const value = e.target.value.trim();
-
-    // Allow the field to be temporarily empty while editing.
-    if (value === '') {
-      return;
-    }
-
+    if (value === '') return;
     const parsed = Number(value);
-    if (!Number.isFinite(parsed)) {
-      return;
-    }
+    if (!Number.isFinite(parsed)) return;
 
     data.focusMinutes = Math.max(1, Math.min(180, parsed));
     healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
@@ -1752,40 +1874,27 @@ function bindEvents() {
     if (!isRunning && phase === 'focus') {
       secondsLeft = data.focusMinutes * 60;
     }
-
     save();
     render();
   });
 
   el('focusMinutesInput')?.addEventListener('blur', (e) => {
-    if (e.target.value.trim() === '') {
-      e.target.value = data.focusMinutes;
-    }
+    if (e.target.value.trim() === '') e.target.value = data.focusMinutes;
   });
 
   el('breakMinutesInput')?.addEventListener('input', (e) => {
     const value = e.target.value.trim();
-
-    // Allow the field to be temporarily empty while editing.
-    if (value === '') {
-      return;
-    }
-
+    if (value === '') return;
     const parsed = Number(value);
-    if (!Number.isFinite(parsed)) {
-      return;
-    }
+    if (!Number.isFinite(parsed)) return;
 
     data.breakMinutes = Math.max(1, Math.min(60, parsed));
-
     save();
     render();
   });
 
   el('breakMinutesInput')?.addEventListener('blur', (e) => {
-    if (e.target.value.trim() === '') {
-      e.target.value = data.breakMinutes;
-    }
+    if (e.target.value.trim() === '') e.target.value = data.breakMinutes;
   });
 
   el('breaksEnabledToggle')?.addEventListener('change', (e) => {
@@ -1795,29 +1904,19 @@ function bindEvents() {
   });
 
   el('themeSelect')?.addEventListener('change', (e) => {
-    clearAmbientTimeouts();
-
     data.theme = e.target.value;
+    save();
+    render();
+  });
 
-    if (forestAudio) forestAudio.started = false;
-    if (nightAudio) nightAudio.started = false;
-    if (rainAudio) rainAudio.started = false;
-
+  el('soundscapeSelect')?.addEventListener('change', (e) => {
+    data.soundscape = e.target.value;
     save();
     render();
   });
 
   el('ambientSoundToggle')?.addEventListener('change', (e) => {
     data.ambientSoundEnabled = e.target.checked;
-
-    if (!data.ambientSoundEnabled) {
-      clearAmbientTimeouts();
-
-      if (forestAudio) forestAudio.started = false;
-      if (nightAudio) nightAudio.started = false;
-      if (rainAudio) rainAudio.started = false;
-    }
-
     save();
     render();
   });
@@ -1838,7 +1937,6 @@ function bindEvents() {
     } else {
       await document.exitFullscreen().catch(() => {});
     }
-
     render();
   });
 
@@ -1849,17 +1947,15 @@ function bindEvents() {
     }
   });
 
-  document.addEventListener('click', () => {
-    // Unlock browser audio after the first user interaction.
-    // This enables both the rain ambience and the night-theme chimes,
-    // even when the HTML file is opened directly from disk.
+  const unlockAudio = () => {
     audioUnlocked = true;
     updateForestSound();
+    updateFiresideSound();
     updateRainSound();
-    updateNightSound();
-  });
+    document.removeEventListener('click', unlockAudio);
+  };
+  document.addEventListener('click', unlockAudio);
 
-  
   el('exportDataBtn')?.addEventListener('click', exportBackup);
 
   el('importDataBtn')?.addEventListener('click', () => {
@@ -1871,21 +1967,18 @@ function bindEvents() {
     if (file) importBackup(file);
   });
 
-
   document.addEventListener('fullscreenchange', render);
 }
 
-
 document.addEventListener('visibilitychange', () => {
   if (document.hidden && !isRunning) {
-    clearAmbientTimeouts();
-
-    if (forestAudio) forestAudio.started = false;
-    if (nightAudio) nightAudio.started = false;
-    if (rainAudio) rainAudio.started = false;
+    if (forestAudio) forestAudio.pause();
+    if (firesideAudio) firesideAudio.pause();
+    if (rainAudio) rainAudio.pause();
+  } else if (!document.hidden) {
+    render();
   }
 });
-
 
 bindEvents();
 render();
@@ -1896,20 +1989,13 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
       const registration = await navigator.serviceWorker.register('./service-worker.js');
-
-      // Always check for updates immediately.
       registration.update();
-
-      // Auto-reload when a new service worker takes control.
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         window.location.reload();
       });
-
-      // Periodically check for updates every 60 seconds.
       setInterval(() => {
         registration.update();
       }, 60000);
-
     } catch (err) {
       console.warn('Service worker registration failed:', err);
     }
