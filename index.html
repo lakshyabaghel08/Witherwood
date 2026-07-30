@@ -10,431 +10,261 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 @keyframes rainfall {
-  from {
-    transform: translate3d(0, -120vh, 0) rotate(12deg);
-  }
-  to {
-    transform: translate3d(-120px, 120vh, 0) rotate(12deg);
-  }
+  from { transform: translate3d(0, -120vh, 0) rotate(12deg); }
+  to { transform: translate3d(-120px, 120vh, 0) rotate(12deg); }
 }
 .rain-overlay {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 2147483646;
+  position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 50; overflow: hidden;
 }
 .rain-drop {
-  position: absolute;
-  top: -20%; 
-  width: 4.5px;
-  border-radius: 9999px;
-  background: linear-gradient(
-    to bottom,
-    rgba(255,255,255,0),
-    rgba(220,238,255,0.95)
-  );
-  box-shadow: 0 0 7px rgba(180,220,255,0.4);
-  animation: rainfall linear infinite;
-  will-change: transform;
+  position: absolute; top: -20%; width: 3px; height: 40px; border-radius: 9999px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(220,238,255,0.7));
+  animation: rainfall linear infinite; will-change: transform;
 }
 
 @keyframes shootingStar {
-  0% {
-    transform: translate3d(0, 0, 0) rotate(25deg);
-    opacity: 0;
-  }
-  8% {
-    opacity: 1;
-  }
-  65% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate3d(320px, 180px, 0) rotate(25deg);
-    opacity: 0;
-  }
+  0% { transform: translate3d(0, 0, 0) rotate(25deg); opacity: 0; }
+  8% { opacity: 1; }
+  65% { opacity: 1; }
+  100% { transform: translate3d(400px, 200px, 0) rotate(25deg); opacity: 0; }
 }
-
 .night-overlay {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 2147483646;
+  position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 50; overflow: hidden;
 }
-
 .shooting-star {
-  position: absolute;
-  width: 140px;
-  height: 3px;
-  border-radius: 9999px;
-  background: linear-gradient(
-    to right,
-    rgba(255,255,255,0),
-    rgba(255,255,255,0.08) 20%,
-    rgba(255,255,255,0.35) 55%,
-    rgba(255,255,255,0.95) 88%,
-    rgba(255,255,255,1) 100%
-  );
-  box-shadow:
-    0 0 6px rgba(255,255,255,0.45),
-    0 0 14px rgba(255,255,255,0.65),
-    0 0 24px rgba(196,181,253,0.35);
-  animation: shootingStar 2.4s ease-out forwards;
-}
-
-.shooting-star::after {
-  content: '';
-  position: absolute;
-  right: -1px;
-  top: 50%;
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  transform: translateY(-50%);
-  background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 45%, rgba(255,255,255,0) 100%);
-  box-shadow:
-    0 0 8px rgba(255,255,255,0.9),
-    0 0 18px rgba(255,255,255,0.7),
-    0 0 30px rgba(196,181,253,0.45);
+  position: absolute; width: 120px; height: 2px; border-radius: 9999px;
+  background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1));
+  box-shadow: 0 0 10px rgba(255,255,255,0.8);
+  animation: shootingStar 3s ease-out forwards;
 }
 
 @keyframes leafFloat {
     0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
     10% { opacity: 1; }
     90% { opacity: 1; }
-    100% { transform: translate(100px, 100vh) rotate(360deg); opacity: 0; }
+    100% { transform: translate(150px, 110vh) rotate(360deg); opacity: 0; }
 }
-
 .forest-overlay {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 2147483646;
-    overflow: hidden;
+    position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 50; overflow: hidden;
 }
-
 .falling-leaf {
-    position: absolute;
-    top: -10%;
-    width: 20px;
-    height: 20px;
+    position: absolute; top: -10%; width: 24px; height: 24px;
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2322c55e"><path d="M17 8C8 10 5.9 16.17 3.82 21.5L5.71 22L6.66 19.7C7.14 19.87 7.64 20 8 20C19 20 22 3 22 3C21 5 14 5.25 9 6.25C4 7.25 2 11.5 2 13.5C2 15.5 3.75 17.25 3.75 17.25C7 8 17 8 17 8Z"/></svg>');
-    background-size: contain;
-    background-repeat: no-repeat;
-    opacity: 0;
-    animation: leafFloat linear forwards;
-    will-change: transform, opacity;
+    background-size: contain; background-repeat: no-repeat; opacity: 0;
+    animation: leafFloat linear forwards; will-change: transform, opacity;
 }
 
-.brand-title {
-  font-family: 'Cinzel', serif;
-  letter-spacing: 0.06em;
-  font-weight: 700;
-  text-shadow:
-    0 2px 8px rgba(16, 24, 40, 0.08),
-    0 0 20px rgba(16, 185, 129, 0.08);
-}
-
-.brand-title-night {
-  text-shadow:
-    0 2px 10px rgba(0, 0, 0, 0.45),
-    0 0 24px rgba(167, 139, 250, 0.22);
-}
-
-.brand-title-rain {
-  text-shadow:
-    0 2px 10px rgba(15, 23, 42, 0.12),
-    0 0 24px rgba(14, 165, 233, 0.16);
-}
+.brand-title { font-family: 'Cinzel', serif; letter-spacing: 0.08em; font-weight: 700; }
+.brand-title-night { text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6), 0 0 20px rgba(167, 139, 250, 0.4); }
+.brand-title-rain { text-shadow: 0 2px 10px rgba(15, 23, 42, 0.2), 0 0 20px rgba(14, 165, 233, 0.3); }
 
 /* Mini Player Styles */
 #miniPlayer {
-  display: none;
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  z-index: 2147483647;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  display: none; position: fixed; bottom: 24px; right: 24px; width: 140px; height: 140px;
+  border-radius: 50%; background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  z-index: 9999; cursor: pointer; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+#miniPlayer:hover { transform: scale(1.05); }
+#miniPlayer.hidden-mini { opacity: 0; pointer-events: none; transform: scale(0.5); }
+#miniPlayer.visible-mini { opacity: 1; pointer-events: auto; transform: scale(1); display: flex; }
 
-#miniPlayer.hidden-mini {
-    opacity: 0;
-    pointer-events: none;
-    transform: scale(0.8);
-}
-
-#miniPlayer.visible-mini {
-    opacity: 1;
-    pointer-events: auto;
-    transform: scale(1);
-}
-
-.mini-ring-container {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.mini-ring-svg {
-    width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
-}
-
-.mini-ring-bg {
-    fill: none;
-    stroke: rgba(255, 255, 255, 0.2);
-    stroke-width: 6;
-}
-
+.mini-ring-container { position: absolute; inset: 0; width: 100%; height: 100%; }
+.mini-ring-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.mini-ring-bg { fill: none; stroke: rgba(255, 255, 255, 0.2); stroke-width: 6; }
 .mini-ring-progress {
-    fill: none;
-    stroke: #10b981;
-    stroke-width: 6;
-    stroke-linecap: round;
-    stroke-dasharray: 339.29; /* 2 * pi * 54 */
-    stroke-dashoffset: 0;
-    transition: stroke-dashoffset 0.25s linear, stroke 0.3s ease;
+    fill: none; stroke: #10b981; stroke-width: 6; stroke-linecap: round;
+    stroke-dasharray: 376.99; /* 2 * pi * 60 */ stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.2s linear, stroke 0.3s ease;
 }
+.mini-timer-text { font-family: monospace; font-size: 1.75rem; font-weight: bold; z-index: 10; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.mini-phase-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; z-index: 10; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
 
-.mini-timer-text {
-    font-family: monospace;
-    font-size: 1.5rem;
-    font-weight: bold;
-    z-index: 10;
-}
-
-.mini-phase-label {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 2px;
-    z-index: 10;
-}
-
+/* PC Scrollbar styles */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(107, 114, 128, 0.8); }
 </style>
-
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#f7f4ea">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 </head>
-<body class="min-h-screen bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 text-slate-800 transition-colors duration-500">
+<body class="min-h-screen bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 text-slate-800 transition-colors duration-700 overflow-x-hidden font-sans selection:bg-emerald-200 selection:text-emerald-900" id="bodyElement">
 
 <!-- Visual Effects Overlays -->
 <div id="rainOverlay" class="rain-overlay hidden"></div>
 <div id="nightOverlay" class="night-overlay hidden"></div>
 <div id="forestOverlay" class="forest-overlay hidden"></div>
 
-<div class="min-h-screen p-4 md:p-8 pb-10 md:pb-16 transition-colors duration-500">
-  <div id="appRoot" class="min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 p-6 transition-colors duration-500 relative">
-    <div class="w-full max-w-none space-y-6">
-      <header class="flex items-start justify-between gap-4 w-full px-1 md:px-2">
-        <div class="flex-1 min-w-0">
-          <h1 id="brandTitle" class="brand-title text-4xl md:text-6xl transition-colors duration-300">🌲 Witherwood</h1>
-          <p class="text-slate-600 mt-2 transition-colors duration-300">Every 10 minutes of focus plants a tree.</p>
-        </div>
-        <button id="fullscreenBtn" class="px-4 py-3 rounded-2xl border bg-white/85 flex-shrink-0 self-start transition-colors duration-300" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">
-          ⛶
+<div class="min-h-screen p-4 md:p-8 flex flex-col items-center justify-center transition-colors duration-700">
+  <div id="appRoot" class="w-full max-w-4xl min-h-[85vh] rounded-[2.5rem] bg-white/40 backdrop-blur-xl border border-white/50 shadow-2xl p-6 md:p-10 transition-all duration-700 relative overflow-hidden">
+    
+    <header class="relative flex flex-col items-center justify-center text-center w-full mb-8 pt-2">
+      <div>
+        <h1 id="brandTitle" class="brand-title text-2xl md:text-3xl uppercase tracking-widest flex items-center justify-center gap-3 transition-colors duration-300">
+          <span class="text-3xl" id="brandIcon">🌲</span> WITHERWOOD
+        </h1>
+        <p id="brandSubtitle" class="text-slate-600 mt-2 text-sm md:text-base font-medium transition-colors duration-300">Every 10 minutes of focus plants a tree.</p>
+      </div>
+      
+      <div class="absolute top-0 right-0 flex gap-3">
+        <button id="miniPlayerToggleBtn" class="w-12 h-12 rounded-2xl border border-slate-200/80 bg-white/80 hover:bg-white flex items-center justify-center text-slate-600 transition-all shadow-sm hover:shadow-md" title="Pop-out Mini Player">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
         </button>
-      </header>
+        <button id="fullscreenBtn" class="w-12 h-12 rounded-2xl border border-slate-200/80 bg-white/80 hover:bg-white flex items-center justify-center text-slate-600 transition-all shadow-sm hover:shadow-md" title="Toggle Fullscreen">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+        </button>
+      </div>
+    </header>
 
-      <nav id="nav" class="flex flex-wrap gap-2"></nav>
+    <nav id="nav" class="flex flex-wrap justify-center gap-3 md:gap-4 mb-8"></nav>
 
-      <section id="focusPage" class="rounded-3xl bg-white/85 border shadow-lg p-6 max-w-3xl mx-auto mb-8 md:mb-12 lg:mb-16 transition-colors duration-300">
-        <div class="max-w-lg mx-auto text-center">
-          <div id="phaseLabel" class="text-sm uppercase tracking-wide text-emerald-700 transition-colors duration-300">Focus Session</div>
+    <section id="focusPage" class="rounded-[2rem] bg-white border border-slate-100 shadow-xl p-8 md:p-12 max-w-2xl mx-auto transition-all duration-500 transform origin-top">
+      <div class="max-w-lg mx-auto text-center">
+        <div id="phaseLabel" class="text-lg font-bold uppercase tracking-wider text-emerald-600 transition-colors duration-300 mb-4">Focus Session</div>
 
-          <div class="mt-3 flex justify-center">
-            <div class="relative w-64 h-64 md:w-72 md:h-72">
-              <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
-                <circle id="progressRingBg" cx="70" cy="70" r="60" fill="none" stroke="#d1fae5" stroke-width="8" class="transition-colors duration-300" />
-                <circle
-                  id="progressRing"
-                  cx="70"
-                  cy="70"
-                  r="60"
-                  fill="none"
-                  stroke="#10b981"
-                  stroke-width="8"
-                  stroke-linecap="round"
-                  stroke-dasharray="376.99"
-                  stroke-dashoffset="0"
-                  class="transition-colors duration-300 transition-[stroke-dashoffset] duration-250 linear"
-                />
-              </svg>
+        <div class="flex justify-center">
+          <div class="relative w-[20rem] h-[20rem] md:w-[24rem] md:h-[24rem] my-2">
+            <svg class="w-full h-full -rotate-90" viewBox="0 0 180 180">
+              <circle id="progressRingBg" cx="90" cy="90" r="84" fill="none" stroke="#ecfdf5" stroke-width="8" class="transition-colors duration-500" />
+              <circle
+                id="progressRing"
+                cx="90"
+                cy="90"
+                r="84"
+                fill="none"
+                stroke="#10b981"
+                stroke-width="8"
+                stroke-linecap="round"
+                stroke-dasharray="527.78"
+                stroke-dashoffset="0"
+                class="transition-colors duration-500 transition-[stroke-dashoffset] duration-200 linear"
+              />
+            </svg>
 
-              <div class="absolute inset-0 flex flex-col items-center justify-center">
-                <div id="timer" class="text-6xl md:text-7xl font-mono font-bold transition-colors duration-300">25:00</div>
-                <div id="progressLabel" class="mt-2 text-sm text-slate-500 transition-colors duration-300"></div>
-              </div>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <div id="timer" class="text-6xl md:text-7xl font-bold tracking-tight text-slate-800 transition-colors duration-300">25:00</div>
+              <div id="progressLabel" class="mt-4 text-lg font-medium text-slate-500 transition-colors duration-300 flex items-center justify-center gap-2"></div>
             </div>
           </div>
+        </div>
 
-          <div id="focusControls" class="mt-4 flex items-center justify-center gap-3">
-            <label class="transition-colors duration-300">Focus (min)</label>
+        <div id="focusControls" class="mt-8 flex flex-col items-center justify-center gap-5">
+          <div class="flex items-center gap-4 bg-slate-50 px-6 py-3 rounded-2xl border border-slate-100 transition-colors duration-300" id="durationControlContainer">
+            <label class="font-semibold text-slate-700 transition-colors duration-300" id="durationLabel">Focus (min)</label>
             <input
               id="focusMinutesInput"
               type="number"
               min="1"
               max="180"
               value="25"
-              class="w-24 rounded-xl border px-3 py-2 transition-colors duration-300"
+              class="w-24 rounded-xl border-2 border-emerald-200 px-3 py-2 text-center text-lg font-bold text-emerald-700 transition-colors duration-300 focus:outline-none focus:border-emerald-500 bg-white"
             />
           </div>
-
-          <div id="saplings" class="mt-4 text-lg font-medium transition-colors duration-300"></div>
-
-          <div class="flex flex-wrap justify-center gap-3 mt-4">
-            <button id="startPauseBtn" class="px-5 py-3 rounded-2xl bg-emerald-500 text-white font-semibold transition-all duration-300">Start</button>
-            <button id="witherBtn" class="px-5 py-3 rounded-2xl bg-amber-500 text-white font-semibold transition-all duration-300">🍂 Wither Tree</button>
-            <button id="resetBtn" class="px-5 py-3 rounded-2xl border bg-white transition-colors duration-300">Reset</button>
-          </div>
-
-          <p id="message" class="mt-5 italic text-slate-500 transition-colors duration-300">“A calm mind nurtures strong roots.”</p>
+          <div id="saplings" class="text-lg font-bold transition-colors duration-300 flex items-center justify-center gap-2"></div>
         </div>
-      </section>
 
-      <section id="forestPage" class="hidden rounded-3xl bg-white/85 border shadow-lg p-6 transition-colors duration-300">
-        <h2 class="text-2xl font-semibold mb-2 transition-colors duration-300">Your Forest</h2>
-        <div id="forestSummary" class="text-slate-500 mb-4 transition-colors duration-300"></div>
-        <div id="forestGrid" class="flex flex-wrap gap-1 text-xl"></div>
-      </section>
+        <div class="flex flex-wrap justify-center gap-4 mt-10">
+          <button id="startPauseBtn" class="px-10 py-4 rounded-full bg-emerald-500 text-white text-lg font-bold shadow-lg shadow-emerald-500/30 transition-all duration-300 hover:bg-emerald-600 hover:-translate-y-1">Start</button>
+          <button id="witherBtn" class="px-8 py-4 rounded-full bg-amber-500 text-white text-lg font-bold shadow-lg shadow-amber-500/30 transition-all duration-300 hover:bg-amber-600 hover:-translate-y-1 hidden">🍂 Give Up</button>
+          <button id="resetBtn" class="px-8 py-4 rounded-full border-2 border-slate-200 bg-white text-slate-600 text-lg font-bold shadow-sm transition-colors duration-300 hover:bg-slate-50 hover:text-slate-800">Reset</button>
+        </div>
 
-      <section id="dashboardPage" class="hidden">
-        <div id="dashboardGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-      </section>
+        <p id="message" class="mt-8 text-lg italic text-slate-500 transition-colors duration-300">“A calm mind nurtures strong roots.”</p>
+      </div>
+    </section>
 
-      <section id="settingsPage" class="hidden rounded-3xl bg-white/85 border shadow-lg p-6 max-w-xl mx-auto space-y-4 transition-colors duration-300">
-        <h2 class="text-2xl font-semibold transition-colors duration-300">Settings</h2>
+    <section id="forestPage" class="hidden rounded-[2rem] bg-white border border-slate-100 shadow-xl p-8 md:p-12 max-w-4xl mx-auto transition-all duration-500">
+      <h2 class="text-3xl font-bold mb-4 text-emerald-800 transition-colors duration-300" id="forestTitle">Your Forest</h2>
+      <div id="forestSummary" class="text-lg font-medium text-slate-600 mb-8 transition-colors duration-300"></div>
+      <div id="forestGrid" class="flex flex-wrap gap-3 text-3xl p-6 bg-slate-50 rounded-3xl min-h-[200px] border border-slate-100 transition-colors duration-300"></div>
+    </section>
 
-        <!-- Visual Theme Selection -->
-        <label class="block">
-          <span class="font-medium transition-colors duration-300">Visual Theme</span>
-          <select id="themeSelect" class="w-full mt-2 rounded-xl border px-3 py-2 transition-colors duration-300">
-            <option value="forest">🌲 Forest</option>
-            <option value="night">🌙 Night</option>
-            <option value="rain">🌧️ Rain</option>
-          </select>
-          <p class="text-xs text-slate-500 mt-1">Changes colors and visual effects.</p>
-        </label>
+    <section id="dashboardPage" class="hidden max-w-4xl mx-auto">
+      <div id="dashboardGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
 
-        <!-- Soundscape Selection -->
-        <label class="block mt-4">
-          <span class="font-medium transition-colors duration-300">Soundscape</span>
-          <select id="soundscapeSelect" class="w-full mt-2 rounded-xl border px-3 py-2 transition-colors duration-300">
-            <option value="woodland">🌲 Woodland</option>
-            <option value="rain">🌧️ Rain</option>
-            <option value="fireside">🔥 Fireside</option>
-          </select>
-          <p class="text-xs text-slate-500 mt-1">Changes background audio.</p>
-        </label>
+    <section id="settingsPage" class="hidden rounded-[2rem] bg-white border border-slate-100 shadow-xl p-8 md:p-12 max-w-2xl mx-auto space-y-8 transition-all duration-500">
+      <h2 class="text-3xl font-bold text-emerald-800 transition-colors duration-300" id="settingsTitle">Settings</h2>
 
-        <div class="border-t border-slate-200/60 my-4"></div>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="space-y-6">
+          <label class="block">
+            <span class="font-bold text-slate-700 transition-colors duration-300" id="themeLabel">Visual Theme</span>
+            <select id="themeSelect" class="w-full mt-2 rounded-xl border-2 border-slate-200 px-4 py-3 text-lg font-medium transition-colors duration-300 focus:border-emerald-500 focus:outline-none">
+              <option value="forest">🌲 Forest</option>
+              <option value="night">🌙 Night</option>
+              <option value="rain">🌧️ Rain</option>
+            </select>
+            <p class="text-sm text-slate-500 mt-1">Changes visual aesthetics.</p>
+          </label>
 
-        <label class="flex items-center gap-3">
-          <input id="breaksEnabledToggle" type="checkbox" />
-          <span class="transition-colors duration-300">Enable Break Sessions</span>
-        </label>
-
-        <label class="block">
-          <span class="transition-colors duration-300">Break Minutes</span>
-          <input
-            id="breakMinutesInput"
-            type="number"
-            min="1"
-            max="60"
-            value="5"
-            class="w-full mt-2 rounded-xl border px-3 py-2 transition-colors duration-300"
-          />
-        </label>
-
-        <label class="flex items-center gap-3 mt-4">
-          <input id="ambientSoundToggle" type="checkbox" />
-          <span class="transition-colors duration-300">Enable Audio</span>
-        </label>
-
-        <label class="block">
-          <div class="flex items-center justify-between">
-            <span class="transition-colors duration-300">Audio Volume</span>
-            <span id="ambientVolumeLabel" class="text-sm text-slate-500 transition-colors duration-300">50%</span>
-          </div>
-          <input
-            id="ambientVolumeInput"
-            type="range"
-            min="0"
-            max="100"
-            step="1"
-            value="50"
-            class="w-full mt-2"
-          />
-        </label>
-
-        <div class="pt-4 border-t border-slate-200/60 space-y-3">
-          <h3 class="font-semibold transition-colors duration-300">Reset Data</h3>
-          <div>
-            <button id="resetAllBtn" class="px-4 py-2 rounded-2xl bg-rose-500 text-white hover:bg-rose-600 transition">
-              Reset All Data
-            </button>
-          </div>
-          <p class="text-sm text-slate-500">Permanently clears your forest and all saved statistics.</p>
-          <div class="pt-2 border-t border-slate-200/60 space-y-3">
-            <h3 class="font-semibold transition-colors duration-300">Backup & Restore</h3>
-            <div class="flex gap-2 flex-wrap">
-              <button id="exportDataBtn" class="px-4 py-2 rounded-2xl bg-emerald-500 text-white hover:bg-emerald-600 transition">
-                📤 Export Backup
-              </button>
-              <button id="importDataBtn" class="px-4 py-2 rounded-2xl bg-sky-500 text-white hover:bg-sky-600 transition">
-                📥 Import Backup
-              </button>
-              <input id="importFileInput" type="file" accept=".json" style="display:none" />
+          <label class="block">
+            <span class="font-bold text-slate-700 transition-colors duration-300" id="soundscapeLabel">Soundscape</span>
+            <select id="soundscapeSelect" class="w-full mt-2 rounded-xl border-2 border-slate-200 px-4 py-3 text-lg font-medium transition-colors duration-300 focus:border-emerald-500 focus:outline-none">
+              <option value="woodland">🌲 Woodland</option>
+              <option value="rain">🌧️ Rain</option>
+              <option value="fireside">🔥 Fireside</option>
+              <option value="none">🔇 None</option>
+            </select>
+            <p class="text-sm text-slate-500 mt-1">Background ambient audio.</p>
+          </label>
+          
+          <label class="block">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-bold text-slate-700 transition-colors duration-300" id="volumeLabel">Audio Volume</span>
+              <span id="ambientVolumeLabel" class="text-sm font-bold text-emerald-600">50%</span>
             </div>
-          </div>
+            <input id="ambientVolumeInput" type="range" min="0" max="100" step="1" value="50" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+          </label>
         </div>
-      </section>
-    </div>
+
+        <div class="space-y-6">
+          <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 transition-colors duration-300" id="breakToggleContainer">
+            <input id="breaksEnabledToggle" type="checkbox" class="w-6 h-6 rounded text-emerald-500 focus:ring-emerald-500 cursor-pointer" />
+            <span class="font-bold text-slate-700 transition-colors duration-300" id="breakToggleLabel">Enable Break Sessions</span>
+          </div>
+
+          <label class="block">
+            <span class="font-bold text-slate-700 transition-colors duration-300" id="breakMinLabel">Break Minutes</span>
+            <input id="breakMinutesInput" type="number" min="1" max="60" value="5" class="w-full mt-2 rounded-xl border-2 border-slate-200 px-4 py-3 text-lg font-bold transition-colors duration-300 focus:border-emerald-500 focus:outline-none" />
+          </label>
+        </div>
+      </div>
+
+      <div class="pt-6 border-t-2 border-slate-100 space-y-4">
+        <h3 class="font-bold text-xl text-slate-700 transition-colors duration-300" id="dataTitle">Data Management</h3>
+        <div class="flex gap-3 flex-wrap">
+          <button id="exportDataBtn" class="px-5 py-3 rounded-xl bg-slate-800 text-white font-semibold hover:bg-slate-700 transition shadow-md">📤 Export Backup</button>
+          <button id="importDataBtn" class="px-5 py-3 rounded-xl bg-slate-600 text-white font-semibold hover:bg-slate-500 transition shadow-md">📥 Import</button>
+          <button id="resetAllBtn" class="px-5 py-3 rounded-xl bg-rose-500 text-white font-semibold hover:bg-rose-600 transition shadow-md ml-auto">Reset Forest</button>
+          <input id="importFileInput" type="file" accept=".json" style="display:none" />
+        </div>
+      </div>
+    </section>
   </div>
 </div>
 
 <!-- Mini Player -->
-<div id="miniPlayer" class="hidden-mini shadow-xl" aria-label="Return to App" title="Click to maximize">
+<div id="miniPlayer" class="hidden-mini text-white" aria-label="Return to App" title="Click to maximize">
     <div class="mini-phase-label" id="miniPhaseLabel">Focus</div>
     <div class="mini-timer-text" id="miniTimer">25:00</div>
     <div class="mini-ring-container">
-        <svg class="mini-ring-svg" viewBox="0 0 120 120">
-            <circle class="mini-ring-bg" cx="60" cy="60" r="54" id="miniRingBg"></circle>
-            <circle class="mini-ring-progress" cx="60" cy="60" r="54" id="miniRingProgress"></circle>
+        <svg class="mini-ring-svg" viewBox="0 0 132 132">
+            <circle class="mini-ring-bg" cx="66" cy="66" r="60" id="miniRingBg"></circle>
+            <circle class="mini-ring-progress" cx="66" cy="66" r="60" id="miniRingProgress"></circle>
         </svg>
     </div>
 </div>
 
 <script>
+// --- State & Defaults ---
 const STORAGE_KEY = 'witherwood-data';
 const DEFAULTS = {
   focusMinutes: 25,
   breakMinutes: 5,
   theme: 'forest',
   soundscape: 'woodland',
-  ambientSoundEnabled: false,
   ambientVolume: 50,
   livingTrees: 0,
   deadTrees: 0,
@@ -446,900 +276,682 @@ const DEFAULTS = {
   breaksEnabled: true,
 };
 
-let data;
-try {
-  data = { ...DEFAULTS, ...(JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || {}) };
-} catch {
-  data = { ...DEFAULTS };
-}
+let data = { ...DEFAULTS, ...(JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')) };
 
-// Ensure new properties exist for users upgrading
-if (!data.soundscape) data.soundscape = 'woodland';
+// Ensure data integrity for older saves
+if (!data.soundscape) data.soundscape = data.ambientSoundEnabled ? 'woodland' : 'none';
 
 let page = 'focus';
-let phase = 'focus';
+let phase = 'focus'; // 'focus' or 'break'
 let isRunning = false;
-let intervalId = null;
+let timerInterval = null;
 let secondsLeft = data.focusMinutes * 60;
-let healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
+let targetEndTime = 0; // Crucial for PC background throttling fix
+let healthyTrees = calculateTrees(data.focusMinutes);
+let effectInterval = null;
 
 const pages = ['focus', 'forest', 'dashboard', 'settings'];
-const labels = {
-  focus: '⏱ Focus',
-  forest: '🌲 Forest',
-  dashboard: '📊 Dashboard',
-  settings: '⚙️ Settings',
-};
+const labels = { focus: '⏱ Focus', forest: '🌲 Forest', dashboard: '📊 Dashboard', settings: '⚙️ Settings' };
 
-// Theme configurations
-const themeConfigs = {
+// --- Theme Configurations ---
+const themes = {
   forest: {
     bg: ['from-emerald-50', 'via-lime-50', 'to-teal-100'],
-    textPrimary: 'text-emerald-900',
-    textSecondary: 'text-emerald-700',
-    cardBg: 'bg-white/85 border shadow-lg',
-    ringColor: '#10b981',
-    ringBg: '#d1fae5',
-    buttonColor: 'bg-emerald-500 hover:bg-emerald-600',
-    navActive: 'bg-emerald-500 text-white',
-    navInactive: 'bg-white/85 text-slate-800'
+    cardBg: 'bg-white',
+    textMain: 'text-slate-800',
+    textMuted: 'text-slate-500',
+    textAccent: 'text-emerald-800',
+    borderColor: 'border-slate-100',
+    ringColor: '#10b981', ringBg: '#ecfdf5',
+    btnPrimary: 'bg-emerald-500 hover:bg-emerald-600 text-white',
+    navActive: 'bg-emerald-500 text-white shadow-md border-transparent',
+    navInactive: 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50',
+    icon: '🌲', effect: 'leaves'
   },
   night: {
-    bg: ['from-slate-950', 'via-slate-900', 'to-indigo-950'],
-    textPrimary: 'text-violet-50 drop-shadow-[0_0_18px_rgba(167,139,250,0.45)]',
-    textSecondary: 'text-violet-200',
-    cardBg: 'bg-gradient-to-br from-slate-900/92 via-slate-900/88 to-indigo-950/90 border border-indigo-300/20 shadow-2xl backdrop-blur-xl',
-    ringColor: '#a78bfa',
-    ringBg: 'rgba(167,139,250,0.2)',
-    buttonColor: 'bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 shadow-xl shadow-violet-900/40 hover:brightness-110',
-    navActive: 'border border-violet-400/40 bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-lg shadow-violet-900/30',
-    navInactive: 'border border-indigo-300/15 bg-slate-900/60 text-slate-200 shadow-sm hover:bg-slate-800/80'
+    bg: ['from-slate-900', 'via-slate-800', 'to-indigo-950'],
+    cardBg: 'bg-slate-800/90 backdrop-blur-md',
+    textMain: 'text-slate-100',
+    textMuted: 'text-slate-400',
+    textAccent: 'text-indigo-300',
+    borderColor: 'border-slate-700',
+    ringColor: '#818cf8', ringBg: 'rgba(129, 140, 248, 0.2)',
+    btnPrimary: 'bg-indigo-500 hover:bg-indigo-600 text-white',
+    navActive: 'bg-indigo-500 text-white shadow-md border-transparent',
+    navInactive: 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700',
+    icon: '🌙', effect: 'stars'
   },
   rain: {
-    bg: ['from-sky-100', 'via-slate-200', 'to-blue-300'],
-    textPrimary: 'text-slate-800',
-    textSecondary: 'text-sky-700',
-    cardBg: 'bg-white/85 border border-sky-100 shadow-lg',
-    ringColor: '#0ea5e9',
-    ringBg: '#bae6fd',
-    buttonColor: 'bg-sky-500 hover:bg-sky-600',
-    navActive: 'bg-sky-500 text-white',
-    navInactive: 'bg-white/90 text-slate-800'
-  },
+    bg: ['from-slate-300', 'via-slate-400', 'to-zinc-500'],
+    cardBg: 'bg-white/80 backdrop-blur-md',
+    textMain: 'text-slate-800',
+    textMuted: 'text-slate-600',
+    textAccent: 'text-sky-800',
+    borderColor: 'border-white/40',
+    ringColor: '#0ea5e9', ringBg: 'rgba(14, 165, 233, 0.2)',
+    btnPrimary: 'bg-sky-500 hover:bg-sky-600 text-white',
+    navActive: 'bg-sky-500 text-white shadow-md border-transparent',
+    navInactive: 'bg-white/60 text-slate-700 border-white/50 hover:bg-white/90',
+    icon: '🌧️', effect: 'rain'
+  }
 };
 
-function el(id) {
-  return document.getElementById(id);
-}
+// --- DOM Elements ---
+const body = document.getElementById('bodyElement');
+const appRoot = document.getElementById('appRoot');
+const navEl = document.getElementById('nav');
+const timerEl = document.getElementById('timer');
+const progressRing = document.getElementById('progressRing');
+const progressRingBg = document.getElementById('progressRingBg');
+const progressLabel = document.getElementById('progressLabel');
+const saplingsEl = document.getElementById('saplings');
+const startPauseBtn = document.getElementById('startPauseBtn');
+const witherBtn = document.getElementById('witherBtn');
+const resetBtn = document.getElementById('resetBtn');
+const messageEl = document.getElementById('message');
+const phaseLabel = document.getElementById('phaseLabel');
+const focusMinutesInput = document.getElementById('focusMinutesInput');
+const brandTitle = document.getElementById('brandTitle');
+const brandIcon = document.getElementById('brandIcon');
+const miniPlayerToggleBtn = document.getElementById('miniPlayerToggleBtn');
+const miniPlayer = document.getElementById('miniPlayer');
+const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-let currentThemeEffects = null; // Track current effects for cleanup
-let effectTimers = [];
-
-function clearVisualEffects() {
-    // Clear all timeouts/intervals related to visual effects
-    effectTimers.forEach(clearTimeout);
-    effectTimers = [];
-
-    // Hide and clear all overlays
-    const overlays = ['rainOverlay', 'nightOverlay', 'forestOverlay'];
-    overlays.forEach(id => {
-        const overlay = el(id);
-        if (overlay) {
-            overlay.classList.add('hidden');
-            overlay.innerHTML = ''; // Remove all generated DOM elements
-        }
-    });
-    currentThemeEffects = null;
-}
-
-function initForestEffects() {
-    const overlay = el('forestOverlay');
-    if (!overlay) return;
-    overlay.classList.remove('hidden');
-
-    function createLeaf() {
-        if (data.theme !== 'forest') return;
-        const leaf = document.createElement('div');
-        leaf.className = 'falling-leaf';
-        leaf.style.left = Math.random() * 100 + '%';
-        
-        // Randomize size and animation
-        const size = 15 + Math.random() * 15;
-        leaf.style.width = `${size}px`;
-        leaf.style.height = `${size}px`;
-        leaf.style.animationDuration = 8 + Math.random() * 7 + 's';
-        
-        // Slight rotation offset
-        leaf.style.transform = `rotate(${Math.random() * 360}deg)`;
-
-        overlay.appendChild(leaf);
-
-        effectTimers.push(setTimeout(() => {
-            if(leaf.parentNode) leaf.remove();
-        }, 16000));
-
-        effectTimers.push(setTimeout(createLeaf, 3000 + Math.random() * 5000));
-    }
-
-    // Initial batch
-    for(let i=0; i<3; i++) {
-        effectTimers.push(setTimeout(createLeaf, Math.random() * 2000));
-    }
-}
-
-function initNightEffects() {
-    const overlay = el('nightOverlay');
-    if (!overlay) return;
-    overlay.classList.remove('hidden');
-
-    function createStar() {
-        if (data.theme !== 'night') return;
-        const star = document.createElement('div');
-        star.className = 'shooting-star';
-        star.style.left = Math.random() * 70 + '%';
-        star.style.top = Math.random() * 35 + '%';
-        overlay.appendChild(star);
-
-        effectTimers.push(setTimeout(() => {
-             if(star.parentNode) star.remove();
-        }, 2500));
-
-        effectTimers.push(setTimeout(createStar, 8000 + Math.random() * 15000));
-    }
-
-    effectTimers.push(setTimeout(createStar, 3000 + Math.random() * 7000));
-}
-
-function initRainEffects() {
-    const overlay = el('rainOverlay');
-    if (!overlay) return;
-    overlay.classList.remove('hidden');
-
-    // Generate static rain drops for CSS animation
-    for (let i = 0; i < 140; i++) {
-      const drop = document.createElement('div');
-      drop.className = 'rain-drop';
-      drop.style.left = Math.random() * 100 + '%';
-      drop.style.height = 28 + Math.random() * 36 + 'px';
-      drop.style.animationDuration = 1.2 + Math.random() * 1.5 + 's'; // Faster rain visual
-      drop.style.animationDelay = '-' + Math.random() * 4 + 's';
-      drop.style.opacity = 0.2 + Math.random() * 0.3;
-      overlay.appendChild(drop);
-    }
-}
-
-function applyThemeVisuals() {
-    const theme = data.theme;
-    const isNight = theme === 'night';
-    const config = themeConfigs[theme];
-    
-    if(!config) return;
-
-    // 1. Structural Classes
-    document.body.className = `min-h-screen bg-gradient-to-b ${config.bg.join(' ')} ${isNight ? 'text-slate-100' : 'text-slate-800'} transition-colors duration-500`;
-    
-    const root = el('appRoot');
-    if (root) root.className = `min-h-[calc(100vh-2rem)] md:min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b ${config.bg.join(' ')} p-6 transition-colors duration-500 relative`;
-
-    // 2. Text and SVGs
-    const brandTitle = el('brandTitle');
-    if (brandTitle) {
-        brandTitle.className = `brand-title text-4xl md:text-6xl transition-colors duration-300 ${isNight ? 'brand-title-night text-violet-50' : (theme === 'rain' ? 'brand-title-rain text-slate-800' : 'text-emerald-900')}`;
-    }
-    
-    const timer = el('timer');
-    if(timer) timer.className = `text-6xl md:text-7xl font-mono font-bold transition-colors duration-300 ${config.textPrimary}`;
-    
-    const phaseLabel = el('phaseLabel');
-    if(phaseLabel) phaseLabel.className = `text-sm uppercase tracking-wide transition-colors duration-300 ${config.textSecondary}`;
-
-    const ring = el('progressRing');
-    if(ring) {
-        ring.setAttribute('stroke', config.ringColor);
-        ring.style.filter = isNight ? 'drop-shadow(0 0 10px rgba(167,139,250,0.55))' : 'none';
-    }
-    const ringBg = el('progressRingBg');
-    if(ringBg) ringBg.setAttribute('stroke', config.ringBg);
-
-    // Mini Player colors
-    const miniRing = el('miniRingProgress');
-    if(miniRing) miniRing.setAttribute('stroke', config.ringColor);
-    const miniLabel = el('miniPhaseLabel');
-    if(miniLabel) miniLabel.style.color = config.ringColor;
-    const miniText = el('miniTimer');
-    if(miniText) miniText.style.color = isNight ? '#f8fafc' : '#1e293b';
-
-    // 3. Buttons & Inputs
-    const startBtn = el('startPauseBtn');
-    if(startBtn) startBtn.className = `px-5 py-3 rounded-2xl text-white font-semibold transition-all duration-300 ${config.buttonColor}`;
-
-    // 4. Cards
-    const cards = ['focusPage', 'forestPage', 'settingsPage'];
-    cards.forEach(id => {
-        const c = el(id);
-        if(c) {
-             const baseClasses = Array.from(c.classList).filter(cls => !cls.startsWith('bg-') && !cls.startsWith('border-') && !cls.startsWith('shadow-') && cls !== 'border');
-             c.className = `${baseClasses.join(' ')} ${config.cardBg} transition-colors duration-500`;
-        }
-    });
-
-    const dashboardCards = document.querySelectorAll('#dashboardGrid > div');
-    dashboardCards.forEach(c => {
-         c.className = `rounded-3xl p-5 transition-colors duration-500 ${config.cardBg}`;
-    });
-
-    // 5. Update Navigation
-    renderNav();
-
-    // 6. Handle Visual Effects strictly based on theme
-    if (currentThemeEffects !== theme) {
-        clearVisualEffects();
-        currentThemeEffects = theme;
-        
-        if (theme === 'forest') initForestEffects();
-        else if (theme === 'night') initNightEffects();
-        else if (theme === 'rain') initRainEffects();
-    }
-}
-
-const AUDIO_FILES = {
-    woodland: {
-        ambience: ['Sounds/AMBIENCE/woodland_01.mp3', 'Sounds/AMBIENCE/woodland_02.mp3'],
-        common: ['Sounds/WOODLAND/robin.mp3', 'Sounds/WOODLAND/sparrow.mp3', 'Sounds/WOODLAND/cuckoo.mp3', 'Sounds/WOODLAND/bird_flying.mp3'],
-        medium: ['Sounds/WOODLAND/woodpecker.mp3', 'Sounds/WOODLAND/squirrel.mp3', 'Sounds/WOODLAND/gust_wind.mp3'],
-        rare: ['Sounds/WOODLAND/owl_01.mp3', 'Sounds/WOODLAND/owl_02.mp3', 'Sounds/WOODLAND/owl_03.mp3']
-    },
-    rain: {
-        ambience: ['Sounds/AMBIENCE/rain_01.mp3', 'Sounds/AMBIENCE/rain_02.mp3'],
-        thunder: ['Sounds/RAIN/thunder_01.mp3', 'Sounds/RAIN/thunder_02.mp3', 'Sounds/RAIN/thunder_03.mp3'],
-        wind: ['Sounds/WOODLAND/gust_wind.mp3'] // Reusing woodland gust for rain
-    },
-    fireside: {
-        ambience: ['Sounds/AMBIENCE/fireplace_01.mp3', 'Sounds/AMBIENCE/fireplace_02.mp3'],
-        woosh: ['Sounds/FIRE/fire_woosh_01.mp3', 'Sounds/FIRE/fire_woosh_02.mp3'],
-        owl: ['Sounds/WOODLAND/owl_01.mp3', 'Sounds/WOODLAND/owl_02.mp3', 'Sounds/WOODLAND/owl_03.mp3'] // Reusing woodland owls
-    }
+// --- Audio System ---
+// Uses Web Audio API Context combined with HTMLAudioElements for reliable cross-browser playback
+const audioSources = {
+    woodland: 'https://cdn.freesound.org/previews/515/515286_11306342-lq.mp3', // birds/forest
+    rain: 'https://cdn.freesound.org/previews/531/531947_11202868-lq.mp3', // steady rain
+    fireside: 'https://cdn.freesound.org/previews/435/435238_8963364-lq.mp3' // fire crackle
 };
 
-let audioContext = null;
-let masterGain = null;
-let currentAmbienceSource = null;
-let currentAmbienceBuffer = null;
-let audioBuffers = {}; // Simple cache: path -> AudioBuffer
-let activeEvents = 0; // Prevent overlapping event sounds
-let soundscapeTimers = [];
+const audioElements = {};
+let activeAudio = null;
 
-function getVolume() {
-    return Math.max(0, Math.min(1, (data.ambientVolume || 50) / 100));
+function setupAudio() {
+    for (const [key, src] of Object.entries(audioSources)) {
+        const audio = new Audio(src);
+        audio.loop = true;
+        audio.volume = data.ambientVolume / 100;
+        audioElements[key] = audio;
+    }
 }
 
-async function initAudio() {
-    if (audioContext) return;
-    try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        audioContext = new AudioContext();
-        masterGain = audioContext.createGain();
-        masterGain.connect(audioContext.destination);
-        masterGain.gain.value = getVolume();
-    } catch (e) {
-        console.warn("Audio initialization failed:", e);
+function playAmbientAudio() {
+    if (data.soundscape === 'none' || !isRunning) return;
+    const targetAudio = audioElements[data.soundscape];
+    
+    // Pause others
+    Object.values(audioElements).forEach(a => {
+        if (a !== targetAudio && !a.paused) a.pause();
+    });
+
+    if (targetAudio && targetAudio.paused) {
+        // Promise catch to handle Chrome's autoplay policy gracefully
+        targetAudio.play().catch(e => {
+            console.log("Audio play blocked by browser policy. Requires user interaction.", e);
+        });
+        activeAudio = targetAudio;
+    }
+}
+
+function stopAmbientAudio() {
+    if (activeAudio) {
+        activeAudio.pause();
+        activeAudio = null;
     }
 }
 
 function updateAudioVolume() {
-    if (masterGain) {
-        // Smooth volume change
-        masterGain.gain.setTargetAtTime(getVolume(), audioContext.currentTime, 0.1);
-    }
+    const vol = data.ambientVolume / 100;
+    Object.values(audioElements).forEach(a => a.volume = vol);
 }
 
-async function fetchAudioBuffer(path) {
-    if (!audioContext) return null;
-    if (audioBuffers[path]) return audioBuffers[path];
-    
-    try {
-        const response = await fetch(path);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const arrayBuffer = await response.arrayBuffer();
-        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-        audioBuffers[path] = audioBuffer;
-        return audioBuffer;
-    } catch (e) {
-        console.warn(`Failed to load audio: ${path}`, e);
-        return null;
-    }
+// --- Timer Logic (Fixed for Background Tab Throttling) ---
+function calculateTrees(minutes) {
+    return Math.max(1, Math.ceil(minutes / 10));
 }
 
-// Crossfade into a new ambience track
-async function playAmbienceTrack(soundscapeId) {
-    if (!data.ambientSoundEnabled || !audioContext) return;
-    
-    const paths = AUDIO_FILES[soundscapeId]?.ambience;
-    if (!paths || paths.length === 0) return;
-
-    // Pick a track (simple alternating logic could go here, for now random)
-    const path = paths[Math.floor(Math.random() * paths.length)];
-    const buffer = await fetchAudioBuffer(path);
-    if (!buffer) return;
-
-    if (data.soundscape !== soundscapeId || !data.ambientSoundEnabled) return; // State changed during fetch
-
-    const source = audioContext.createBufferSource();
-    source.buffer = buffer;
-    source.loop = true;
-
-    const gainNode = audioContext.createGain();
-    source.connect(gainNode);
-    gainNode.connect(masterGain);
-
-    const now = audioContext.currentTime;
-    gainNode.gain.setValueAtTime(0, now);
-    
-    // Crossfade logic
-    if (currentAmbienceSource) {
-        // Fade out old
-        const oldGain = currentAmbienceSource.gainNode;
-        oldGain.gain.cancelScheduledValues(now);
-        oldGain.gain.linearRampToValueAtTime(0, now + 3);
-        const oldSource = currentAmbienceSource.source;
-        setTimeout(() => {
-            try { oldSource.stop(); } catch(e){}
-        }, 3500);
-    }
-
-    // Fade in new
-    source.start(now);
-    gainNode.gain.linearRampToValueAtTime(1, now + 3);
-
-    currentAmbienceSource = { source, gainNode, path };
-}
-
-async function playEventSound(pathArray) {
-    if (!data.ambientSoundEnabled || !audioContext || pathArray.length === 0) return;
-    if (activeEvents > 0) return; // Prevent overlap
-
-    const path = pathArray[Math.floor(Math.random() * pathArray.length)];
-    const buffer = await fetchAudioBuffer(path);
-    if (!buffer) return;
-    if (!data.ambientSoundEnabled) return;
-
-    activeEvents++;
-    const source = audioContext.createBufferSource();
-    source.buffer = buffer;
-    
-    // Slight randomization of pan/pitch for variety
-    const panNode = audioContext.createStereoPanner ? audioContext.createStereoPanner() : null;
-    if(panNode) {
-        panNode.pan.value = (Math.random() * 0.8) - 0.4;
-        source.connect(panNode);
-        panNode.connect(masterGain);
+function toggleTimer() {
+    if (isRunning) {
+        // Pause
+        isRunning = false;
+        clearInterval(timerInterval);
+        startPauseBtn.textContent = 'Resume';
+        witherBtn.classList.remove('hidden');
+        stopAmbientAudio();
     } else {
-        source.connect(masterGain);
-    }
-    
-    source.playbackRate.value = 0.95 + (Math.random() * 0.1);
-
-    source.onended = () => {
-        activeEvents = Math.max(0, activeEvents - 1);
-    };
-
-    source.start(0);
-}
-
-function clearSoundscapeTimers() {
-    soundscapeTimers.forEach(clearTimeout);
-    soundscapeTimers = [];
-}
-
-function scheduleNext(func, minMs, maxMs) {
-    const delay = minMs + Math.random() * (maxMs - minMs);
-    const timerId = setTimeout(() => {
-        // If an event is playing, delay by 10-30s
-        if (activeEvents > 0) {
-            scheduleNext(func, 10000, 30000);
-        } else {
-            func();
-            scheduleNext(func, minMs, maxMs); // Reschedule
-        }
-    }, delay);
-    soundscapeTimers.push(timerId);
-}
-
-function startSoundscapeLogic() {
-    clearSoundscapeTimers();
-    if (!data.ambientSoundEnabled || !audioContext) return;
-
-    const s = data.soundscape;
-    
-    if (s === 'woodland') {
-        // Common: 2-6 mins
-        let commonCount = 0;
-        let mediumCount = 0;
+        // Start
+        isRunning = true;
+        startPauseBtn.textContent = 'Pause';
+        witherBtn.classList.remove('hidden');
+        focusMinutesInput.disabled = true;
         
-        const doCommon = () => {
-            playEventSound(AUDIO_FILES.woodland.common);
-            commonCount++;
-            if (commonCount >= (2 + Math.floor(Math.random()*2))) { // after 2-3
-                commonCount = 0;
-                // Schedule medium shortly after
-                setTimeout(doMedium, 5000 + Math.random() * 15000);
-            }
-        };
+        // Calculate absolute end time to prevent background throttling desync
+        targetEndTime = Date.now() + (secondsLeft * 1000);
         
-        const doMedium = () => {
-             playEventSound(AUDIO_FILES.woodland.medium);
-             mediumCount++;
-             if (mediumCount >= (2 + Math.floor(Math.random()*2))) { // after 2-3
-                 mediumCount = 0;
-                 setTimeout(doRare, 5000 + Math.random() * 20000);
-             }
-        };
-
-        const doRare = () => {
-            playEventSound(AUDIO_FILES.woodland.rare);
-        };
-
-        scheduleNext(doCommon, 120000, 360000); // 2-6 mins
-    } 
-    else if (s === 'rain') {
-        // Thunder: 7-10 mins
-        scheduleNext(() => playEventSound(AUDIO_FILES.rain.thunder), 420000, 600000);
-        // Wind: 12-15 mins
-        scheduleNext(() => playEventSound(AUDIO_FILES.rain.wind), 720000, 900000);
-    }
-    else if (s === 'fireside') {
-        // Fire woosh: 4-8 mins
-        scheduleNext(() => playEventSound(AUDIO_FILES.fireside.woosh), 240000, 480000);
-        // Owl: 20-35 mins
-        scheduleNext(() => playEventSound(AUDIO_FILES.fireside.owl), 1200000, 2100000);
+        // Run interval frequently for smooth UI updates
+        timerInterval = setInterval(updateTimerTick, 200); 
+        
+        playAmbientAudio(); // Calling play within a click event satisfies Autoplay policies!
     }
 }
 
-function handleAudioState() {
-    if (!data.ambientSoundEnabled) {
-        if (currentAmbienceSource) {
-            const oldSource = currentAmbienceSource.source;
-            const oldGain = currentAmbienceSource.gainNode;
-            oldGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 1);
-            setTimeout(() => { try { oldSource.stop(); } catch(e){} }, 1100);
-            currentAmbienceSource = null;
-        }
-        clearSoundscapeTimers();
-        if(audioContext && audioContext.state === 'running') {
-            // We don't suspend the whole context so UI sounds (if added later) could play
-        }
-        return;
-    }
-
-    if (audioContext && audioContext.state === 'suspended') {
-        audioContext.resume();
-    }
-
-    updateAudioVolume();
-
-    // Check if we need to switch ambience
-    if (!currentAmbienceSource || !currentAmbienceSource.path.includes(data.soundscape)) {
-        playAmbienceTrack(data.soundscape);
-        startSoundscapeLogic();
-    }
-}
-
-// Background Audio behavior is inherently handled by Web Audio API unless the browser explicitly suspends it.
-// We removed visibilitychange pausing logic to allow background play.
-
-function exportBackup() {
-  const backup = {
-    version: 1,
-    exportedAt: new Date().toISOString(),
-    data
-  };
-
-  const blob = new Blob([JSON.stringify(backup, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `Witherwood_Backup_${new Date().toISOString().split('T')[0]}.json`;
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-
-function importBackup(file) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const backup = JSON.parse(reader.result);
-      if (!backup.data) throw new Error('Invalid backup');
-      data = { ...DEFAULTS, ...backup.data };
-      save();
-      resetTimer();
-      render();
-      alert('Backup restored successfully!');
-    } catch (e) {
-      alert('Invalid backup file.');
-    }
-  };
-  reader.readAsText(file);
-}
-
-function fmt(seconds) {
-  return String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
-}
-
-function getIcons() {
-  if (data.theme === 'rain') return { sapling: '💧', living: '💧', dead: '☁️' };
-  if (data.theme === 'night') return { sapling: '⭐', living: '⭐', dead: '🌑' };
-  return { sapling: '🌱', living: '🌲', dead: '🪵' };
-}
-
-function setMessage(text) {
-  const message = el('message');
-  if (message) message.textContent = `“${text}”`;
-}
-
-function witherTree() {
-  if (!isRunning || phase !== 'focus') return;
-  healthyTrees = Math.max(0, healthyTrees - 1);
-  data.deadTrees += 1;
-  save();
-  setMessage('A gust passed through your forest.');
-  render();
-}
-
-function renderNav() {
-  const nav = el('nav');
-  if (!nav) return;
-
-  const config = themeConfigs[data.theme] || themeConfigs.forest;
-  const isNight = data.theme === 'night';
-
-  nav.innerHTML = '';
-  for (const p of pages) {
-    const button = document.createElement('button');
+function updateTimerTick() {
+    const now = Date.now();
     
-    if (page === p) {
-        button.className = `px-4 py-2 rounded-2xl transition-colors duration-300 ${config.navActive}`;
+    if (now >= targetEndTime) {
+        // Timer finished
+        secondsLeft = 0;
+        updateDisplay();
+        completePhase();
     } else {
-        button.className = `px-4 py-2 rounded-2xl transition-colors duration-300 ${config.navInactive}`;
+        // Calculate remaining seconds based on absolute time
+        secondsLeft = Math.ceil((targetEndTime - now) / 1000);
+        updateDisplay();
     }
+}
+
+function completePhase() {
+    clearInterval(timerInterval);
+    isRunning = false;
+    stopAmbientAudio();
     
-    button.textContent = labels[p];
-    button.onclick = () => {
-      page = p;
-      render();
-    };
-    nav.appendChild(button);
-  }
-}
-
-// Mini player logic
-function updateMiniPlayer() {
-    const miniPlayer = el('miniPlayer');
-    if (!miniPlayer) return;
-
-    // Show if timer is running and we are NOT on the focus page
-    if (isRunning && page !== 'focus') {
-        miniPlayer.classList.remove('hidden-mini');
-        miniPlayer.classList.add('visible-mini');
-    } else {
-        miniPlayer.classList.remove('visible-mini');
-        miniPlayer.classList.add('hidden-mini');
-    }
-
-    const total = (phase === 'focus' ? data.focusMinutes : data.breakMinutes) * 60;
-    const circumference = 339.29; // Matches CSS
-    const offset = circumference * (1 - secondsLeft / Math.max(1, total));
-    
-    el('miniTimer').textContent = fmt(secondsLeft);
-    el('miniPhaseLabel').textContent = phase;
-    el('miniRingProgress').style.strokeDashoffset = offset;
-}
-
-function renderFocus() {
-  const icons = getIcons();
-
-  if (el('phaseLabel')) el('phaseLabel').textContent = phase === 'focus' ? 'Focus Session' : 'Break Time';
-  if (el('timer')) el('timer').textContent = fmt(secondsLeft);
-  if (el('saplings')) el('saplings').textContent = `${icons.sapling} ${healthyTrees} saplings`;
-  if (el('progressLabel')) el('progressLabel').textContent = `${icons.sapling} ${healthyTrees} saplings to protect`;
-  if (el('startPauseBtn')) el('startPauseBtn').textContent = isRunning ? 'Pause' : 'Start';
-
-  const controls = el('focusControls');
-  if (controls) controls.style.display = !isRunning && phase === 'focus' ? 'flex' : 'none';
-
-  const ring = el('progressRing');
-  if (ring) {
-    const total = (phase === 'focus' ? data.focusMinutes : data.breakMinutes) * 60;
-    const circumference = 376.99;
-    ring.style.strokeDashoffset = circumference * (1 - secondsLeft / Math.max(1, total));
-  }
-}
-
-function getForestLevel() {
-  const hours = data.todayFocusMinutes / 60;
-  if (hours < 1) return '🌱 Sapling Grove';
-  if (hours < 2) return '🌿 Young Woodland';
-  if (hours < 3.5) return '🌳 Flourishing Forest';
-  if (hours < 5) return '🦉 Ancient Canopy';
-  if (hours < 6.5) return '🍄 Enchanted Wilds';
-  if (hours < 8) return '👑 Mythic Witherwood';
-  return '☀️ Zenith of Stillness';
-}
-
-function getLocalDateString() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
-function updateDailyStats(minutes) {
-  const today = getLocalDateString();
-  if (data.lastFocusDate !== today) {
-    if (!data.lastFocusDate) {
-      data.streakDays = 1;
-    } else {
-      const prev = new Date(data.lastFocusDate + 'T00:00:00');
-      const curr = new Date(today + 'T00:00:00');
-      const diffDays = Math.round((curr - prev) / 86400000);
-      if (diffDays === 1) data.streakDays = Math.max(1, data.streakDays + 1);
-      else data.streakDays = 1;
-    }
-    data.todayFocusMinutes = 0;
-    data.lastFocusDate = today;
-  }
-  data.todayFocusMinutes += minutes;
-  data.bestDayMinutes = Math.max(data.bestDayMinutes, data.todayFocusMinutes);
-}
-
-function renderForest() {
-  const icons = getIcons();
-  if (el('forestSummary')) {
-    el('forestSummary').textContent = `${data.livingTrees} living trees • ${data.deadTrees} withered trees • ${getForestLevel()}`;
-  }
-  const grid = el('forestGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  for (let i = 0; i < Math.min(120, data.livingTrees); i++) {
-    const span = document.createElement('span');
-    span.textContent = icons.living;
-    grid.appendChild(span);
-  }
-  for (let i = 0; i < Math.min(30, data.deadTrees); i++) {
-    const span = document.createElement('span');
-    span.textContent = icons.dead;
-    span.className = 'opacity-50';
-    grid.appendChild(span);
-  }
-}
-
-function renderDashboard() {
-  const grid = el('dashboardGrid');
-  if (!grid) return;
-  grid.innerHTML = `
-    <div><div class="text-sm uppercase opacity-70">Forest Level</div><div class="text-2xl font-bold mt-2">${getForestLevel()}</div></div>
-    <div><div class="text-sm uppercase opacity-70">Today's Focus</div><div class="text-3xl font-bold mt-2">${(data.todayFocusMinutes / 60).toFixed(1)}h</div></div>
-    <div><div class="text-sm uppercase opacity-70">Day Streak</div><div class="text-3xl font-bold mt-2">${data.streakDays}</div></div>
-    <div><div class="text-sm uppercase opacity-70">Living Trees</div><div class="text-3xl font-bold mt-2">${data.livingTrees}</div></div>
-    <div><div class="text-sm uppercase opacity-70">Withered Trees</div><div class="text-3xl font-bold mt-2">${data.deadTrees}</div></div>
-    <div><div class="text-sm uppercase opacity-70">Total Focus</div><div class="text-3xl font-bold mt-2">${(data.totalFocusMinutes / 60).toFixed(1)}h</div></div>
-  `;
-}
-
-function render() {
-  applyThemeVisuals();
-  renderFocus();
-  renderForest();
-  renderDashboard();
-  updateMiniPlayer();
-
-  for (const p of pages) {
-    const section = el(p + 'Page');
-    if (section) section.classList.toggle('hidden', page !== p);
-  }
-
-  // Update inputs
-  if (el('focusMinutesInput')) el('focusMinutesInput').value = data.focusMinutes;
-  if (el('breakMinutesInput')) el('breakMinutesInput').value = data.breakMinutes;
-  if (el('breaksEnabledToggle')) el('breaksEnabledToggle').checked = data.breaksEnabled;
-  if (el('themeSelect')) el('themeSelect').value = data.theme;
-  if (el('soundscapeSelect')) el('soundscapeSelect').value = data.soundscape;
-  if (el('ambientSoundToggle')) el('ambientSoundToggle').checked = data.ambientSoundEnabled;
-  if (el('ambientVolumeInput')) el('ambientVolumeInput').value = data.ambientVolume ?? 50;
-  if (el('ambientVolumeLabel')) el('ambientVolumeLabel').textContent = `${data.ambientVolume ?? 50}%`;
-  
-  if (el('fullscreenBtn')) {
-    el('fullscreenBtn').textContent = '⛶';
-    el('fullscreenBtn').title = document.fullscreenElement ? 'Exit Fullscreen' : 'Enter Fullscreen';
-  }
-}
-
-function startTimer() {
-  if (isRunning) return;
-  
-  initAudio().then(() => {
-      handleAudioState();
-  });
-
-  isRunning = true;
-  const endTimestamp = Date.now() + secondsLeft * 1000;
-
-  intervalId = setInterval(() => {
-    secondsLeft = Math.max(0, Math.round((endTimestamp - Date.now()) / 1000));
-
-    if (secondsLeft <= 0) {
-      clearInterval(intervalId);
-      intervalId = null;
-      isRunning = false;
-
-      if (phase === 'focus') {
-        data.livingTrees += healthyTrees;
+    if (phase === 'focus') {
+        const gained = healthyTrees;
+        data.livingTrees += gained;
         data.totalFocusMinutes += data.focusMinutes;
         updateDailyStats(data.focusMinutes);
-        save(); 
-
-        if (data.breaksEnabled) {
-          phase = 'break';
-          secondsLeft = data.breakMinutes * 60;
-          setMessage('Your forest grew peacefully today.');
-        } else {
-          phase = 'focus';
-          healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
-          secondsLeft = data.focusMinutes * 60;
-          setMessage('New saplings are ready to grow.');
+        saveData();
+        
+        // Browser Notification if supported
+        if (Notification.permission === 'granted') {
+            new Notification('Session Complete!', { body: `You planted ${gained} tree(s)!` });
         }
-      } else {
-        phase = 'focus';
-        healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
-        secondsLeft = data.focusMinutes * 60;
-        setMessage('New saplings are ready to grow.');
-      }
+        
+        if (data.breaksEnabled) {
+            startPhase('break');
+            // Auto-start break
+            setTimeout(() => { toggleTimer(); }, 1000); 
+        } else {
+            resetTimer();
+            messageEl.textContent = `Great job! Planted ${gained} tree(s).`;
+        }
+    } else {
+        // Break finished
+        if (Notification.permission === 'granted') {
+            new Notification('Break Over', { body: 'Time to refocus and plant more trees!' });
+        }
+        startPhase('focus');
+        messageEl.textContent = "Ready to plant another tree?";
     }
-    render(); 
-  }, 250);
-  render();
 }
 
-function pauseTimer() {
-  isRunning = false;
-  clearInterval(intervalId);
-  render();
-}
-
-function resetAllData() {
-  if (!confirm('Reset ALL saved data? This will permanently remove your forest and all statistics.')) return;
-  const { theme, soundscape, ambientSoundEnabled, ambientVolume, focusMinutes, breakMinutes, breaksEnabled } = data;
-  data = { ...DEFAULTS, theme, soundscape, ambientSoundEnabled, ambientVolume, focusMinutes, breakMinutes, breaksEnabled };
-  save(); 
-  resetTimer();
-  page = 'focus';
-  setMessage('A new forest begins.');
-  render();
+function startPhase(newPhase) {
+    phase = newPhase;
+    isRunning = false;
+    clearInterval(timerInterval);
+    stopAmbientAudio();
+    
+    if (phase === 'focus') {
+        secondsLeft = data.focusMinutes * 60;
+        phaseLabel.textContent = 'Focus Session';
+        witherBtn.classList.add('hidden');
+        focusMinutesInput.disabled = false;
+        startPauseBtn.textContent = 'Start';
+        startPauseBtn.className = `px-10 py-4 rounded-full text-white text-lg font-bold shadow-lg transition-all duration-300 hover:-translate-y-1 ${themes[data.theme].btnPrimary}`;
+    } else {
+        secondsLeft = data.breakMinutes * 60;
+        phaseLabel.textContent = 'Rest & Recover';
+        witherBtn.classList.add('hidden');
+        focusMinutesInput.disabled = true;
+        startPauseBtn.textContent = 'Start Break';
+        startPauseBtn.className = `px-10 py-4 rounded-full bg-blue-500 hover:bg-blue-600 text-white text-lg font-bold shadow-lg shadow-blue-500/30 transition-all duration-300 hover:-translate-y-1`;
+    }
+    updateDisplay();
 }
 
 function resetTimer() {
-  pauseTimer();
-  phase = 'focus';
-  healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
-  secondsLeft = data.focusMinutes * 60;
-  setMessage('A calm mind nurtures strong roots.');
-  render();
+    startPhase(phase);
 }
 
-function bindEvents() {
-  el('startPauseBtn')?.addEventListener('click', () => isRunning ? pauseTimer() : startTimer());
-  el('witherBtn')?.addEventListener('click', witherTree);
-  el('resetBtn')?.addEventListener('click', resetTimer);
-  el('resetAllBtn')?.addEventListener('click', resetAllData);
-  
-  el('miniPlayer')?.addEventListener('click', () => {
-      page = 'focus';
-      render();
-  });
+function witherTree() {
+    if (!confirm("Are you sure you want to give up? The trees you were planting will wither.")) return;
+    
+    data.deadTrees += healthyTrees;
+    saveData();
+    resetTimer();
+    messageEl.textContent = "The saplings withered. Try again when you're ready.";
+}
 
-  el('focusMinutesInput')?.addEventListener('input', (e) => {
-    const value = e.target.value.trim();
-    if (value === '') return;
-    const parsed = Number(value);
-    if (!Number.isFinite(parsed)) return;
-    data.focusMinutes = Math.max(1, Math.min(180, parsed));
-    healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
-    if (!isRunning && phase === 'focus') secondsLeft = data.focusMinutes * 60;
-    save();
-    render();
-  });
+function updateDisplay() {
+    const totalSeconds = phase === 'focus' ? data.focusMinutes * 60 : data.breakMinutes * 60;
+    const m = Math.floor(secondsLeft / 60).toString().padStart(2, '0');
+    const s = (secondsLeft % 60).toString().padStart(2, '0');
+    const timeString = `${m}:${s}`;
+    
+    timerEl.textContent = timeString;
+    document.title = isRunning ? `${timeString} - Witherwood` : 'Witherwood';
 
-  el('focusMinutesInput')?.addEventListener('blur', (e) => {
-    if (e.target.value.trim() === '') e.target.value = data.focusMinutes;
-  });
+    // SVG Ring Progress
+    const radius = 84;
+    const circumference = radius * 2 * Math.PI; // ~527.78
+    const percent = secondsLeft / totalSeconds;
+    const offset = circumference - (percent * circumference);
+    progressRing.style.strokeDashoffset = offset;
 
-  el('breakMinutesInput')?.addEventListener('input', (e) => {
-    const value = e.target.value.trim();
-    if (value === '') return;
-    const parsed = Number(value);
-    if (!Number.isFinite(parsed)) return;
-    data.breakMinutes = Math.max(1, Math.min(60, parsed));
-    save();
-    render();
-  });
+    // Mini Player Sync
+    const miniRingRadius = 60;
+    const miniCircumference = miniRingRadius * 2 * Math.PI;
+    document.getElementById('miniTimer').textContent = timeString;
+    document.getElementById('miniPhaseLabel').textContent = phase;
+    document.getElementById('miniRingProgress').style.strokeDashoffset = miniCircumference - (percent * miniCircumference);
 
-  el('breakMinutesInput')?.addEventListener('blur', (e) => {
-    if (e.target.value.trim() === '') e.target.value = data.breakMinutes;
-  });
-
-  el('breaksEnabledToggle')?.addEventListener('change', (e) => {
-    data.breaksEnabled = e.target.checked;
-    save();
-    render();
-  });
-
-  el('themeSelect')?.addEventListener('change', (e) => {
-    data.theme = e.target.value;
-    save();
-    render(); // applyThemeVisuals handles the clean switch
-  });
-
-  el('soundscapeSelect')?.addEventListener('change', (e) => {
-      data.soundscape = e.target.value;
-      save();
-      handleAudioState();
-  });
-
-  el('ambientSoundToggle')?.addEventListener('change', (e) => {
-    data.ambientSoundEnabled = e.target.checked;
-    save();
-    if (data.ambientSoundEnabled) {
-        initAudio().then(() => handleAudioState());
+    if (phase === 'focus') {
+        const planted = healthyTrees - Math.ceil((secondsLeft / 60) / 10);
+        const growing = healthyTrees - planted;
+        progressLabel.innerHTML = `<span>⏳ ${m}m remaining</span>`;
+        saplingsEl.innerHTML = `${'🌲'.repeat(Math.max(0, planted))}${'🌱'.repeat(Math.max(0, growing))}`;
+        
+        // Mini player color mapping
+        document.getElementById('miniRingProgress').style.stroke = themes[data.theme].ringColor;
+        document.getElementById('miniPlayer').style.background = themes[data.theme].ringBg.replace('0.2', '0.8');
     } else {
-        handleAudioState();
+        progressLabel.innerHTML = `<span>☕ Resting</span>`;
+        saplingsEl.innerHTML = '';
+        document.getElementById('miniRingProgress').style.stroke = '#3b82f6'; // blue for break
+        document.getElementById('miniPlayer').style.background = 'rgba(59, 130, 246, 0.8)';
     }
-    render();
-  });
+}
 
-  el('ambientVolumeInput')?.addEventListener('input', (e) => {
-    data.ambientVolume = Math.max(0, Math.min(100, Number(e.target.value) || 0));
-    save();
+// Mini Player Toggle Logic
+let isMiniPlayerActive = false;
+function toggleMiniPlayer() {
+    isMiniPlayerActive = !isMiniPlayerActive;
+    if (isMiniPlayerActive) {
+        miniPlayer.classList.remove('hidden-mini');
+        miniPlayer.classList.add('visible-mini');
+        document.getElementById('focusPage').style.opacity = '0.3';
+        document.getElementById('focusPage').style.pointerEvents = 'none';
+        
+        // Request visual PIP if browser supports generic Document PIP (rare, but good fallback)
+        if ('documentPictureInPicture' in window) {
+           // Complex implementation skipped for stability; using custom floating div instead.
+        }
+    } else {
+        miniPlayer.classList.add('hidden-mini');
+        miniPlayer.classList.remove('visible-mini');
+        document.getElementById('focusPage').style.opacity = '1';
+        document.getElementById('focusPage').style.pointerEvents = 'auto';
+    }
+}
+
+miniPlayerToggleBtn.addEventListener('click', toggleMiniPlayer);
+miniPlayer.addEventListener('click', toggleMiniPlayer);
+
+// Fullscreen API (Requires user interaction)
+fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            console.log(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+});
+
+// --- Themes & Effects ---
+function applyTheme() {
+    const t = themes[data.theme];
+    
+    // Background and base text
+    body.className = `min-h-screen bg-gradient-to-b ${t.bg.join(' ')} ${t.textMain} transition-colors duration-700 overflow-x-hidden font-sans selection:bg-emerald-200 selection:text-emerald-900`;
+    
+    // App Container
+    appRoot.className = `w-full max-w-4xl min-h-[85vh] rounded-[2.5rem] ${t.cardBg} border ${t.borderColor} shadow-2xl p-6 md:p-10 transition-all duration-700 relative overflow-hidden`;
+
+    // Titles
+    brandIcon.textContent = t.icon;
+    brandTitle.className = `brand-title text-2xl md:text-3xl uppercase tracking-widest flex items-center justify-center gap-3 transition-colors duration-300 ${t.textMain}`;
+    if (data.theme === 'night') brandTitle.classList.add('brand-title-night');
+    if (data.theme === 'rain') brandTitle.classList.add('brand-title-rain');
+    
+    document.getElementById('brandSubtitle').className = `mt-2 text-sm md:text-base font-medium transition-colors duration-300 ${t.textMuted}`;
+    
+    // Section styles
+    ['focusPage', 'forestPage', 'settingsPage'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) {
+            el.className = el.className.replace(/bg-[\w/-]+/, t.cardBg.split(' ')[0]);
+            el.className = el.className.replace(/border-[\w/-]+/, t.borderColor);
+        }
+    });
+
+    // Typography overrides
+    phaseLabel.className = `text-lg font-bold uppercase tracking-wider transition-colors duration-300 mb-4 ${t.textAccent}`;
+    timerEl.className = `text-6xl md:text-7xl font-bold tracking-tight transition-colors duration-300 ${t.textMain}`;
+    progressLabel.className = `mt-4 text-lg font-medium transition-colors duration-300 flex items-center justify-center gap-2 ${t.textMuted}`;
+    
+    // Progress Ring colors
+    progressRing.style.stroke = t.ringColor;
+    progressRingBg.style.stroke = t.ringBg;
+
+    // Button colors (if not in break)
+    if (phase === 'focus') {
+        startPauseBtn.className = `px-10 py-4 rounded-full text-white text-lg font-bold shadow-lg transition-all duration-300 hover:-translate-y-1 ${t.btnPrimary}`;
+    }
+
+    renderNav();
+    applyVisualEffects();
+    
+    // Update Theme select UI
+    document.getElementById('themeSelect').value = data.theme;
+}
+
+function applyVisualEffects() {
+    // Clear all existing
+    clearInterval(effectInterval);
+    document.getElementById('rainOverlay').innerHTML = '';
+    document.getElementById('nightOverlay').innerHTML = '';
+    document.getElementById('forestOverlay').innerHTML = '';
+    document.getElementById('rainOverlay').classList.add('hidden');
+    document.getElementById('nightOverlay').classList.add('hidden');
+    document.getElementById('forestOverlay').classList.add('hidden');
+
+    // Only apply if tab is visible to save PC CPU
+    if (document.hidden) return;
+
+    if (data.theme === 'rain') {
+        const overlay = document.getElementById('rainOverlay');
+        overlay.classList.remove('hidden');
+        createRainDrops(overlay);
+    } else if (data.theme === 'night') {
+        const overlay = document.getElementById('nightOverlay');
+        overlay.classList.remove('hidden');
+        effectInterval = setInterval(() => createShootingStar(overlay), 4000);
+    } else if (data.theme === 'forest') {
+        const overlay = document.getElementById('forestOverlay');
+        overlay.classList.remove('hidden');
+        effectInterval = setInterval(() => createLeaf(overlay), 3000);
+    }
+}
+
+// Pause effects when tab is hidden, resume when visible
+document.addEventListener('visibilitychange', () => {
+    applyVisualEffects();
+});
+
+function createRainDrops(container) {
+    const fragment = document.createDocumentFragment();
+    // Reduce density slightly for PC performance
+    for (let i = 0; i < 70; i++) { 
+        const drop = document.createElement('div');
+        drop.className = 'rain-drop';
+        drop.style.left = `${Math.random() * 120 - 10}%`;
+        drop.style.animationDuration = `${Math.random() * 0.4 + 0.4}s`;
+        drop.style.animationDelay = `${Math.random() * 2}s`;
+        fragment.appendChild(drop);
+    }
+    container.appendChild(fragment);
+}
+
+function createShootingStar(container) {
+    if(document.hidden) return;
+    const star = document.createElement('div');
+    star.className = 'shooting-star';
+    star.style.top = `${Math.random() * 40}%`;
+    star.style.left = `${Math.random() * 60}%`;
+    container.appendChild(star);
+    setTimeout(() => star.remove(), 3000);
+}
+
+function createLeaf(container) {
+    if(document.hidden) return;
+    const leaf = document.createElement('div');
+    leaf.className = 'falling-leaf';
+    leaf.style.left = `${Math.random() * 90}%`;
+    leaf.style.animationDuration = `${Math.random() * 4 + 6}s`;
+    
+    const size = Math.random() * 15 + 15;
+    leaf.style.width = `${size}px`;
+    leaf.style.height = `${size}px`;
+    
+    container.appendChild(leaf);
+    setTimeout(() => leaf.remove(), 10000);
+}
+
+// --- Navigation & Routing ---
+function setPage(newPage) {
+    page = newPage;
+    pages.forEach(p => {
+        const el = document.getElementById(`${p}Page`);
+        if(el) el.classList.toggle('hidden', p !== page);
+    });
+    renderNav();
+    if (page === 'forest') renderForest();
+    if (page === 'dashboard') renderDashboard();
+}
+
+function renderNav() {
+    const t = themes[data.theme];
+    navEl.innerHTML = pages.map(p => `
+        <button onclick="setPage('${p}')" class="px-5 py-2.5 rounded-2xl font-bold transition-all shadow-sm ${page === p ? t.navActive : t.navInactive}">
+            ${labels[p]}
+        </button>
+    `).join('');
+}
+
+// --- Data & Stats ---
+function updateDailyStats(minutes) {
+    const today = new Date().toDateString();
+    if (data.lastFocusDate !== today) {
+        if (data.lastFocusDate === new Date(Date.now() - 86400000).toDateString()) {
+            data.streakDays++;
+        } else {
+            data.streakDays = 1;
+        }
+        data.todayFocusMinutes = 0;
+        data.lastFocusDate = today;
+    }
+    data.todayFocusMinutes += minutes;
+    if (data.todayFocusMinutes > data.bestDayMinutes) {
+        data.bestDayMinutes = data.todayFocusMinutes;
+    }
+}
+
+function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+// --- Specific Pages Renderers ---
+function renderForest() {
+    document.getElementById('forestSummary').innerHTML = `
+        <div class="flex gap-6 mb-4">
+            <div class="bg-emerald-50 px-4 py-3 rounded-xl border border-emerald-100 text-emerald-800">
+                <span class="text-2xl font-bold">${data.livingTrees}</span> <br/>Living Trees
+            </div>
+            <div class="bg-amber-50 px-4 py-3 rounded-xl border border-amber-100 text-amber-800">
+                <span class="text-2xl font-bold">${data.deadTrees}</span> <br/>Withered Saplings
+            </div>
+        </div>
+        <p>Your forest represents your dedication. Keep focusing to grow it further!</p>
+    `;
+    
+    const grid = document.getElementById('forestGrid');
+    grid.innerHTML = '';
+    
+    if(data.livingTrees === 0 && data.deadTrees === 0) {
+        grid.innerHTML = '<div class="w-full text-center text-slate-400 py-10 text-lg">Your forest is empty. Start a session to plant your first tree!</div>';
+        return;
+    }
+
+    const docFrag = document.createDocumentFragment();
+    
+    for (let i = 0; i < data.livingTrees; i++) {
+        const treeTypes = ['🌲', '🌳', '🌴', '🎍'];
+        const type = treeTypes[Math.floor(Math.random() * treeTypes.length)];
+        const span = document.createElement('span');
+        span.className = 'transform hover:scale-125 transition-transform cursor-default inline-block';
+        span.textContent = type;
+        docFrag.appendChild(span);
+    }
+    for (let i = 0; i < data.deadTrees; i++) {
+        const span = document.createElement('span');
+        span.className = 'opacity-60 grayscale transform hover:scale-110 transition-transform cursor-default inline-block';
+        span.textContent = '🍂';
+        docFrag.appendChild(span);
+    }
+    
+    grid.appendChild(docFrag);
+}
+
+function renderDashboard() {
+    const stats = [
+        { label: 'Total Focus', value: `${Math.floor(data.totalFocusMinutes / 60)}h ${data.totalFocusMinutes % 60}m`, icon: '⏱' },
+        { label: 'Today', value: `${data.todayFocusMinutes}m`, icon: '📅' },
+        { label: 'Current Streak', value: `${data.streakDays} Days`, icon: '🔥' },
+        { label: 'Best Day', value: `${data.bestDayMinutes}m`, icon: '🏆' },
+        { label: 'Forest Size', value: data.livingTrees, icon: '🌲' },
+        { label: 'Survival Rate', value: `${data.livingTrees + data.deadTrees > 0 ? Math.round((data.livingTrees / (data.livingTrees + data.deadTrees)) * 100) : 0}%`, icon: '📊' },
+    ];
+
+    const t = themes[data.theme];
+    document.getElementById('dashboardGrid').innerHTML = stats.map(s => `
+        <div class="${t.cardBg} rounded-3xl p-6 border ${t.borderColor} shadow-lg flex items-center gap-4 transition-all duration-300 hover:translate-y-[-2px]">
+            <div class="text-4xl bg-slate-50/50 p-4 rounded-2xl border border-slate-100">${s.icon}</div>
+            <div>
+                <div class="text-sm font-bold uppercase tracking-wider ${t.textMuted}">${s.label}</div>
+                <div class="text-2xl font-bold ${t.textMain}">${s.value}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// --- Event Listeners Setup ---
+startPauseBtn.addEventListener('click', () => {
+    // Required for web audio API to start on some browsers
+    if (Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
+    toggleTimer();
+});
+
+witherBtn.addEventListener('click', witherTree);
+resetBtn.addEventListener('click', () => {
+    if (confirm("Reset current timer?")) resetTimer();
+});
+
+focusMinutesInput.addEventListener('change', (e) => {
+    let val = parseInt(e.target.value);
+    if (isNaN(val) || val < 1) val = 1;
+    if (val > 180) val = 180;
+    e.target.value = val;
+    data.focusMinutes = val;
+    healthyTrees = calculateTrees(val);
+    saveData();
+    if (!isRunning && phase === 'focus') resetTimer();
+});
+
+// Settings Events
+document.getElementById('themeSelect').addEventListener('change', (e) => {
+    data.theme = e.target.value;
+    saveData();
+    applyTheme();
+});
+
+document.getElementById('soundscapeSelect').addEventListener('change', (e) => {
+    data.soundscape = e.target.value;
+    saveData();
+    if (isRunning) {
+        stopAmbientAudio();
+        playAmbientAudio();
+    }
+});
+
+document.getElementById('ambientVolumeInput').addEventListener('input', (e) => {
+    data.ambientVolume = e.target.value;
+    document.getElementById('ambientVolumeLabel').textContent = `${data.ambientVolume}%`;
     updateAudioVolume();
-    render();
-  });
+    saveData();
+});
 
-  el('fullscreenBtn')?.addEventListener('click', async () => {
-    const root = el('appRoot');
-    if (!root) return;
-    if (!document.fullscreenElement) await root.requestFullscreen().catch(() => {});
-    else await document.exitFullscreen().catch(() => {});
-    render();
-  });
+document.getElementById('breaksEnabledToggle').addEventListener('change', (e) => {
+    data.breaksEnabled = e.target.checked;
+    saveData();
+});
 
-  window.addEventListener('keydown', (e) => {
-    if (e.code === 'Space' && isRunning && phase === 'focus') {
-      e.preventDefault();
-      witherTree();
+document.getElementById('breakMinutesInput').addEventListener('change', (e) => {
+    let val = parseInt(e.target.value);
+    if (isNaN(val) || val < 1) val = 1;
+    e.target.value = val;
+    data.breakMinutes = val;
+    saveData();
+    if (!isRunning && phase === 'break') resetTimer();
+});
+
+document.getElementById('resetAllBtn').addEventListener('click', () => {
+    if (confirm("WARNING: This will permanently delete your forest and all statistics. Continue?")) {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
     }
-  });
-  
-  el('exportDataBtn')?.addEventListener('click', exportBackup);
-  el('importDataBtn')?.addEventListener('click', () => el('importFileInput')?.click());
-  el('importFileInput')?.addEventListener('change', (e) => {
-    const file = e.target.files?.[0];
-    if (file) importBackup(file);
-  });
+});
 
-  document.addEventListener('fullscreenchange', render);
+// Import/Export
+document.getElementById('exportDataBtn').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `witherwood_backup_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+});
+
+document.getElementById('importDataBtn').addEventListener('click', () => {
+    document.getElementById('importFileInput').click();
+});
+
+document.getElementById('importFileInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const imported = JSON.parse(e.target.result);
+            if (imported && typeof imported === 'object') {
+                data = { ...DEFAULTS, ...imported };
+                saveData();
+                alert("Data imported successfully!");
+                location.reload();
+            }
+        } catch (err) {
+            alert("Invalid backup file.");
+        }
+    };
+    reader.readAsText(file);
+});
+
+// --- Boot Sequence ---
+function init() {
+    setupAudio();
+    
+    // Sync UI with data
+    focusMinutesInput.value = data.focusMinutes;
+    document.getElementById('themeSelect').value = data.theme;
+    document.getElementById('soundscapeSelect').value = data.soundscape;
+    document.getElementById('ambientVolumeInput').value = data.ambientVolume;
+    document.getElementById('ambientVolumeLabel').textContent = `${data.ambientVolume}%`;
+    document.getElementById('breaksEnabledToggle').checked = data.breaksEnabled;
+    document.getElementById('breakMinutesInput').value = data.breakMinutes;
+    
+    applyTheme();
+    resetTimer();
+    setPage('focus');
 }
 
-// Initial setup
-bindEvents();
-render();
-if (data.ambientSoundEnabled) {
-    // Only init if user interacts to bypass autoplay restrictions if loaded directly
-    document.body.addEventListener('click', () => {
-        initAudio().then(() => handleAudioState());
-    }, { once: true });
-}
+init();
 
 </script>
 </body>
