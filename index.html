@@ -188,6 +188,7 @@ input[type=range]::-webkit-slider-runnable-track {
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 </head>
 <body class="min-h-screen bg-emerald-50 text-slate-800 transition-colors duration-500 flex flex-col items-center">
+
 <div id="toastContainer"></div>
 
 <!-- Confirm Reset Modal -->
@@ -205,9 +206,13 @@ input[type=range]::-webkit-slider-runnable-track {
 <div class="w-full flex-1 flex flex-col items-center transition-all duration-500">
   <div id="appRoot" class="w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-emerald-50 p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center shadow-2xl mt-4 mb-4">
     
+    <!-- Unified Visual Effects Layer -->
     <div id="visualEffectsLayer"></div>
 
-    <div class="w-full max-w-4xl space-y-8 relative z-10 flex flex-col items-center my-auto">
+    <!-- Top spacer for safe centering -->
+    <div class="flex-1 min-h-0 w-full pointer-events-none"></div>
+
+    <div class="w-full max-w-4xl space-y-8 relative z-10 flex flex-col items-center shrink-0 py-4 md:py-8">
       <header class="flex flex-col items-center text-center gap-4 w-full relative">
         <div class="absolute right-0 top-0 flex gap-2 z-20">
           <button id="pipBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl" title="Mini Player" aria-label="Mini Player">
@@ -379,6 +384,10 @@ input[type=range]::-webkit-slider-runnable-track {
         </section>
       </div>
     </div>
+
+    <!-- Bottom spacer for safe centering -->
+    <div class="flex-1 min-h-0 w-full pointer-events-none"></div>
+
   </div>
 </div>
 
@@ -428,6 +437,7 @@ const labels = {
   settings: '⚙️ Settings',
 };
 
+// CENTRALIZED THEME SYSTEM
 const THEME_DEFS = {
   forest: {
     bg: 'from-emerald-50 via-lime-50 to-teal-100',
@@ -594,7 +604,6 @@ class SoundscapeEngine {
     const isTurningOff = !enabled && this.enabled;
 
     this.enabled = enabled;
-    const prevSoundscape = this.currentSoundscape;
     this.currentSoundscape = soundscape;
 
     if (isTurningOff) {
@@ -609,8 +618,6 @@ class SoundscapeEngine {
 
       if (isSwitching) {
         this.detachAndFadeOutAll(6);
-      } else if (prevSoundscape !== soundscape && !isSwitching) {
-        this.stopAllInstantly();
       }
 
       if (this.activeAmbience.size === 0 || isSwitching) {
@@ -958,7 +965,11 @@ function playCompletionSound() {
 }
 
 function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch(e) {
+    console.warn("Could not save to localStorage. Quota may be exceeded.", e);
+  }
 }
 
 function exportBackup() {
@@ -977,7 +988,20 @@ function importBackup(file) {
     try {
       const backup = JSON.parse(reader.result);
       if (!backup.data) throw new Error('Invalid backup');
+      
       data = { ...DEFAULTS, ...backup.data };
+      
+      // Data Validation and Casting
+      data.focusMinutes = Number(data.focusMinutes) || DEFAULTS.focusMinutes;
+      data.breakMinutes = Number(data.breakMinutes) || DEFAULTS.breakMinutes;
+      data.ambientVolume = Number(data.ambientVolume) || DEFAULTS.ambientVolume;
+      data.livingTrees = Number(data.livingTrees) || 0;
+      data.deadTrees = Number(data.deadTrees) || 0;
+      data.totalFocusMinutes = Number(data.totalFocusMinutes) || 0;
+      data.todayFocusMinutes = Number(data.todayFocusMinutes) || 0;
+      data.streakDays = Number(data.streakDays) || 0;
+      data.bestDayMinutes = Number(data.bestDayMinutes) || 0;
+      
       if (!data.soundscape) data.soundscape = 'woodland';
       save();
       resetTimer();
@@ -1006,7 +1030,7 @@ function setMessage(text) {
 }
 
 function witherTree() {
-  if (!isRunning || phase !== 'focus') return;
+  if (!isRunning || phase !== 'focus' || healthyTrees <= 0) return;
   healthyTrees = Math.max(0, healthyTrees - 1);
   data.deadTrees += 1;
   save();
@@ -1015,8 +1039,13 @@ function witherTree() {
   render();
 }
 
+let isNavigating = false;
+
 async function switchPage(newPage) {
-  if (page === newPage) return;
+  if (page === newPage || isNavigating) return;
+  
+  isNavigating = true;
+  
   const oldEl = el(page + 'Page');
   const newEl = el(newPage + 'Page');
   
@@ -1035,6 +1064,8 @@ async function switchPage(newPage) {
   
   page = newPage;
   renderNav();
+  
+  isNavigating = false;
 }
 
 function renderNav() {
@@ -1259,7 +1290,7 @@ function renderDashboard() {
   `;
 }
 
-// VISUAL EFFECTS ENGINE (Decoupled from Soundscapes)
+// VISUAL EFFECTS ENGINE
 let activeVisualTimeouts = new Set();
 let currentVisualTheme = null;
 
@@ -1359,13 +1390,13 @@ function applyTheme() {
   const isNight = data.theme === 'night';
   const isFs = !!document.fullscreenElement;
 
-  document.body.className = `min-h-screen bg-gradient-to-b ${def.bg} ${def.text} transition-colors duration-500 flex flex-col items-center`;
+  document.body.className = `min-h-screen bg-gradient-to-b ${def.bg} ${def.text} transition-colors duration-500 flex flex-col items-center ${isFs ? 'overflow-hidden' : ''}`;
   
   const root = el('appRoot');
   if(isFs) {
-    root.className = `w-full max-w-none min-h-screen flex flex-col items-center p-6 md:p-12 transition-all duration-500 relative`;
+    root.className = `w-full max-w-none min-h-screen bg-gradient-to-b ${def.bg} flex flex-col items-center transition-all duration-500 relative overflow-y-auto overflow-x-hidden`;
   } else {
-    root.className = `w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b ${def.bg} p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center shadow-2xl mt-4 mb-4`;
+    root.className = `w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b ${def.bg} transition-all duration-500 relative overflow-hidden flex flex-col items-center shadow-2xl mt-4 mb-4`;
   }
 
   document.querySelectorAll('[data-theme-target]').forEach(el => {
@@ -1566,13 +1597,24 @@ function bindEvents() {
     const root = el('appRoot');
     if (!root) return;
     if (!document.fullscreenElement) {
-      await root.requestFullscreen().catch(() => {});
+      if (root.requestFullscreen) {
+        await root.requestFullscreen().catch(() => {});
+      } else if (root.webkitRequestFullscreen) { // Safari Fallback
+        await root.webkitRequestFullscreen();
+      }
     } else {
-      await document.exitFullscreen().catch(() => {});
+      if (document.exitFullscreen) {
+        await document.exitFullscreen().catch(() => {});
+      } else if (document.webkitExitFullscreen) { // Safari Fallback
+        await document.webkitExitFullscreen();
+      }
     }
   });
 
   window.addEventListener('keydown', (e) => {
+    // Ignore spacebar if user is interacting with inputs or buttons
+    if (['INPUT', 'TEXTAREA', 'BUTTON', 'SELECT'].includes(e.target.tagName)) return;
+
     if (e.code === 'Space' && isRunning && phase === 'focus') {
       e.preventDefault();
       witherTree();
@@ -1595,6 +1637,18 @@ function bindEvents() {
   });
 
   document.addEventListener('fullscreenchange', () => {
+    const isFs = !!document.fullscreenElement;
+    const root = el('appRoot');
+    const toast = el('toastContainer');
+    const modal = el('confirmModal');
+    
+    if (isFs && root) {
+      if(toast) root.appendChild(toast);
+      if(modal) root.appendChild(modal);
+    } else {
+      if(toast) document.body.appendChild(toast);
+      if(modal) document.body.appendChild(modal);
+    }
     applyTheme();
   });
 }
