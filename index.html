@@ -6,7 +6,7 @@
 <title>Witherwood</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=JetBrains+Mono:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 @keyframes rainfall {
@@ -197,16 +197,16 @@ body.fullscreen-active {
 }
 #appRoot.fullscreen-active {
   min-height: 100vh !important;
-  height: 100vh !important; /* Forces bounded height so auto-scroll works */
+  height: 100vh !important; 
   max-width: 100% !important;
   margin: 0 !important;
   border-radius: 0 !important;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start !important; /* Fixes title getting pushed off top screen */
+  justify-content: flex-start !important;
   align-items: center;
   padding: 3rem 1rem 2rem 1rem !important; 
-  overflow-y: auto !important; /* Enables scrolling for settings/dashboard in fullscreen */
+  overflow-y: auto !important; 
   overflow-x: hidden !important;
 }
 .btn-interactive {
@@ -245,6 +245,14 @@ body.fullscreen-active {
   transform: translateY(0) scale(1);
   opacity: 1;
 }
+
+/* Fix for Toggle Switch Flinching */
+input[type="checkbox"] {
+  transform: translateZ(0); /* Force hardware acceleration */
+  backface-visibility: hidden; 
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
 </style>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#f7f4ea">
@@ -1037,8 +1045,8 @@ async function togglePiP() {
   if ('documentPictureInPicture' in window) {
     try {
       pipWindow = await documentPictureInPicture.requestWindow({
-        width: 320,
-        height: 400
+        width: 330,
+        height: 390
       });
       setupPiP(pipWindow);
       pipWindow.addEventListener('pagehide', () => { pipWindow = null; });
@@ -1051,7 +1059,7 @@ async function togglePiP() {
 }
 
 function fallbackPiP() {
-  pipWindow = window.open('', 'Witherwood Mini Player', 'width=320,height=400');
+  pipWindow = window.open('', 'Witherwood Mini Player', 'width=330,height=390');
   if (pipWindow) {
     setupPiP(pipWindow);
     pipWindow.addEventListener('beforeunload', () => { pipWindow = null; });
@@ -1061,27 +1069,39 @@ function fallbackPiP() {
 }
 
 function setupPiP(win) {
+  const fontLink = win.document.createElement('link');
+  fontLink.rel = 'stylesheet';
+  fontLink.href = 'https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=JetBrains+Mono:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap';
+  win.document.head.appendChild(fontLink);
+
   const style = win.document.createElement('style');
-  style.textContent = `
-    body { font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #0f172a; color: white; text-align: center; overflow: hidden; user-select: none; }
-    .timer { font-size: 5rem; font-family: monospace; font-weight: bold; margin: 1.5rem 0; line-height: 1; letter-spacing: -2px; }
-    .phase { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.15em; color: #a78bfa; font-weight: 600; }
-    .controls { display: flex; gap: 0.75rem; margin-top: 1rem; }
-    button { padding: 0.75rem 1.5rem; border-radius: 0.75rem; border: none; font-weight: 600; cursor: pointer; font-size: 1rem; transition: transform 0.1s; }
-    button:active { transform: scale(0.95); }
-    .btn-primary { background: #10b981; color: white; }
-    .btn-secondary { background: #334155; color: white; }
-  `;
+  style.id = 'pipThemeStyles';
+  style.textContent = getPipThemeCSS();
   win.document.head.appendChild(style);
 
   win.document.title = "Witherwood";
 
   win.document.body.innerHTML = `
-    <div class="phase" id="pipPhase">Focus Session</div>
-    <div class="timer" id="pipTimer">25:00</div>
-    <div class="controls">
-      <button id="pipStartBtn" class="btn-primary">Start</button>
-      <button id="pipResetBtn" class="btn-secondary">Reset</button>
+    <div class="pip-container">
+      <div class="pip-header">
+        <span class="pip-logo">🌲 Witherwood</span>
+        <div class="phase" id="pipPhase">Focus Session</div>
+      </div>
+      
+      <div class="timer-card">
+        <div class="ring-wrapper">
+          <svg viewBox="0 0 140 140" class="progress-svg">
+            <circle cx="70" cy="70" r="58" class="ring-bg"></circle>
+            <circle id="pipProgressRing" cx="70" cy="70" r="58" class="ring-fill"></circle>
+          </svg>
+          <div class="timer" id="pipTimer">25:00</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="pipStartBtn" class="btn-primary">Start</button>
+        <button id="pipResetBtn" class="btn-secondary">Reset</button>
+      </div>
     </div>
   `;
 
@@ -1089,13 +1109,203 @@ function setupPiP(win) {
     phase: win.document.getElementById('pipPhase'),
     timer: win.document.getElementById('pipTimer'),
     startBtn: win.document.getElementById('pipStartBtn'),
-    resetBtn: win.document.getElementById('pipResetBtn')
+    resetBtn: win.document.getElementById('pipResetBtn'),
+    ring: win.document.getElementById('pipProgressRing'),
+    styleTag: style
   };
 
   pipElements.startBtn.onclick = () => { isRunning ? pauseTimer() : startTimer(); };
   pipElements.resetBtn.onclick = () => { resetTimer(); };
 
   renderFocus();
+}
+
+function getPipThemeCSS() {
+  const isNight = data.theme === 'night';
+  const isRain = data.theme === 'rain';
+
+  let bgGradient = 'linear-gradient(145deg, #0f172a 0%, #064e3b 50%, #022c22 100%)';
+  let cardBg = 'rgba(255, 255, 255, 0.08)';
+  let cardBorder = 'rgba(255, 255, 255, 0.14)';
+  let timerColor = '#f0fdf4';
+  let timerGlow = 'rgba(52, 211, 153, 0.35)';
+  let accentColor = '#10b981';
+  let accentHover = '#059669';
+  let phaseColor = '#a7f3d0';
+  let ringFill = '#10b981';
+  let ringBg = 'rgba(255, 255, 255, 0.08)';
+
+  if (isNight) {
+    bgGradient = 'linear-gradient(145deg, #090d16 0%, #0f172a 45%, #1e1b4b 100%)';
+    cardBg = 'rgba(15, 23, 42, 0.55)';
+    cardBorder = 'rgba(167, 139, 250, 0.22)';
+    timerColor = '#f5f3ff';
+    timerGlow = 'rgba(167, 139, 250, 0.45)';
+    accentColor = '#8b5cf6';
+    accentHover = '#7c3aed';
+    phaseColor = '#c4b5fd';
+    ringFill = '#a78bfa';
+    ringBg = 'rgba(167, 139, 250, 0.12)';
+  } else if (isRain) {
+    bgGradient = 'linear-gradient(145deg, #0f172a 0%, #0c4a6e 50%, #082f49 100%)';
+    cardBg = 'rgba(255, 255, 255, 0.09)';
+    cardBorder = 'rgba(186, 230, 253, 0.2)';
+    timerColor = '#f0f9ff';
+    timerGlow = 'rgba(56, 189, 248, 0.38)';
+    accentColor = '#0ea5e9';
+    accentHover = '#0284c7';
+    phaseColor = '#7dd3fc';
+    ringFill = '#38bdf8';
+    ringBg = 'rgba(255, 255, 255, 0.09)';
+  }
+
+  return `
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100vw;
+      background: ${bgGradient};
+      color: #ffffff;
+      text-align: center;
+      overflow: hidden;
+      user-select: none;
+      padding: 1rem;
+      transition: background 0.5s ease;
+    }
+    .pip-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .pip-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+      margin-top: 0.2rem;
+    }
+    .pip-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      opacity: 0.85;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .phase {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: ${phaseColor};
+      font-weight: 700;
+      opacity: 0.95;
+    }
+    .timer-card {
+      width: 100%;
+      max-width: 250px;
+      padding: 0.8rem;
+      background: ${cardBg};
+      border: 1px solid ${cardBorder};
+      border-radius: 1.5rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    .ring-wrapper {
+      position: relative;
+      width: 170px;
+      height: 170px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .progress-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .ring-bg {
+      fill: none;
+      stroke: ${ringBg};
+      stroke-width: 6;
+    }
+    .ring-fill {
+      fill: none;
+      stroke: ${ringFill};
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke-dasharray: 364.42;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.3s ease-in-out, stroke 0.4s ease;
+      filter: drop-shadow(0 0 6px ${timerGlow});
+    }
+    .timer {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2.75rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: ${timerColor};
+      text-shadow: 0 0 16px ${timerGlow};
+      z-index: 2;
+    }
+    .controls {
+      display: flex;
+      gap: 0.65rem;
+      width: 100%;
+      max-width: 250px;
+      margin-bottom: 0.2rem;
+    }
+    button {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: 1rem;
+      border: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+    }
+    button:active {
+      transform: translateY(0) scale(0.96);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+    .btn-primary {
+      background: ${accentColor};
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background: ${accentHover};
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  `;
 }
 
 function renderFocus() {
@@ -1120,15 +1330,18 @@ function renderFocus() {
     ring.style.strokeDashoffset = circumference * (1 - secondsLeft / Math.max(1, total));
   }
 
-  // Update Mini Player
   if (pipWindow && pipElements.timer) {
+    if (pipElements.styleTag) {
+      pipElements.styleTag.textContent = getPipThemeCSS();
+    }
     pipElements.timer.textContent = timeStr;
     pipElements.phase.textContent = phaseStr;
     pipElements.startBtn.textContent = startStr;
-    if (phase === 'break') {
-      pipElements.phase.style.color = '#38bdf8';
-    } else {
-      pipElements.phase.style.color = '#a78bfa';
+
+    if (pipElements.ring) {
+      const total = (phase === 'focus' ? data.focusMinutes : data.breakMinutes) * 60;
+      const circumference = 364.42; 
+      pipElements.ring.style.strokeDashoffset = circumference * (1 - secondsLeft / Math.max(1, total));
     }
   }
 }
