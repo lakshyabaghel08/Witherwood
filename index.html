@@ -13,15 +13,6 @@
   from { transform: translate3d(0, -120vh, 0) rotate(12deg); }
   to { transform: translate3d(-120px, 120vh, 0) rotate(12deg); }
 }
-.rain-overlay {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
-}
 .rain-drop {
   position: absolute;
   top: -20%; 
@@ -94,11 +85,12 @@
 .particle-leaf {
   position: absolute;
   background: #8bc34a;
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50% 0 50% 0;
   animation: floatLeaf var(--dur) linear infinite;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  will-change: transform;
 }
 @keyframes floatLeaf {
   0% { transform: translate3d(var(--sx), -10vh, 0) rotate(0deg); opacity: 0; }
@@ -113,6 +105,7 @@
   background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.015) 0%, transparent 60%);
   animation: floatMist var(--dur) ease-in-out infinite alternate;
   filter: blur(12px);
+  will-change: transform;
 }
 @keyframes floatMist {
   0% { transform: scale(1) translate3d(0, 0, 0); }
@@ -132,20 +125,16 @@
   visibility: hidden;
 }
 
-body.fullscreen-active {
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-}
-
 .btn-interactive {
   transition: all 0.2s ease;
 }
 .btn-interactive:hover {
   transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 .btn-interactive:active {
   transform: translateY(0) scale(0.95);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 #toastContainer {
@@ -213,180 +202,182 @@ input[type=range]::-webkit-slider-runnable-track {
   </div>
 </div>
 
-<div id="appRoot" class="w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-emerald-50 p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center shadow-2xl mt-4 md:mt-4 mb-4 md:mb-4">
-  <!-- Unified Visual Effects Layer -->
-  <div id="visualEffectsLayer"></div>
+<div class="w-full flex-1 flex flex-col items-center transition-all duration-500">
+  <div id="appRoot" class="w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-emerald-50 p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center shadow-2xl mt-4 mb-4">
+    
+    <div id="visualEffectsLayer"></div>
 
-  <div class="w-full max-w-4xl space-y-8 relative z-10 flex flex-col items-center">
-    <header class="flex flex-col items-center text-center gap-4 w-full relative">
-      <div class="absolute right-0 top-0 flex gap-2">
-        <button id="pipBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl" title="Mini Player" aria-label="Mini Player">
-          ◱
-        </button>
-        <button id="fullscreenBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">
-          ⛶
-        </button>
-      </div>
-      <div class="mt-4 md:mt-0">
-        <h1 id="brandTitle" data-theme-target="title" class="brand-title text-4xl md:text-6xl transition-colors duration-500">🌲 Witherwood</h1>
-        <p data-theme-target="subtext" class="mt-2 transition-colors duration-500">Every 10 minutes of focus plants a tree.</p>
-      </div>
-    </header>
+    <div class="w-full max-w-4xl space-y-8 relative z-10 flex flex-col items-center my-auto">
+      <header class="flex flex-col items-center text-center gap-4 w-full relative">
+        <div class="absolute right-0 top-0 flex gap-2 z-20">
+          <button id="pipBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl" title="Mini Player" aria-label="Mini Player">
+            ◱
+          </button>
+          <button id="fullscreenBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">
+            ⛶
+          </button>
+        </div>
+        <div class="mt-14 md:mt-0 px-12">
+          <h1 id="brandTitle" data-theme-target="title" class="brand-title text-4xl md:text-6xl transition-colors duration-500">🌲 Witherwood</h1>
+          <p data-theme-target="subtext" class="mt-2 transition-colors duration-500">Every 10 minutes of focus plants a tree.</p>
+        </div>
+      </header>
 
-    <nav id="nav" class="flex flex-wrap justify-center gap-3 w-full"></nav>
+      <nav id="nav" class="flex flex-wrap justify-center gap-3 w-full"></nav>
 
-    <div class="w-full relative flex justify-center">
-      <section id="focusPage" data-theme-target="card" data-base-class="page-section w-full rounded-3xl p-6 max-w-3xl mb-8 md:mb-12 lg:mb-16" class="page-section w-full rounded-3xl p-6 max-w-3xl mb-8 md:mb-12 lg:mb-16">
-        <div class="max-w-lg mx-auto text-center">
-          <div id="phaseLabel" data-theme-target="label" class="text-sm uppercase tracking-wide transition-colors duration-500 font-semibold">Focus Session</div>
+      <div class="w-full relative flex justify-center">
+        <section id="focusPage" data-theme-target="card" data-base-class="page-section w-full rounded-3xl p-6 max-w-3xl mb-4 md:mb-8" class="page-section w-full rounded-3xl p-6 max-w-3xl mb-4 md:mb-8">
+          <div class="max-w-lg mx-auto text-center">
+            <div id="phaseLabel" data-theme-target="label" class="text-sm uppercase tracking-wide transition-colors duration-500 font-semibold">Focus Session</div>
 
-          <div class="mt-4 flex justify-center">
-            <div class="relative w-64 h-64 md:w-72 md:h-72">
-              <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
-                <circle cx="70" cy="70" r="60" fill="none" stroke="currentColor" stroke-width="8" opacity="0.2" class="transition-colors duration-500 text-slate-400" />
-                <circle
-                  id="progressRing"
-                  cx="70"
-                  cy="70"
-                  r="60"
-                  fill="none"
-                  stroke="#10b981"
-                  stroke-width="8"
-                  stroke-linecap="round"
-                  stroke-dasharray="376.99"
-                  stroke-dashoffset="0"
-                  class="transition-all duration-300 ease-in-out"
-                />
-              </svg>
+            <div class="mt-4 flex justify-center">
+              <div class="relative w-64 h-64 md:w-72 md:h-72">
+                <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
+                  <circle cx="70" cy="70" r="60" fill="none" stroke="currentColor" stroke-width="8" opacity="0.2" class="transition-colors duration-500 text-slate-400" />
+                  <circle
+                    id="progressRing"
+                    cx="70"
+                    cy="70"
+                    r="60"
+                    fill="none"
+                    stroke="#10b981"
+                    stroke-width="8"
+                    stroke-linecap="round"
+                    stroke-dasharray="376.99"
+                    stroke-dashoffset="0"
+                    class="transition-all duration-300 ease-in-out"
+                  />
+                </svg>
 
-              <div class="absolute inset-0 flex flex-col items-center justify-center">
-                <div id="timer" data-theme-target="timer" class="text-6xl md:text-7xl font-mono font-bold transition-colors duration-500">25:00</div>
-                <div id="progressLabel" data-theme-target="subtext" class="mt-2 text-sm transition-colors duration-500"></div>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <div id="timer" data-theme-target="timer" class="text-6xl md:text-7xl font-mono font-bold transition-colors duration-500">25:00</div>
+                  <div id="progressLabel" data-theme-target="subtext" class="mt-2 text-sm transition-colors duration-500"></div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div id="focusControls" class="mt-6 flex items-center justify-center gap-3">
-            <label data-theme-target="label" class="transition-colors duration-500">Focus (min)</label>
+            <div id="focusControls" class="mt-6 flex items-center justify-center gap-3">
+              <label data-theme-target="label" class="transition-colors duration-500">Focus (min)</label>
+              <input
+                id="focusMinutesInput"
+                type="number"
+                min="1"
+                max="180"
+                value="25"
+                data-theme-target="input"
+                data-base-class="w-24 text-center rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500"
+              />
+            </div>
+
+            <div id="saplings" data-theme-target="text" class="mt-5 text-lg font-medium transition-colors duration-500"></div>
+
+            <div class="flex flex-wrap justify-center gap-4 mt-6">
+              <button id="startPauseBtn" data-theme-target="btnPrimary" data-base-class="btn-interactive px-6 py-3 rounded-2xl font-semibold" class="btn-interactive px-6 py-3 rounded-2xl font-semibold">Start</button>
+              <button id="witherBtn" data-theme-target="btnWarning" data-base-class="btn-interactive px-6 py-3 rounded-2xl font-semibold" class="btn-interactive px-6 py-3 rounded-2xl font-semibold">🍂 Wither Tree</button>
+              <button id="resetBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive px-6 py-3 rounded-2xl border font-medium" class="btn-interactive px-6 py-3 rounded-2xl border font-medium">Reset</button>
+            </div>
+
+            <p id="message" data-theme-target="subtext" class="mt-6 italic transition-colors duration-500">“A calm mind nurtures strong roots.”</p>
+          </div>
+        </section>
+
+        <section id="forestPage" data-theme-target="card" data-base-class="page-section page-hidden w-full rounded-3xl p-6 max-w-3xl" class="page-section page-hidden w-full rounded-3xl p-6 max-w-3xl">
+          <h2 data-theme-target="text" class="text-2xl font-semibold mb-2 transition-colors duration-500">Your Forest</h2>
+          <div id="forestSummary" data-theme-target="subtext" class="mb-6 transition-colors duration-500"></div>
+          <div id="forestGrid" class="flex flex-wrap gap-1 text-xl justify-center md:justify-start"></div>
+        </section>
+
+        <section id="dashboardPage" class="page-section page-hidden w-full max-w-4xl">
+          <div id="dashboardGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+
+        <section id="settingsPage" data-theme-target="card" data-base-class="page-section page-hidden w-full rounded-3xl p-6 max-w-xl space-y-5" class="page-section page-hidden w-full rounded-3xl p-6 max-w-xl space-y-5">
+          <h2 data-theme-target="text" class="text-2xl font-semibold transition-colors duration-500 mb-2">Settings</h2>
+
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input id="breaksEnabledToggle" type="checkbox" data-theme-target="accent" data-base-class="w-5 h-5 rounded border-slate-300 transition-colors duration-500" class="w-5 h-5 rounded border-slate-300 transition-colors duration-500" />
+            <span data-theme-target="label" class="font-medium transition-colors duration-500">Enable Break Sessions</span>
+          </label>
+
+          <label class="block">
+            <span data-theme-target="label" class="font-medium transition-colors duration-500">Break Minutes</span>
             <input
-              id="focusMinutesInput"
+              id="breakMinutesInput"
               type="number"
               min="1"
-              max="180"
-              value="25"
+              max="60"
+              value="5"
               data-theme-target="input"
-              data-base-class="w-24 text-center rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500"
-            />
-          </div>
-
-          <div id="saplings" data-theme-target="text" class="mt-5 text-lg font-medium transition-colors duration-500"></div>
-
-          <div class="flex flex-wrap justify-center gap-4 mt-6">
-            <button id="startPauseBtn" data-theme-target="btnPrimary" data-base-class="btn-interactive px-6 py-3 rounded-2xl font-semibold" class="btn-interactive px-6 py-3 rounded-2xl font-semibold">Start</button>
-            <button id="witherBtn" data-theme-target="btnWarning" data-base-class="btn-interactive px-6 py-3 rounded-2xl font-semibold" class="btn-interactive px-6 py-3 rounded-2xl font-semibold">🍂 Wither Tree</button>
-            <button id="resetBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive px-6 py-3 rounded-2xl border font-medium" class="btn-interactive px-6 py-3 rounded-2xl border font-medium">Reset</button>
-          </div>
-
-          <p id="message" data-theme-target="subtext" class="mt-6 italic transition-colors duration-500">“A calm mind nurtures strong roots.”</p>
-        </div>
-      </section>
-
-      <section id="forestPage" data-theme-target="card" data-base-class="page-section page-hidden w-full rounded-3xl p-6 max-w-3xl" class="page-section page-hidden w-full rounded-3xl p-6 max-w-3xl">
-        <h2 data-theme-target="text" class="text-2xl font-semibold mb-2 transition-colors duration-500">Your Forest</h2>
-        <div id="forestSummary" data-theme-target="subtext" class="mb-6 transition-colors duration-500"></div>
-        <div id="forestGrid" class="flex flex-wrap gap-1 text-xl justify-center md:justify-start"></div>
-      </section>
-
-      <section id="dashboardPage" class="page-section page-hidden w-full max-w-4xl">
-        <div id="dashboardGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-      </section>
-
-      <section id="settingsPage" data-theme-target="card" data-base-class="page-section page-hidden w-full rounded-3xl p-6 max-w-xl space-y-5" class="page-section page-hidden w-full rounded-3xl p-6 max-w-xl space-y-5">
-        <h2 data-theme-target="text" class="text-2xl font-semibold transition-colors duration-500 mb-2">Settings</h2>
-
-        <label class="flex items-center gap-3 cursor-pointer">
-          <input id="breaksEnabledToggle" type="checkbox" data-theme-target="accent" data-base-class="w-5 h-5 rounded border-slate-300 transition-colors duration-500" class="w-5 h-5 rounded border-slate-300 transition-colors duration-500" />
-          <span data-theme-target="label" class="font-medium transition-colors duration-500">Enable Break Sessions</span>
-        </label>
-
-        <label class="block">
-          <span data-theme-target="label" class="font-medium transition-colors duration-500">Break Minutes</span>
-          <input
-            id="breakMinutesInput"
-            type="number"
-            min="1"
-            max="60"
-            value="5"
-            data-theme-target="input"
-            data-base-class="w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500"
-          />
-        </label>
-
-        <div class="pt-4 border-t border-slate-200/60">
-          <label class="flex items-center gap-3 cursor-pointer mb-4">
-            <input id="ambientSoundToggle" type="checkbox" data-theme-target="accent" data-base-class="w-5 h-5 rounded border-slate-300 transition-colors duration-500" class="w-5 h-5 rounded border-slate-300 transition-colors duration-500" />
-            <span data-theme-target="label" class="font-medium transition-colors duration-500">Enable Ambient Sound</span>
-          </label>
-
-          <label class="block">
-            <div class="flex items-center justify-between mb-2">
-              <span data-theme-target="label" class="font-medium transition-colors duration-500">Ambient Volume</span>
-              <span id="ambientVolumeLabel" data-theme-target="subtext" class="text-sm font-medium">50%</span>
-            </div>
-            <input
-              id="ambientVolumeInput"
-              type="range"
-              min="0"
-              max="100"
-              step="1"
-              value="50"
-              data-theme-target="accent"
-              data-base-class="w-full h-2 bg-black/10 rounded-lg appearance-none cursor-pointer transition-colors duration-500"
+              data-base-class="w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500"
             />
           </label>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-4 border-t border-slate-200/60">
-          <label class="block">
-            <span data-theme-target="label" class="font-medium transition-colors duration-500">Visual Theme</span>
-            <select id="themeSelect" data-theme-target="input" data-base-class="w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500">
-              <option value="forest">🌲 Forest</option>
-              <option value="night">🌙 Night</option>
-              <option value="rain">🌧️ Rain</option>
-            </select>
-          </label>
-          <label class="block">
-            <span data-theme-target="label" class="font-medium transition-colors duration-500">Soundscape</span>
-            <select id="soundscapeSelect" data-theme-target="input" data-base-class="w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500">
-              <option value="woodland">🍃 Woodland</option>
-              <option value="fireside">🔥 Fireside</option>
-              <option value="rainfall">🌧️ Rainfall</option>
-            </select>
-          </label>
-        </div>
-
-        <div class="pt-6 border-t border-slate-200/60 space-y-4">
-          <div>
-            <h3 data-theme-target="label" class="font-semibold transition-colors duration-500 mb-2">Data Management</h3>
-            <div class="flex flex-wrap gap-3">
-              <button id="exportDataBtn" data-theme-target="btnPrimary" data-base-class="btn-interactive px-5 py-2.5 rounded-xl font-medium" class="btn-interactive px-5 py-2.5 rounded-xl font-medium">
-                📤 Export Backup
-              </button>
-              <button id="importDataBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive px-5 py-2.5 rounded-xl border font-medium" class="btn-interactive px-5 py-2.5 rounded-xl border font-medium">
-                📥 Import Backup
-              </button>
-              <input id="importFileInput" type="file" accept=".json" style="display:none" />
-            </div>
-          </div>
           <div class="pt-4 border-t border-slate-200/60">
-            <h3 class="font-semibold text-rose-500 mb-2">Danger Zone</h3>
-            <p data-theme-target="subtext" class="text-sm transition-colors duration-500 mb-3">Permanently clears your forest and all saved statistics.</p>
-            <button id="resetAllBtn" data-theme-target="btnDanger" data-base-class="btn-interactive px-5 py-2.5 rounded-xl font-medium" class="btn-interactive px-5 py-2.5 rounded-xl font-medium">
-              Reset All Data
-            </button>
+            <label class="flex items-center gap-3 cursor-pointer mb-4">
+              <input id="ambientSoundToggle" type="checkbox" data-theme-target="accent" data-base-class="w-5 h-5 rounded border-slate-300 transition-colors duration-500" class="w-5 h-5 rounded border-slate-300 transition-colors duration-500" />
+              <span data-theme-target="label" class="font-medium transition-colors duration-500">Enable Ambient Sound</span>
+            </label>
+
+            <label class="block">
+              <div class="flex items-center justify-between mb-2">
+                <span data-theme-target="label" class="font-medium transition-colors duration-500">Ambient Volume</span>
+                <span id="ambientVolumeLabel" data-theme-target="subtext" class="text-sm font-medium">50%</span>
+              </div>
+              <input
+                id="ambientVolumeInput"
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                value="50"
+                data-theme-target="accent"
+                data-base-class="w-full h-2 bg-black/10 rounded-lg appearance-none cursor-pointer transition-colors duration-500"
+              />
+            </label>
           </div>
-        </div>
-      </section>
+
+          <div class="space-y-5 pt-4 border-t border-slate-200/60">
+            <label class="block">
+              <span data-theme-target="label" class="font-medium transition-colors duration-500">Visual Theme</span>
+              <select id="themeSelect" data-theme-target="input" data-base-class="w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500">
+                <option value="forest">🌲 Forest</option>
+                <option value="night">🌙 Night</option>
+                <option value="rain">🌧️ Rain</option>
+              </select>
+            </label>
+            <label class="block">
+              <span data-theme-target="label" class="font-medium transition-colors duration-500">Soundscape</span>
+              <select id="soundscapeSelect" data-theme-target="input" data-base-class="w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500">
+                <option value="woodland">🍃 Woodland</option>
+                <option value="fireside">🔥 Fireside</option>
+                <option value="rainfall">🌧️ Rainfall</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="pt-6 border-t border-slate-200/60 space-y-4">
+            <div>
+              <h3 data-theme-target="label" class="font-semibold transition-colors duration-500 mb-2">Data Management</h3>
+              <div class="flex flex-wrap gap-3">
+                <button id="exportDataBtn" data-theme-target="btnPrimary" data-base-class="btn-interactive px-5 py-2.5 rounded-xl font-medium" class="btn-interactive px-5 py-2.5 rounded-xl font-medium">
+                  📤 Export Backup
+                </button>
+                <button id="importDataBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive px-5 py-2.5 rounded-xl border font-medium" class="btn-interactive px-5 py-2.5 rounded-xl border font-medium">
+                  📥 Import Backup
+                </button>
+                <input id="importFileInput" type="file" accept=".json" style="display:none" />
+              </div>
+            </div>
+            <div class="pt-4 border-t border-slate-200/60">
+              <h3 class="font-semibold text-rose-500 mb-2">Danger Zone</h3>
+              <p data-theme-target="subtext" class="text-sm transition-colors duration-500 mb-3">Permanently clears your forest and all saved statistics.</p>
+              <button id="resetAllBtn" data-theme-target="btnDanger" data-base-class="btn-interactive px-5 py-2.5 rounded-xl font-medium" class="btn-interactive px-5 py-2.5 rounded-xl font-medium">
+                Reset All Data
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   </div>
 </div>
@@ -437,18 +428,17 @@ const labels = {
   settings: '⚙️ Settings',
 };
 
-// CENTRALIZED THEME SYSTEM
 const THEME_DEFS = {
   forest: {
     bg: 'from-emerald-50 via-lime-50 to-teal-100',
     text: 'text-slate-800',
     card: 'bg-white/85 border border-slate-200 shadow-xl',
     input: 'border-emerald-200 bg-white text-slate-800 focus:ring-emerald-300/50',
-    btnPrimary: 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-md',
+    btnPrimary: 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-md border-transparent',
     btnSecondary: 'bg-white/85 hover:bg-white text-slate-700 border-slate-200 shadow-sm',
     btnNavActive: 'bg-emerald-500 text-white shadow-md border-transparent',
-    btnWarning: 'bg-amber-500 hover:bg-amber-600 text-white shadow-md',
-    btnDanger: 'bg-rose-500 hover:bg-rose-600 text-white shadow-md',
+    btnWarning: 'bg-amber-500 hover:bg-amber-600 text-white shadow-md border-transparent',
+    btnDanger: 'bg-rose-500 hover:bg-rose-600 text-white shadow-md border-transparent',
     ring: '#10b981',
     title: 'text-emerald-900 brand-title',
     label: 'text-emerald-700',
@@ -482,11 +472,11 @@ const THEME_DEFS = {
     text: 'text-slate-800',
     card: 'bg-white/85 border border-sky-200 shadow-xl',
     input: 'border-sky-200 bg-white/90 text-slate-800 focus:ring-sky-300/50',
-    btnPrimary: 'bg-sky-500 hover:bg-sky-600 text-white shadow-md',
+    btnPrimary: 'bg-sky-500 hover:bg-sky-600 text-white shadow-md border-transparent',
     btnSecondary: 'bg-white/90 hover:bg-sky-50 text-slate-700 border-sky-200 shadow-sm',
     btnNavActive: 'bg-sky-500 text-white shadow-md border-transparent',
     btnWarning: 'bg-gradient-to-r from-slate-500 to-slate-600 shadow-lg hover:brightness-110 text-white border-transparent',
-    btnDanger: 'bg-rose-500 hover:bg-rose-600 text-white shadow-md',
+    btnDanger: 'bg-rose-500 hover:bg-rose-600 text-white shadow-md border-transparent',
     ring: '#0ea5e9',
     title: 'text-slate-800 brand-title-rain',
     label: 'text-sky-700',
@@ -529,6 +519,7 @@ class SoundscapeEngine {
     this.currentSoundscape = null;
     this.ambienceMonitor = null;
     this.buffers = new Map();
+    this.loading = false;
     
     this.state = {
       common: 0,
@@ -554,6 +545,47 @@ class SoundscapeEngine {
     }
   }
 
+  async loadSoundscape(type) {
+    const config = AUDIO_CONFIG[type];
+    if (!config) return;
+
+    const allSrcs = [
+      ...(config.ambience || []),
+      ...(config.common || []),
+      ...(config.medium || []),
+      ...(config.rare || []),
+      ...(config.woosh || []),
+      ...(config.owl || []),
+      ...(config.thunder || []),
+      ...(config.wind || [])
+    ];
+
+    let toLoad = allSrcs.filter(src => !this.buffers.has(src));
+    
+    if (toLoad.length > 0) {
+      showToast('Loading soundscape...', 'info');
+      this.loading = true;
+      
+      await Promise.all(toLoad.map(async (src) => {
+        try {
+          const response = await fetch(src);
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+          const arrayBuffer = await response.arrayBuffer();
+          const audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
+          this.buffers.set(src, audioBuffer);
+        } catch (e) {
+          console.warn('Failed to load audio:', src, e);
+        }
+      }));
+
+      this.loading = false;
+      
+      if (this.currentSoundscape === type && this.enabled) {
+        showToast('Soundscape ready.', 'success');
+      }
+    }
+  }
+
   async apply(soundscape, enabled) {
     this.init();
     if(this.ctx.state === 'suspended') this.ctx.resume();
@@ -562,6 +594,7 @@ class SoundscapeEngine {
     const isTurningOff = !enabled && this.enabled;
 
     this.enabled = enabled;
+    const prevSoundscape = this.currentSoundscape;
     this.currentSoundscape = soundscape;
 
     if (isTurningOff) {
@@ -570,10 +603,14 @@ class SoundscapeEngine {
     }
 
     if(enabled) {
+      await this.loadSoundscape(soundscape);
+      
       if (!this.enabled || this.currentSoundscape !== soundscape) return;
 
       if (isSwitching) {
         this.detachAndFadeOutAll(6);
+      } else if (prevSoundscape !== soundscape && !isSwitching) {
+        this.stopAllInstantly();
       }
 
       if (this.activeAmbience.size === 0 || isSwitching) {
@@ -609,10 +646,42 @@ class SoundscapeEngine {
     });
   }
 
+  stopAllInstantly() {
+    if (!this.ctx) return;
+    this.timeouts.forEach(clearTimeout);
+    this.timeouts.clear();
+    
+    if(this.ambienceMonitor) {
+      clearInterval(this.ambienceMonitor);
+      this.ambienceMonitor = null;
+    }
+
+    const now = this.ctx.currentTime;
+    
+    this.activeAmbience.forEach(w => {
+      w.gainNode.gain.cancelScheduledValues(now);
+      try { w.source.stop(); } catch(e){}
+    });
+    
+    this.activeEvents.forEach(w => {
+      w.gainNode.gain.cancelScheduledValues(now);
+      try { w.source.stop(); } catch(e){}
+    });
+
+    this.activeAmbience.clear();
+    this.activeEvents.clear();
+    this.state = { common: 0, medium: 0, lastPlayed: {} };
+  }
+
   playAudio(src, isAmbience = false, onEnd = null) {
-    const audio = new Audio(src);
-    audio.crossOrigin = "anonymous";
-    const source = this.ctx.createMediaElementSource(audio);
+    const buffer = this.buffers.get(src);
+    if (!buffer) {
+      if (onEnd) onEnd();
+      return null;
+    }
+
+    const source = this.ctx.createBufferSource();
+    source.buffer = buffer;
 
     const gainNode = this.ctx.createGain();
     const targetVol = isAmbience ? 1 : (0.7 + Math.random() * 0.3);
@@ -628,7 +697,7 @@ class SoundscapeEngine {
         const panX = (Math.random() * 1.0) - 0.5;
         panner.setPosition(panX, 0, 1 - Math.abs(panX));
       }
-      audio.playbackRate = 0.97 + Math.random() * 0.06;
+      source.playbackRate.value = 0.97 + Math.random() * 0.06;
     }
 
     gainNode.gain.value = 0;
@@ -647,7 +716,7 @@ class SoundscapeEngine {
     
     gainNode.gain.linearRampToValueAtTime(targetVol, now + fadeDuration);
 
-    const wrapper = { source: audio, gainNode, targetVol, startTime: now };
+    const wrapper = { source, gainNode, targetVol, duration: buffer.duration, startTime: now };
     
     if(isAmbience) {
       this.activeAmbience.add(wrapper);
@@ -655,7 +724,7 @@ class SoundscapeEngine {
       this.activeEvents.add(wrapper);
     }
 
-    audio.onended = () => {
+    source.onended = () => {
       if(isAmbience) {
         this.activeAmbience.delete(wrapper);
       } else {
@@ -664,7 +733,7 @@ class SoundscapeEngine {
       if(onEnd) onEnd();
     };
 
-    audio.play().catch(()=>{});
+    source.start(now);
     return wrapper;
   }
 
@@ -682,13 +751,17 @@ class SoundscapeEngine {
       
       if (!wrapper) return;
 
+      const crossfadeDuration = Math.min(8, wrapper.duration / 2);
+      const crossfadeTime = wrapper.duration - crossfadeDuration;
+      
       const checkCrossfade = setInterval(() => {
         if(!this.enabled || this.currentSoundscape !== type) {
           clearInterval(checkCrossfade);
           return;
         }
         
-        if (wrapper.source.duration && wrapper.source.currentTime > wrapper.source.duration - 8) {
+        const elapsed = this.ctx.currentTime - wrapper.startTime;
+        if(elapsed >= crossfadeTime) {
           clearInterval(checkCrossfade);
           currentIndex = (currentIndex + 1) % tracks.length;
           playNext();
@@ -696,7 +769,7 @@ class SoundscapeEngine {
           const now = this.ctx.currentTime;
           wrapper.gainNode.gain.cancelScheduledValues(now);
           wrapper.gainNode.gain.setValueAtTime(wrapper.gainNode.gain.value, now);
-          wrapper.gainNode.gain.linearRampToValueAtTime(0, now + 8);
+          wrapper.gainNode.gain.linearRampToValueAtTime(0, now + crossfadeDuration);
         }
       }, 500);
       
@@ -1084,12 +1157,13 @@ function renderFocus() {
   const controls = el('focusControls');
   if (controls) controls.style.display = !isRunning && phase === 'focus' ? 'flex' : 'none';
 
-  const ring = el('progressRing');
   let dashoffset = 0;
+  const total = (phase === 'focus' ? data.focusMinutes : data.breakMinutes) * 60;
+  const circumference = 376.99;
+  dashoffset = circumference * (1 - secondsLeft / Math.max(1, total));
+
+  const ring = el('progressRing');
   if (ring) {
-    const total = (phase === 'focus' ? data.focusMinutes : data.breakMinutes) * 60;
-    const circumference = 376.99;
-    dashoffset = circumference * (1 - secondsLeft / Math.max(1, total));
     ring.style.strokeDashoffset = dashoffset;
   }
 
@@ -1285,13 +1359,13 @@ function applyTheme() {
   const isNight = data.theme === 'night';
   const isFs = !!document.fullscreenElement;
 
-  document.body.className = `min-h-screen bg-gradient-to-b ${def.bg} ${def.text} transition-colors duration-500 flex flex-col items-center ${isFs ? 'fullscreen-active' : ''}`;
+  document.body.className = `min-h-screen bg-gradient-to-b ${def.bg} ${def.text} transition-colors duration-500 flex flex-col items-center`;
   
   const root = el('appRoot');
   if(isFs) {
-    root.className = `w-full max-w-none flex-1 flex flex-col items-center justify-center p-6 md:p-12 transition-all duration-500 relative`;
+    root.className = `w-full max-w-none min-h-screen flex flex-col items-center p-6 md:p-12 transition-all duration-500 relative`;
   } else {
-    root.className = `w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b ${def.bg} p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center shadow-2xl mt-4 md:mt-4 mb-4 md:mb-4`;
+    root.className = `w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b ${def.bg} p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center shadow-2xl mt-4 mb-4`;
   }
 
   document.querySelectorAll('[data-theme-target]').forEach(el => {
@@ -1383,15 +1457,15 @@ function startTimer() {
         setMessage('New saplings are ready to grow.');
       }
     }
-    render(); 
+    renderFocus(); 
   }, 250);
-  render();
+  renderFocus();
 }
 
 function pauseTimer() {
   isRunning = false;
   clearInterval(intervalId);
-  render();
+  renderFocus();
 }
 
 function resetAllData() {
@@ -1413,7 +1487,7 @@ function resetTimer() {
   healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
   secondsLeft = data.focusMinutes * 60;
   setMessage('A calm mind nurtures strong roots.');
-  render();
+  renderFocus();
 }
 
 function bindEvents() {
@@ -1430,9 +1504,11 @@ function bindEvents() {
     if (!Number.isFinite(parsed)) return;
     data.focusMinutes = Math.max(1, Math.min(180, parsed));
     healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
-    if (!isRunning && phase === 'focus') secondsLeft = data.focusMinutes * 60;
+    if (!isRunning && phase === 'focus') {
+      secondsLeft = data.focusMinutes * 60;
+      renderFocus();
+    }
     save();
-    render();
   });
 
   el('focusMinutesInput')?.addEventListener('blur', (e) => {
@@ -1445,8 +1521,11 @@ function bindEvents() {
     const parsed = Number(value);
     if (!Number.isFinite(parsed)) return;
     data.breakMinutes = Math.max(1, Math.min(60, parsed));
+    if (!isRunning && phase === 'break') {
+      secondsLeft = data.breakMinutes * 60;
+      renderFocus();
+    }
     save();
-    render();
   });
 
   el('breakMinutesInput')?.addEventListener('blur', (e) => {
@@ -1456,34 +1535,31 @@ function bindEvents() {
   el('breaksEnabledToggle')?.addEventListener('change', (e) => {
     data.breaksEnabled = e.target.checked;
     save();
-    render();
   });
 
   el('themeSelect')?.addEventListener('change', (e) => {
     data.theme = e.target.value;
     save();
-    render();
+    applyTheme();
   });
 
   el('soundscapeSelect')?.addEventListener('change', (e) => {
     data.soundscape = e.target.value;
     save();
     soundEngine.apply(data.soundscape, data.ambientSoundEnabled);
-    render();
   });
 
   el('ambientSoundToggle')?.addEventListener('change', (e) => {
     data.ambientSoundEnabled = e.target.checked;
     save();
     soundEngine.apply(data.soundscape, data.ambientSoundEnabled);
-    render();
   });
 
   el('ambientVolumeInput')?.addEventListener('input', (e) => {
     data.ambientVolume = Math.max(0, Math.min(100, Number(e.target.value) || 0));
     save();
+    if(el('ambientVolumeLabel')) el('ambientVolumeLabel').textContent = `${data.ambientVolume}%`;
     soundEngine.setVolume(data.ambientVolume / 100);
-    render();
   });
 
   el('fullscreenBtn')?.addEventListener('click', async () => {
@@ -1519,7 +1595,7 @@ function bindEvents() {
   });
 
   document.addEventListener('fullscreenchange', () => {
-    render();
+    applyTheme();
   });
 }
 
@@ -1528,12 +1604,15 @@ document.addEventListener('visibilitychange', () => {
     if(soundEngine.ctx && soundEngine.ctx.state === 'suspended') {
       soundEngine.ctx.resume();
     }
-    render();
   }
 });
 
 bindEvents();
 render();
+pages.forEach(p => {
+  const section = el(p + 'Page');
+  if (section && p !== page) section.classList.add('page-hidden');
+});
 </script>
 
 <script>
