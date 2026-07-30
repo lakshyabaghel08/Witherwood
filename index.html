@@ -223,8 +223,8 @@ input[type=range]::-webkit-slider-runnable-track {
           </button>
         </div>
         <div class="mt-14 md:mt-0 px-12">
-          <!-- BUMPED UP BRAND TEXT SIZE -->
-          <h1 id="brandTitle" data-theme-target="title" class="brand-title text-5xl md:text-7xl transition-colors duration-500">🌲 Witherwood</h1>
+          <!-- FIXED BRAND TEXT SIZE -->
+          <h1 id="brandTitle" data-theme-target="title" class="brand-title text-6xl transition-colors duration-500">🌲 Witherwood</h1>
           <p data-theme-target="subtext" class="mt-2 text-lg transition-colors duration-500">Every 10 minutes of focus plants a tree.</p>
         </div>
       </header>
@@ -237,8 +237,8 @@ input[type=range]::-webkit-slider-runnable-track {
             <div id="phaseLabel" data-theme-target="label" class="text-sm uppercase tracking-wide transition-colors duration-500 font-semibold">Focus Session</div>
 
             <div class="mt-4 flex justify-center">
-              <!-- BUMPED UP CONTAINER SIZE FOR TIMER -->
-              <div class="relative w-72 h-72 md:w-96 md:h-96">
+              <!-- FIXED CONTAINER SIZE FOR TIMER -->
+              <div class="relative w-80 h-80">
                 <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
                   <circle cx="70" cy="70" r="60" fill="none" stroke="currentColor" stroke-width="5" opacity="0.2" class="transition-colors duration-500 text-slate-400" />
                   <circle
@@ -257,9 +257,9 @@ input[type=range]::-webkit-slider-runnable-track {
                 </svg>
 
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <!-- BUMPED UP TIMER TEXT SIZE -->
-                  <div id="timer" data-theme-target="timer" class="text-7xl md:text-[8rem] leading-none font-mono font-bold transition-colors duration-500 tracking-tighter">25:00</div>
-                  <div id="progressLabel" data-theme-target="subtext" class="mt-4 text-sm md:text-base font-medium transition-colors duration-500"></div>
+                  <!-- FIXED TIMER TEXT SIZE -->
+                  <div id="timer" data-theme-target="timer" class="text-[6rem] leading-none font-mono font-bold transition-colors duration-500 tracking-tighter">25:00</div>
+                  <div id="progressLabel" data-theme-target="subtext" class="mt-4 text-base font-medium transition-colors duration-500"></div>
                 </div>
               </div>
             </div>
@@ -1391,7 +1391,6 @@ function applyTheme() {
   const def = THEME_DEFS[data.theme] || THEME_DEFS.forest;
   const isNight = data.theme === 'night';
   
-  // FIXED SAFARI FULLSCREEN CHECK
   const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
 
   document.body.className = `min-h-screen bg-gradient-to-b ${def.bg} ${def.text} transition-colors duration-500 flex flex-col items-center ${isFs ? 'overflow-hidden' : ''}`;
@@ -1603,20 +1602,19 @@ function bindEvents() {
     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
       if (root.requestFullscreen) {
         await root.requestFullscreen().catch(() => {});
-      } else if (root.webkitRequestFullscreen) { // Safari Fallback
+      } else if (root.webkitRequestFullscreen) { 
         await root.webkitRequestFullscreen();
       }
     } else {
       if (document.exitFullscreen) {
         await document.exitFullscreen().catch(() => {});
-      } else if (document.webkitExitFullscreen) { // Safari Fallback
+      } else if (document.webkitExitFullscreen) { 
         await document.webkitExitFullscreen();
       }
     }
   });
 
   window.addEventListener('keydown', (e) => {
-    // Ignore spacebar if user is interacting with inputs or buttons
     if (['INPUT', 'TEXTAREA', 'BUTTON', 'SELECT'].includes(e.target.tagName)) return;
 
     if (e.code === 'Space' && isRunning && phase === 'focus') {
@@ -1640,7 +1638,6 @@ function bindEvents() {
     if (file) importBackup(file);
   });
 
-  // FIXED FULLSCREEN HANDLER FOR SAFARI COMPATIBILITY 
   const handleFullscreenChange = () => {
     const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
     const root = el('appRoot');
@@ -1658,7 +1655,7 @@ function bindEvents() {
   };
 
   document.addEventListener('fullscreenchange', handleFullscreenChange);
-  document.addEventListener('webkitfullscreenchange', handleFullscreenChange); // Essential Safari patch
+  document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 }
 
 document.addEventListener('visibilitychange', () => {
