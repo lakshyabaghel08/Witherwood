@@ -10,51 +10,34 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 @keyframes rainfall {
-  from {
-    transform: translate3d(0, -120vh, 0) rotate(12deg);
-  }
-  to {
-    transform: translate3d(-120px, 120vh, 0) rotate(12deg);
-  }
+  from { transform: translate3d(0, -120vh, 0) rotate(12deg); }
+  to { transform: translate3d(-120px, 120vh, 0) rotate(12deg); }
 }
 .rain-overlay {
-  position: fixed;
+  position: absolute;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  z-index: 2147483645;
+  z-index: 0;
+  overflow: hidden;
 }
 .rain-drop {
   position: absolute;
   top: -20%; 
   width: 4.5px;
   border-radius: 9999px;
-  background: linear-gradient(
-    to bottom,
-    rgba(255,255,255,0),
-    rgba(220,238,255,0.95)
-  );
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(220,238,255,0.95));
   box-shadow: 0 0 7px rgba(180,220,255,0.4);
   animation: rainfall linear infinite;
   will-change: transform;
 }
 
 @keyframes shootingStar {
-  0% {
-    transform: translate3d(0, 0, 0) rotate(var(--star-angle));
-    opacity: 0;
-  }
-  8% {
-    opacity: var(--star-opacity);
-  }
-  65% {
-    opacity: var(--star-opacity);
-  }
-  100% {
-    transform: translate3d(var(--star-travel-x), var(--star-travel-y), 0) rotate(var(--star-angle));
-    opacity: 0;
-  }
+  0% { transform: translate3d(0, 0, 0) rotate(var(--star-angle)); opacity: 0; }
+  8% { opacity: var(--star-opacity); }
+  65% { opacity: var(--star-opacity); }
+  100% { transform: translate3d(var(--star-travel-x), var(--star-travel-y), 0) rotate(var(--star-angle)); opacity: 0; }
 }
 
 .shooting-star {
@@ -62,17 +45,8 @@
   width: var(--star-width, 140px);
   height: 3px;
   border-radius: 9999px;
-  background: linear-gradient(
-    to right,
-    rgba(var(--star-color),0),
-    rgba(var(--star-color),calc(var(--star-opacity) * 0.1)) 20%,
-    rgba(var(--star-color),calc(var(--star-opacity) * 0.4)) 55%,
-    rgba(var(--star-color),var(--star-opacity)) 100%
-  );
-  box-shadow:
-    0 0 calc(var(--star-glow) * 0.5) rgba(var(--star-color),calc(var(--star-opacity) * 0.5)),
-    0 0 var(--star-glow) rgba(var(--star-color),calc(var(--star-opacity) * 0.8)),
-    0 0 calc(var(--star-glow) * 1.5) rgba(196,181,253,calc(var(--star-opacity) * 0.45));
+  background: linear-gradient(to right, rgba(var(--star-color),0), rgba(var(--star-color),calc(var(--star-opacity) * 0.1)) 20%, rgba(var(--star-color),calc(var(--star-opacity) * 0.4)) 55%, rgba(var(--star-color),var(--star-opacity)) 100%);
+  box-shadow: 0 0 calc(var(--star-glow) * 0.5) rgba(var(--star-color),calc(var(--star-opacity) * 0.5)), 0 0 var(--star-glow) rgba(var(--star-color),calc(var(--star-opacity) * 0.8)), 0 0 calc(var(--star-glow) * 1.5) rgba(196,181,253,calc(var(--star-opacity) * 0.45));
   animation: shootingStar var(--star-duration, 2.4s) ease-out forwards;
 }
 
@@ -88,76 +62,33 @@
   border-radius: 9999px;
   transform: translateY(-50%);
   background: radial-gradient(circle, rgba(var(--star-color),1) 0%, rgba(var(--star-color),var(--star-opacity)) 45%, rgba(var(--star-color),0) 100%);
-  box-shadow:
-    0 0 var(--star-glow) rgba(var(--star-color),var(--star-opacity)),
-    0 0 calc(var(--star-glow) * 2) rgba(196,181,253,calc(var(--star-opacity) * 0.7));
+  box-shadow: 0 0 var(--star-glow) rgba(var(--star-color),var(--star-opacity)), 0 0 calc(var(--star-glow) * 2) rgba(196,181,253,calc(var(--star-opacity) * 0.7));
 }
 
 .brand-title {
   font-family: 'Cinzel', serif;
   letter-spacing: 0.06em;
   font-weight: 700;
-  text-shadow:
-    0 2px 8px rgba(16, 24, 40, 0.08),
-    0 0 20px rgba(16, 185, 129, 0.08);
+  text-shadow: 0 2px 8px rgba(16, 24, 40, 0.08), 0 0 20px rgba(16, 185, 129, 0.08);
 }
 
 .brand-title-night {
-  text-shadow:
-    0 2px 10px rgba(0, 0, 0, 0.45),
-    0 0 24px rgba(167, 139, 250, 0.22);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45), 0 0 24px rgba(167, 139, 250, 0.22);
 }
 
 .brand-title-rain {
-  text-shadow:
-    0 2px 10px rgba(15, 23, 42, 0.12),
-    0 0 24px rgba(14, 165, 233, 0.16);
+  text-shadow: 0 2px 10px rgba(15, 23, 42, 0.12), 0 0 24px rgba(14, 165, 233, 0.16);
 }
 
-@keyframes ambientIconFloat {
-  0% { transform: translateY(8px) scale(0.92); opacity: 0; }
-  15% { opacity: 0.55; }
-  80% { opacity: 0.42; }
-  100% { transform: translateY(-18px) scale(1); opacity: 0; }
-}
-
-.ambient-icon-layer {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2147483647;
-}
-
-.ambient-icon {
+#visualEffectsLayer {
   position: absolute;
-  font-size: 18px;
-  opacity: 0;
-  filter: blur(0.15px);
-  animation: ambientIconFloat 2.8s ease-out forwards;
-  user-select: none;
-}
-
-/* Soundscape Particles */
-#soundscapeParticles {
-  position: fixed;
   inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  z-index: 2147483646;
+  z-index: 0;
   overflow: hidden;
-}
-
-.particle-ember {
-  position: absolute;
-  border-radius: 50%;
-  background: #ff7b00;
-  box-shadow: 0 0 6px #ff7b00, 0 0 10px #ff3c00;
-  animation: floatEmber var(--dur) ease-in infinite;
-}
-@keyframes floatEmber {
-  0% { transform: translate3d(0, 110vh, 0) scale(var(--s)); opacity: 0; }
-  10% { opacity: var(--op); }
-  75% { opacity: var(--op); }
-  100% { transform: translate3d(var(--tx), -10vh, 0) scale(calc(var(--s) * 0.5)); opacity: 0; }
+  border-radius: inherit;
 }
 
 .particle-leaf {
@@ -167,6 +98,7 @@
   height: 5px;
   border-radius: 50% 0 50% 0;
   animation: floatLeaf var(--dur) linear infinite;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 @keyframes floatLeaf {
   0% { transform: translate3d(var(--sx), -10vh, 0) rotate(0deg); opacity: 0; }
@@ -187,7 +119,6 @@
   100% { transform: scale(1.15) translate3d(3%, 3%, 0); }
 }
 
-/* UI Transitions & Fullscreen */
 .page-section {
   transition: opacity 0.2s ease, transform 0.2s ease;
   opacity: 1;
@@ -200,33 +131,23 @@
   position: absolute;
   visibility: hidden;
 }
+
 body.fullscreen-active {
-  overflow: hidden;
-}
-#appRoot.fullscreen-active {
-  min-height: 100vh !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  border-radius: 0 !important;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem 1rem !important;
 }
+
 .btn-interactive {
   transition: all 0.2s ease;
 }
 .btn-interactive:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 .btn-interactive:active {
   transform: translateY(0) scale(0.95);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-/* Toast Notifications */
 #toastContainer {
   position: fixed;
   top: 1.5rem;
@@ -251,200 +172,221 @@ body.fullscreen-active {
   transform: translateY(0) scale(1);
   opacity: 1;
 }
+
+input[type=range] {
+  -webkit-appearance: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: currentColor;
+  cursor: pointer;
+  margin-top: -4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+}
 </style>
 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#f7f4ea">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 </head>
-<body class="min-h-screen bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 text-slate-800 transition-colors duration-500">
-<div id="rainOverlay" class="rain-overlay hidden"></div>
-<div id="nightOverlay" class="rain-overlay hidden"></div>
-<div id="soundscapeParticles"></div>
+<body class="min-h-screen bg-emerald-50 text-slate-800 transition-colors duration-500 flex flex-col items-center">
 <div id="toastContainer"></div>
 
 <!-- Confirm Reset Modal -->
 <div id="confirmModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[9999] hidden flex items-center justify-center opacity-0 transition-opacity duration-200">
-  <div class="bg-white rounded-3xl p-6 max-w-sm mx-4 shadow-2xl transform scale-95 transition-transform duration-200">
-    <h3 class="text-xl font-bold mb-2">Reset All Data?</h3>
-    <p class="text-slate-600 mb-6">This will permanently remove your forest and all statistics.</p>
+  <div data-theme-target="modal" data-base-class="rounded-3xl p-6 max-w-sm mx-4 transform scale-95 transition-transform duration-200" class="bg-white rounded-3xl p-6 max-w-sm mx-4 shadow-2xl transform scale-95 transition-transform duration-200">
+    <h3 data-theme-target="text" class="text-xl font-bold mb-2">Reset All Data?</h3>
+    <p data-theme-target="subtext" class="mb-6">This will permanently remove your forest and all statistics.</p>
     <div class="flex justify-end gap-3">
-      <button id="confirmCancel" class="btn-interactive px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">Cancel</button>
-      <button id="confirmYes" class="btn-interactive px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-medium">Reset</button>
+      <button id="confirmCancel" data-theme-target="btnSecondary" data-base-class="btn-interactive px-5 py-2.5 rounded-xl font-medium" class="btn-interactive px-4 py-2 rounded-xl font-medium">Cancel</button>
+      <button id="confirmYes" data-theme-target="btnDanger" data-base-class="btn-interactive px-5 py-2.5 rounded-xl font-medium" class="btn-interactive px-4 py-2 rounded-xl font-medium">Reset</button>
     </div>
   </div>
 </div>
 
-<div class="min-h-screen p-4 md:p-8 pb-10 md:pb-16 flex flex-col items-center transition-all duration-500">
-  <div id="appRoot" class="w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center">
-    <div class="w-full max-w-4xl space-y-8 relative z-10 flex flex-col items-center">
-      <header class="flex flex-col items-center text-center gap-4 w-full relative">
-        <div class="absolute right-0 top-0 flex gap-2">
-          <button id="pipBtn" class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl transition-colors duration-500" title="Mini Player" aria-label="Mini Player">
-            ◱
-          </button>
-          <button id="fullscreenBtn" class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl transition-colors duration-500" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">
-            ⛶
-          </button>
-        </div>
-        <div class="mt-4 md:mt-0">
-          <h1 id="brandTitle" class="brand-title text-4xl md:text-6xl transition-colors duration-500">🌲 Witherwood</h1>
-          <p class="text-slate-600 mt-2 transition-colors duration-500">Every 10 minutes of focus plants a tree.</p>
-        </div>
-      </header>
+<div id="appRoot" class="w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-emerald-50 p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center shadow-2xl mt-4 md:mt-4 mb-4 md:mb-4">
+  <!-- Unified Visual Effects Layer -->
+  <div id="visualEffectsLayer"></div>
 
-      <nav id="nav" class="flex flex-wrap justify-center gap-3 w-full"></nav>
+  <div class="w-full max-w-4xl space-y-8 relative z-10 flex flex-col items-center">
+    <header class="flex flex-col items-center text-center gap-4 w-full relative">
+      <div class="absolute right-0 top-0 flex gap-2">
+        <button id="pipBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl" title="Mini Player" aria-label="Mini Player">
+          ◱
+        </button>
+        <button id="fullscreenBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">
+          ⛶
+        </button>
+      </div>
+      <div class="mt-4 md:mt-0">
+        <h1 id="brandTitle" data-theme-target="title" class="brand-title text-4xl md:text-6xl transition-colors duration-500">🌲 Witherwood</h1>
+        <p data-theme-target="subtext" class="mt-2 transition-colors duration-500">Every 10 minutes of focus plants a tree.</p>
+      </div>
+    </header>
 
-      <div class="w-full relative flex justify-center">
-        <section id="focusPage" class="page-section w-full rounded-3xl bg-white/85 border shadow-lg p-6 max-w-3xl mb-8 md:mb-12 lg:mb-16">
-          <div class="max-w-lg mx-auto text-center">
-            <div id="phaseLabel" class="text-sm uppercase tracking-wide text-emerald-700 transition-colors duration-500 font-semibold">Focus Session</div>
+    <nav id="nav" class="flex flex-wrap justify-center gap-3 w-full"></nav>
 
-            <div class="mt-4 flex justify-center">
-              <div class="relative w-64 h-64 md:w-72 md:h-72">
-                <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
-                  <circle cx="70" cy="70" r="60" fill="none" stroke="#d1fae5" stroke-width="8" class="transition-colors duration-500" />
-                  <circle
-                    id="progressRing"
-                    cx="70"
-                    cy="70"
-                    r="60"
-                    fill="none"
-                    stroke="#10b981"
-                    stroke-width="8"
-                    stroke-linecap="round"
-                    stroke-dasharray="376.99"
-                    stroke-dashoffset="0"
-                    class="transition-all duration-300 ease-in-out"
-                  />
-                </svg>
+    <div class="w-full relative flex justify-center">
+      <section id="focusPage" data-theme-target="card" data-base-class="page-section w-full rounded-3xl p-6 max-w-3xl mb-8 md:mb-12 lg:mb-16" class="page-section w-full rounded-3xl p-6 max-w-3xl mb-8 md:mb-12 lg:mb-16">
+        <div class="max-w-lg mx-auto text-center">
+          <div id="phaseLabel" data-theme-target="label" class="text-sm uppercase tracking-wide transition-colors duration-500 font-semibold">Focus Session</div>
 
-                <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <div id="timer" class="text-6xl md:text-7xl font-mono font-bold transition-colors duration-500">25:00</div>
-                  <div id="progressLabel" class="mt-2 text-sm text-slate-500 transition-colors duration-500"></div>
-                </div>
+          <div class="mt-4 flex justify-center">
+            <div class="relative w-64 h-64 md:w-72 md:h-72">
+              <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
+                <circle cx="70" cy="70" r="60" fill="none" stroke="currentColor" stroke-width="8" opacity="0.2" class="transition-colors duration-500 text-slate-400" />
+                <circle
+                  id="progressRing"
+                  cx="70"
+                  cy="70"
+                  r="60"
+                  fill="none"
+                  stroke="#10b981"
+                  stroke-width="8"
+                  stroke-linecap="round"
+                  stroke-dasharray="376.99"
+                  stroke-dashoffset="0"
+                  class="transition-all duration-300 ease-in-out"
+                />
+              </svg>
+
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <div id="timer" data-theme-target="timer" class="text-6xl md:text-7xl font-mono font-bold transition-colors duration-500">25:00</div>
+                <div id="progressLabel" data-theme-target="subtext" class="mt-2 text-sm transition-colors duration-500"></div>
               </div>
             </div>
-
-            <div id="focusControls" class="mt-6 flex items-center justify-center gap-3">
-              <label class="transition-colors duration-500">Focus (min)</label>
-              <input
-                id="focusMinutesInput"
-                type="number"
-                min="1"
-                max="180"
-                value="25"
-                class="w-24 rounded-xl border px-3 py-2 transition-colors duration-500"
-              />
-            </div>
-
-            <div id="saplings" class="mt-5 text-lg font-medium transition-colors duration-500"></div>
-
-            <div class="flex flex-wrap justify-center gap-4 mt-6">
-              <button id="startPauseBtn" class="btn-interactive px-6 py-3 rounded-2xl bg-emerald-500 text-white font-semibold transition-colors duration-500">Start</button>
-              <button id="witherBtn" class="btn-interactive px-6 py-3 rounded-2xl bg-amber-500 text-white font-semibold transition-colors duration-500">🍂 Wither Tree</button>
-              <button id="resetBtn" class="btn-interactive px-6 py-3 rounded-2xl border bg-white transition-colors duration-500 font-medium">Reset</button>
-            </div>
-
-            <p id="message" class="mt-6 italic text-slate-500 transition-colors duration-500">“A calm mind nurtures strong roots.”</p>
           </div>
-        </section>
 
-        <section id="forestPage" class="page-section page-hidden w-full rounded-3xl bg-white/85 border shadow-lg p-6 max-w-3xl">
-          <h2 class="text-2xl font-semibold mb-2 transition-colors duration-500">Your Forest</h2>
-          <div id="forestSummary" class="text-slate-500 mb-6 transition-colors duration-500"></div>
-          <div id="forestGrid" class="flex flex-wrap gap-1 text-xl justify-center md:justify-start"></div>
-        </section>
+          <div id="focusControls" class="mt-6 flex items-center justify-center gap-3">
+            <label data-theme-target="label" class="transition-colors duration-500">Focus (min)</label>
+            <input
+              id="focusMinutesInput"
+              type="number"
+              min="1"
+              max="180"
+              value="25"
+              data-theme-target="input"
+              data-base-class="w-24 text-center rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500"
+            />
+          </div>
 
-        <section id="dashboardPage" class="page-section page-hidden w-full max-w-4xl">
-          <div id="dashboardGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-        </section>
+          <div id="saplings" data-theme-target="text" class="mt-5 text-lg font-medium transition-colors duration-500"></div>
 
-        <section id="settingsPage" class="page-section page-hidden w-full rounded-3xl bg-white/85 border shadow-lg p-6 max-w-xl space-y-5">
-          <h2 class="text-2xl font-semibold transition-colors duration-500 mb-2">Settings</h2>
+          <div class="flex flex-wrap justify-center gap-4 mt-6">
+            <button id="startPauseBtn" data-theme-target="btnPrimary" data-base-class="btn-interactive px-6 py-3 rounded-2xl font-semibold" class="btn-interactive px-6 py-3 rounded-2xl font-semibold">Start</button>
+            <button id="witherBtn" data-theme-target="btnWarning" data-base-class="btn-interactive px-6 py-3 rounded-2xl font-semibold" class="btn-interactive px-6 py-3 rounded-2xl font-semibold">🍂 Wither Tree</button>
+            <button id="resetBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive px-6 py-3 rounded-2xl border font-medium" class="btn-interactive px-6 py-3 rounded-2xl border font-medium">Reset</button>
+          </div>
 
-          <label class="flex items-center gap-3 cursor-pointer">
-            <input id="breaksEnabledToggle" type="checkbox" class="w-5 h-5 text-emerald-500 rounded border-slate-300 focus:ring-emerald-500" />
-            <span class="font-medium settings-label transition-colors duration-500">Enable Break Sessions</span>
+          <p id="message" data-theme-target="subtext" class="mt-6 italic transition-colors duration-500">“A calm mind nurtures strong roots.”</p>
+        </div>
+      </section>
+
+      <section id="forestPage" data-theme-target="card" data-base-class="page-section page-hidden w-full rounded-3xl p-6 max-w-3xl" class="page-section page-hidden w-full rounded-3xl p-6 max-w-3xl">
+        <h2 data-theme-target="text" class="text-2xl font-semibold mb-2 transition-colors duration-500">Your Forest</h2>
+        <div id="forestSummary" data-theme-target="subtext" class="mb-6 transition-colors duration-500"></div>
+        <div id="forestGrid" class="flex flex-wrap gap-1 text-xl justify-center md:justify-start"></div>
+      </section>
+
+      <section id="dashboardPage" class="page-section page-hidden w-full max-w-4xl">
+        <div id="dashboardGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </section>
+
+      <section id="settingsPage" data-theme-target="card" data-base-class="page-section page-hidden w-full rounded-3xl p-6 max-w-xl space-y-5" class="page-section page-hidden w-full rounded-3xl p-6 max-w-xl space-y-5">
+        <h2 data-theme-target="text" class="text-2xl font-semibold transition-colors duration-500 mb-2">Settings</h2>
+
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input id="breaksEnabledToggle" type="checkbox" data-theme-target="accent" data-base-class="w-5 h-5 rounded border-slate-300 transition-colors duration-500" class="w-5 h-5 rounded border-slate-300 transition-colors duration-500" />
+          <span data-theme-target="label" class="font-medium transition-colors duration-500">Enable Break Sessions</span>
+        </label>
+
+        <label class="block">
+          <span data-theme-target="label" class="font-medium transition-colors duration-500">Break Minutes</span>
+          <input
+            id="breakMinutesInput"
+            type="number"
+            min="1"
+            max="60"
+            value="5"
+            data-theme-target="input"
+            data-base-class="w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500"
+          />
+        </label>
+
+        <div class="pt-4 border-t border-slate-200/60">
+          <label class="flex items-center gap-3 cursor-pointer mb-4">
+            <input id="ambientSoundToggle" type="checkbox" data-theme-target="accent" data-base-class="w-5 h-5 rounded border-slate-300 transition-colors duration-500" class="w-5 h-5 rounded border-slate-300 transition-colors duration-500" />
+            <span data-theme-target="label" class="font-medium transition-colors duration-500">Enable Ambient Sound</span>
           </label>
 
           <label class="block">
-            <span class="font-medium settings-label transition-colors duration-500">Break Minutes</span>
+            <div class="flex items-center justify-between mb-2">
+              <span data-theme-target="label" class="font-medium transition-colors duration-500">Ambient Volume</span>
+              <span id="ambientVolumeLabel" data-theme-target="subtext" class="text-sm font-medium">50%</span>
+            </div>
             <input
-              id="breakMinutesInput"
-              type="number"
-              min="1"
-              max="60"
-              value="5"
-              class="w-full mt-2 rounded-xl border px-3 py-3 transition-colors duration-500"
+              id="ambientVolumeInput"
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value="50"
+              data-theme-target="accent"
+              data-base-class="w-full h-2 bg-black/10 rounded-lg appearance-none cursor-pointer transition-colors duration-500"
             />
           </label>
+        </div>
 
-          <div class="pt-4 border-t border-slate-200/60">
-            <label class="flex items-center gap-3 cursor-pointer mb-4">
-              <input id="ambientSoundToggle" type="checkbox" class="w-5 h-5 text-emerald-500 rounded border-slate-300 focus:ring-emerald-500" />
-              <span class="font-medium settings-label transition-colors duration-500">Enable Ambient Sound</span>
-            </label>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-4 border-t border-slate-200/60">
+          <label class="block">
+            <span data-theme-target="label" class="font-medium transition-colors duration-500">Visual Theme</span>
+            <select id="themeSelect" data-theme-target="input" data-base-class="w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500">
+              <option value="forest">🌲 Forest</option>
+              <option value="night">🌙 Night</option>
+              <option value="rain">🌧️ Rain</option>
+            </select>
+          </label>
+          <label class="block">
+            <span data-theme-target="label" class="font-medium transition-colors duration-500">Soundscape</span>
+            <select id="soundscapeSelect" data-theme-target="input" data-base-class="w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer transition-colors duration-500">
+              <option value="woodland">🍃 Woodland</option>
+              <option value="fireside">🔥 Fireside</option>
+              <option value="rainfall">🌧️ Rainfall</option>
+            </select>
+          </label>
+        </div>
 
-            <label class="block">
-              <div class="flex items-center justify-between mb-2">
-                <span class="font-medium settings-label transition-colors duration-500">Ambient Volume</span>
-                <span id="ambientVolumeLabel" class="text-sm text-slate-500 font-medium">50%</span>
-              </div>
-              <input
-                id="ambientVolumeInput"
-                type="range"
-                min="0"
-                max="100"
-                step="1"
-                value="50"
-                class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-500"
-              />
-            </label>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-4 border-t border-slate-200/60">
-            <label class="block">
-              <span class="font-medium settings-label transition-colors duration-500">Visual Theme</span>
-              <select id="themeSelect" class="w-full mt-2 rounded-xl border px-3 py-3 transition-colors duration-500 cursor-pointer">
-                <option value="forest">🌲 Forest</option>
-                <option value="night">🌙 Night</option>
-                <option value="rain">🌧️ Rain</option>
-              </select>
-            </label>
-            <label class="block">
-              <span class="font-medium settings-label transition-colors duration-500">Soundscape</span>
-              <select id="soundscapeSelect" class="w-full mt-2 rounded-xl border px-3 py-3 transition-colors duration-500 cursor-pointer">
-                <option value="woodland">🍃 Woodland</option>
-                <option value="fireside">🔥 Fireside</option>
-                <option value="rainfall">🌧️ Rainfall</option>
-              </select>
-            </label>
-          </div>
-
-          <div class="pt-6 border-t border-slate-200/60 space-y-4">
-            <div>
-              <h3 class="font-semibold settings-label transition-colors duration-500 mb-2">Data Management</h3>
-              <div class="flex flex-wrap gap-3">
-                <button id="exportDataBtn" class="btn-interactive px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium">
-                  📤 Export Backup
-                </button>
-                <button id="importDataBtn" class="btn-interactive px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-medium">
-                  📥 Import Backup
-                </button>
-                <input id="importFileInput" type="file" accept=".json" style="display:none" />
-              </div>
-            </div>
-            <div class="pt-4 border-t border-slate-200/60">
-              <h3 class="font-semibold settings-label transition-colors duration-500 text-rose-500 mb-2">Danger Zone</h3>
-              <p class="text-sm text-slate-500 transition-colors duration-500 mb-3">Permanently clears your forest and all saved statistics.</p>
-              <button id="resetAllBtn" class="btn-interactive px-5 py-2.5 rounded-xl bg-rose-500 text-white hover:bg-rose-600 transition-colors font-medium">
-                Reset All Data
+        <div class="pt-6 border-t border-slate-200/60 space-y-4">
+          <div>
+            <h3 data-theme-target="label" class="font-semibold transition-colors duration-500 mb-2">Data Management</h3>
+            <div class="flex flex-wrap gap-3">
+              <button id="exportDataBtn" data-theme-target="btnPrimary" data-base-class="btn-interactive px-5 py-2.5 rounded-xl font-medium" class="btn-interactive px-5 py-2.5 rounded-xl font-medium">
+                📤 Export Backup
               </button>
+              <button id="importDataBtn" data-theme-target="btnSecondary" data-base-class="btn-interactive px-5 py-2.5 rounded-xl border font-medium" class="btn-interactive px-5 py-2.5 rounded-xl border font-medium">
+                📥 Import Backup
+              </button>
+              <input id="importFileInput" type="file" accept=".json" style="display:none" />
             </div>
           </div>
-        </section>
-      </div>
+          <div class="pt-4 border-t border-slate-200/60">
+            <h3 class="font-semibold text-rose-500 mb-2">Danger Zone</h3>
+            <p data-theme-target="subtext" class="text-sm transition-colors duration-500 mb-3">Permanently clears your forest and all saved statistics.</p>
+            <button id="resetAllBtn" data-theme-target="btnDanger" data-base-class="btn-interactive px-5 py-2.5 rounded-xl font-medium" class="btn-interactive px-5 py-2.5 rounded-xl font-medium">
+              Reset All Data
+            </button>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </div>
@@ -484,7 +426,6 @@ let audioUnlocked = false;
 let secondsLeft = data.focusMinutes * 60;
 let healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
 
-// PiP State
 let pipWindow = null;
 let pipElements = {};
 
@@ -496,13 +437,67 @@ const labels = {
   settings: '⚙️ Settings',
 };
 
-const themes = {
-  forest: ['from-emerald-50', 'via-lime-50', 'to-teal-100'],
-  night: ['from-slate-950', 'via-slate-900', 'to-indigo-950'],
-  rain: ['from-sky-100', 'via-slate-200', 'to-blue-300'],
+// CENTRALIZED THEME SYSTEM
+const THEME_DEFS = {
+  forest: {
+    bg: 'from-emerald-50 via-lime-50 to-teal-100',
+    text: 'text-slate-800',
+    card: 'bg-white/85 border border-slate-200 shadow-xl',
+    input: 'border-emerald-200 bg-white text-slate-800 focus:ring-emerald-300/50',
+    btnPrimary: 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-md',
+    btnSecondary: 'bg-white/85 hover:bg-white text-slate-700 border-slate-200 shadow-sm',
+    btnNavActive: 'bg-emerald-500 text-white shadow-md border-transparent',
+    btnWarning: 'bg-amber-500 hover:bg-amber-600 text-white shadow-md',
+    btnDanger: 'bg-rose-500 hover:bg-rose-600 text-white shadow-md',
+    ring: '#10b981',
+    title: 'text-emerald-900 brand-title',
+    label: 'text-emerald-700',
+    subtext: 'text-slate-500',
+    timer: 'text-slate-800',
+    modal: 'bg-white text-slate-800 border border-slate-200',
+    toast: 'bg-emerald-50 text-emerald-900 border border-emerald-200',
+    accent: 'accent-emerald-500 text-emerald-500 focus:ring-emerald-500'
+  },
+  night: {
+    bg: 'from-slate-950 via-slate-900 to-indigo-950',
+    text: 'text-slate-100',
+    card: 'bg-gradient-to-br from-slate-900/92 via-slate-900/88 to-indigo-950/90 border border-indigo-300/20 shadow-2xl backdrop-blur-xl',
+    input: 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-inner focus:ring-violet-400/50',
+    btnPrimary: 'bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 shadow-xl shadow-violet-900/40 hover:brightness-110 text-white border-transparent',
+    btnSecondary: 'bg-slate-800/80 hover:bg-slate-700/90 text-slate-300 border-slate-700/50 shadow-sm hover:shadow-indigo-900/20',
+    btnNavActive: 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.4)] border-transparent',
+    btnWarning: 'bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 shadow-xl shadow-orange-900/35 hover:brightness-110 text-white border-transparent',
+    btnDanger: 'bg-gradient-to-r from-rose-500 to-red-600 shadow-xl shadow-rose-900/30 hover:brightness-110 text-white border-transparent',
+    ring: '#a78bfa',
+    title: 'text-violet-50 brand-title-night',
+    label: 'text-violet-200',
+    subtext: 'text-slate-300',
+    timer: 'text-violet-50 drop-shadow-[0_0_18px_rgba(167,139,250,0.45)]',
+    modal: 'bg-slate-900 text-slate-100 border border-indigo-500/30 shadow-2xl shadow-indigo-900/50',
+    toast: 'bg-slate-900 text-slate-100 border border-indigo-500/30 shadow-2xl',
+    accent: 'accent-violet-500 text-violet-500 focus:ring-violet-500'
+  },
+  rain: {
+    bg: 'from-sky-100 via-slate-200 to-blue-300',
+    text: 'text-slate-800',
+    card: 'bg-white/85 border border-sky-200 shadow-xl',
+    input: 'border-sky-200 bg-white/90 text-slate-800 focus:ring-sky-300/50',
+    btnPrimary: 'bg-sky-500 hover:bg-sky-600 text-white shadow-md',
+    btnSecondary: 'bg-white/90 hover:bg-sky-50 text-slate-700 border-sky-200 shadow-sm',
+    btnNavActive: 'bg-sky-500 text-white shadow-md border-transparent',
+    btnWarning: 'bg-gradient-to-r from-slate-500 to-slate-600 shadow-lg hover:brightness-110 text-white border-transparent',
+    btnDanger: 'bg-rose-500 hover:bg-rose-600 text-white shadow-md',
+    ring: '#0ea5e9',
+    title: 'text-slate-800 brand-title-rain',
+    label: 'text-sky-700',
+    subtext: 'text-slate-600',
+    timer: 'text-slate-800',
+    modal: 'bg-white text-slate-800 border border-sky-200',
+    toast: 'bg-sky-50 text-sky-900 border border-sky-200',
+    accent: 'accent-sky-500 text-sky-500 focus:ring-sky-500'
+  }
 };
 
-// AUDIO ENGINE
 const AUDIO_CONFIG = {
   woodland: {
     ambience: ['sounds/AMBIENCE/forest_01.mp3', 'sounds/AMBIENCE/forest_02.mp3'],
@@ -534,7 +529,6 @@ class SoundscapeEngine {
     this.currentSoundscape = null;
     this.ambienceMonitor = null;
     this.buffers = new Map();
-    this.loading = false;
     
     this.state = {
       common: 0,
@@ -560,47 +554,6 @@ class SoundscapeEngine {
     }
   }
 
-  async loadSoundscape(type) {
-    const config = AUDIO_CONFIG[type];
-    if (!config) return;
-
-    const allSrcs = [
-      ...(config.ambience || []),
-      ...(config.common || []),
-      ...(config.medium || []),
-      ...(config.rare || []),
-      ...(config.woosh || []),
-      ...(config.owl || []),
-      ...(config.thunder || []),
-      ...(config.wind || [])
-    ];
-
-    let toLoad = allSrcs.filter(src => !this.buffers.has(src));
-    
-    if (toLoad.length > 0) {
-      showToast('Loading soundscape...', 'info');
-      this.loading = true;
-      
-      await Promise.all(toLoad.map(async (src) => {
-        try {
-          const response = await fetch(src);
-          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-          const arrayBuffer = await response.arrayBuffer();
-          const audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
-          this.buffers.set(src, audioBuffer);
-        } catch (e) {
-          console.warn('Failed to load audio:', src, e);
-        }
-      }));
-
-      this.loading = false;
-      
-      if (this.currentSoundscape === type && this.enabled) {
-        showToast('Soundscape ready.', 'success');
-      }
-    }
-  }
-
   async apply(soundscape, enabled) {
     this.init();
     if(this.ctx.state === 'suspended') this.ctx.resume();
@@ -617,8 +570,6 @@ class SoundscapeEngine {
     }
 
     if(enabled) {
-      await this.loadSoundscape(soundscape);
-      
       if (!this.enabled || this.currentSoundscape !== soundscape) return;
 
       if (isSwitching) {
@@ -659,14 +610,9 @@ class SoundscapeEngine {
   }
 
   playAudio(src, isAmbience = false, onEnd = null) {
-    const buffer = this.buffers.get(src);
-    if (!buffer) {
-      if (onEnd) onEnd();
-      return null;
-    }
-
-    const source = this.ctx.createBufferSource();
-    source.buffer = buffer;
+    const audio = new Audio(src);
+    audio.crossOrigin = "anonymous";
+    const source = this.ctx.createMediaElementSource(audio);
 
     const gainNode = this.ctx.createGain();
     const targetVol = isAmbience ? 1 : (0.7 + Math.random() * 0.3);
@@ -682,7 +628,7 @@ class SoundscapeEngine {
         const panX = (Math.random() * 1.0) - 0.5;
         panner.setPosition(panX, 0, 1 - Math.abs(panX));
       }
-      source.playbackRate.value = 0.97 + Math.random() * 0.06;
+      audio.playbackRate = 0.97 + Math.random() * 0.06;
     }
 
     gainNode.gain.value = 0;
@@ -701,7 +647,7 @@ class SoundscapeEngine {
     
     gainNode.gain.linearRampToValueAtTime(targetVol, now + fadeDuration);
 
-    const wrapper = { source, gainNode, targetVol, duration: buffer.duration, startTime: now };
+    const wrapper = { source: audio, gainNode, targetVol, startTime: now };
     
     if(isAmbience) {
       this.activeAmbience.add(wrapper);
@@ -709,7 +655,7 @@ class SoundscapeEngine {
       this.activeEvents.add(wrapper);
     }
 
-    source.onended = () => {
+    audio.onended = () => {
       if(isAmbience) {
         this.activeAmbience.delete(wrapper);
       } else {
@@ -718,7 +664,7 @@ class SoundscapeEngine {
       if(onEnd) onEnd();
     };
 
-    source.start(now);
+    audio.play().catch(()=>{});
     return wrapper;
   }
 
@@ -736,17 +682,13 @@ class SoundscapeEngine {
       
       if (!wrapper) return;
 
-      const crossfadeDuration = Math.min(8, wrapper.duration / 2);
-      const crossfadeTime = wrapper.duration - crossfadeDuration;
-      
       const checkCrossfade = setInterval(() => {
         if(!this.enabled || this.currentSoundscape !== type) {
           clearInterval(checkCrossfade);
           return;
         }
         
-        const elapsed = this.ctx.currentTime - wrapper.startTime;
-        if(elapsed >= crossfadeTime) {
+        if (wrapper.source.duration && wrapper.source.currentTime > wrapper.source.duration - 8) {
           clearInterval(checkCrossfade);
           currentIndex = (currentIndex + 1) % tracks.length;
           playNext();
@@ -754,7 +696,7 @@ class SoundscapeEngine {
           const now = this.ctx.currentTime;
           wrapper.gainNode.gain.cancelScheduledValues(now);
           wrapper.gainNode.gain.setValueAtTime(wrapper.gainNode.gain.value, now);
-          wrapper.gainNode.gain.linearRampToValueAtTime(0, now + crossfadeDuration);
+          wrapper.gainNode.gain.linearRampToValueAtTime(0, now + 8);
         }
       }, 500);
       
@@ -871,10 +813,13 @@ function el(id) {
 function showToast(message, type = 'info') {
   const container = el('toastContainer');
   if(!container) return;
+  
+  const def = THEME_DEFS[data.theme] || THEME_DEFS.forest;
+  let colors = def.toast;
+  if (type === 'error') colors = def.btnDanger;
+  else if (type === 'success') colors = def.btnPrimary;
+
   const toast = document.createElement('div');
-  const colors = type === 'error' ? 'bg-rose-500 text-white' : 
-                 type === 'success' ? 'bg-emerald-500 text-white' : 
-                 'bg-slate-800 text-white/90 border border-slate-700';
   toast.className = `toast-msg ${colors}`;
   toast.textContent = message;
   container.appendChild(toast);
@@ -1024,29 +969,38 @@ function renderNav() {
   if (!nav) return;
 
   nav.innerHTML = '';
-  const isNight = data.theme === 'night';
+  const def = THEME_DEFS[data.theme] || THEME_DEFS.forest;
   
   for (const p of pages) {
     const button = document.createElement('button');
     const isActive = page === p;
-    
-    if (isNight) {
-      button.className = isActive
-        ? 'btn-interactive px-5 py-2.5 rounded-2xl border border-indigo-400/30 bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.4)] transition-all duration-200 font-medium'
-        : 'btn-interactive px-5 py-2.5 rounded-2xl border border-slate-700/50 bg-slate-800/80 text-slate-300 shadow-sm hover:bg-slate-700/90 hover:text-white hover:shadow-lg hover:shadow-indigo-900/20 transition-all duration-200';
-    } else {
-      button.className = isActive
-        ? 'btn-interactive px-5 py-2.5 rounded-2xl border shadow-sm bg-emerald-500 text-white transition-all duration-200 font-medium'
-        : 'btn-interactive px-5 py-2.5 rounded-2xl border shadow-sm bg-white/85 text-slate-700 hover:bg-white transition-all duration-200';
-    }
-
+    button.className = `btn-interactive px-5 py-2.5 rounded-2xl font-medium transition-all duration-200 border ${isActive ? def.btnNavActive : def.btnSecondary}`;
     button.textContent = labels[p];
     button.onclick = () => switchPage(p);
     nav.appendChild(button);
   }
 }
 
-// Mini Player Logic
+function updatePiPTheme() {
+  if (!pipWindow) return;
+  const def = THEME_DEFS[data.theme] || THEME_DEFS.forest;
+  const isNight = data.theme === 'night';
+  const isRain = data.theme === 'rain';
+
+  const bg = isNight ? '#0f172a' : isRain ? '#f0f9ff' : '#ecfdf5';
+  const text = isNight ? '#f8fafc' : '#0f172a';
+  
+  pipWindow.document.body.style.background = bg;
+  pipWindow.document.body.style.color = text;
+  
+  if(pipElements.ring) {
+    pipElements.ring.setAttribute('stroke', def.ring);
+  }
+  if(pipElements.phase) {
+    pipElements.phase.style.color = def.ring;
+  }
+}
+
 async function togglePiP() {
   if (pipWindow) {
     pipWindow.close();
@@ -1057,7 +1011,7 @@ async function togglePiP() {
     try {
       pipWindow = await documentPictureInPicture.requestWindow({
         width: 320,
-        height: 400
+        height: 320
       });
       setupPiP(pipWindow);
       pipWindow.addEventListener('pagehide', () => { pipWindow = null; });
@@ -1070,7 +1024,7 @@ async function togglePiP() {
 }
 
 function fallbackPiP() {
-  pipWindow = window.open('', 'Witherwood Mini Player', 'width=320,height=400');
+  pipWindow = window.open('', 'Witherwood Mini Player', 'width=320,height=320');
   if (pipWindow) {
     setupPiP(pipWindow);
     pipWindow.addEventListener('beforeunload', () => { pipWindow = null; });
@@ -1082,38 +1036,36 @@ function fallbackPiP() {
 function setupPiP(win) {
   const style = win.document.createElement('style');
   style.textContent = `
-    body { font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #0f172a; color: white; text-align: center; overflow: hidden; user-select: none; }
-    .timer { font-size: 5rem; font-family: monospace; font-weight: bold; margin: 1.5rem 0; line-height: 1; letter-spacing: -2px; }
-    .phase { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.15em; color: #a78bfa; font-weight: 600; }
-    .controls { display: flex; gap: 0.75rem; margin-top: 1rem; }
-    button { padding: 0.75rem 1.5rem; border-radius: 0.75rem; border: none; font-weight: 600; cursor: pointer; font-size: 1rem; transition: transform 0.1s; }
-    button:active { transform: scale(0.95); }
-    .btn-primary { background: #10b981; color: white; }
-    .btn-secondary { background: #334155; color: white; }
+    body { font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; user-select: none; transition: all 0.5s ease; }
+    .glass-panel { position: relative; display: flex; align-items: center; justify-content: center; width: 85vmin; height: 85vmin; max-width: 280px; max-height: 280px; border-radius: 50%; background: rgba(128, 128, 128, 0.05); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); border: 1px solid rgba(128, 128, 128, 0.15); }
+    .pip-svg { width: 100%; height: 100%; transform: rotate(-90deg); position: absolute; inset: 0; }
+    .timer-container { display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
+    .timer { font-size: 4rem; font-family: monospace; font-weight: bold; line-height: 1; letter-spacing: -2px; }
+    .phase { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600; margin-bottom: 0.5rem; opacity: 0.9; transition: color 0.5s ease; }
   `;
   win.document.head.appendChild(style);
-
   win.document.title = "Witherwood";
 
   win.document.body.innerHTML = `
-    <div class="phase" id="pipPhase">Focus Session</div>
-    <div class="timer" id="pipTimer">25:00</div>
-    <div class="controls">
-      <button id="pipStartBtn" class="btn-primary">Start</button>
-      <button id="pipResetBtn" class="btn-secondary">Reset</button>
+    <div class="glass-panel">
+      <svg viewBox="0 0 140 140" class="pip-svg">
+        <circle cx="70" cy="70" r="60" fill="none" stroke="currentColor" stroke-width="4" opacity="0.1" />
+        <circle id="pipRing" cx="70" cy="70" r="60" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-dasharray="376.99" stroke-dashoffset="0" style="transition: stroke-dashoffset 0.3s ease, stroke 0.5s ease;" />
+      </svg>
+      <div class="timer-container">
+        <div class="phase" id="pipPhase">FOCUS</div>
+        <div class="timer" id="pipTimer">25:00</div>
+      </div>
     </div>
   `;
 
   pipElements = {
     phase: win.document.getElementById('pipPhase'),
     timer: win.document.getElementById('pipTimer'),
-    startBtn: win.document.getElementById('pipStartBtn'),
-    resetBtn: win.document.getElementById('pipResetBtn')
+    ring: win.document.getElementById('pipRing')
   };
-
-  pipElements.startBtn.onclick = () => { isRunning ? pauseTimer() : startTimer(); };
-  pipElements.resetBtn.onclick = () => { resetTimer(); };
-
+  
+  updatePiPTheme();
   renderFocus();
 }
 
@@ -1133,21 +1085,22 @@ function renderFocus() {
   if (controls) controls.style.display = !isRunning && phase === 'focus' ? 'flex' : 'none';
 
   const ring = el('progressRing');
+  let dashoffset = 0;
   if (ring) {
     const total = (phase === 'focus' ? data.focusMinutes : data.breakMinutes) * 60;
     const circumference = 376.99;
-    ring.style.strokeDashoffset = circumference * (1 - secondsLeft / Math.max(1, total));
+    dashoffset = circumference * (1 - secondsLeft / Math.max(1, total));
+    ring.style.strokeDashoffset = dashoffset;
   }
 
-  // Update Mini Player
   if (pipWindow && pipElements.timer) {
     pipElements.timer.textContent = timeStr;
     pipElements.phase.textContent = phaseStr;
-    pipElements.startBtn.textContent = startStr;
+    if(pipElements.ring) pipElements.ring.style.strokeDashoffset = dashoffset;
     if (phase === 'break') {
-      pipElements.phase.style.color = '#38bdf8';
+      pipElements.phase.style.opacity = '0.7';
     } else {
-      pipElements.phase.style.color = '#a78bfa';
+      pipElements.phase.style.opacity = '1';
     }
   }
 }
@@ -1213,114 +1166,62 @@ function renderForest() {
 function renderDashboard() {
   const grid = el('dashboardGrid');
   if (!grid) return;
+  const def = THEME_DEFS[data.theme] || THEME_DEFS.forest;
+  
+  const makeCard = (title, val) => `
+    <div class="rounded-3xl p-5 transition-colors duration-500 ${def.card}">
+      <div class="text-sm uppercase transition-colors duration-500 ${def.label}">${title}</div>
+      <div class="text-3xl font-bold mt-2 transition-colors duration-500 ${def.text}">${val}</div>
+    </div>
+  `;
+
   grid.innerHTML = `
-    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 transition-colors duration-500">
-      <div class="text-sm uppercase transition-colors duration-500">Forest Level</div>
-      <div class="text-2xl font-bold mt-2 transition-colors duration-500">${getForestLevel()}</div>
-    </div>
-    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 transition-colors duration-500">
-      <div class="text-sm uppercase transition-colors duration-500">Today's Focus</div>
-      <div class="text-3xl font-bold mt-2 transition-colors duration-500">${(data.todayFocusMinutes / 60).toFixed(1)}h</div>
-    </div>
-    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 transition-colors duration-500">
-      <div class="text-sm uppercase transition-colors duration-500">Day Streak</div>
-      <div class="text-3xl font-bold mt-2 transition-colors duration-500">${data.streakDays}</div>
-    </div>
-    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 transition-colors duration-500">
-      <div class="text-sm uppercase transition-colors duration-500">Living Trees</div>
-      <div class="text-3xl font-bold mt-2 transition-colors duration-500">${data.livingTrees}</div>
-    </div>
-    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 transition-colors duration-500">
-      <div class="text-sm uppercase transition-colors duration-500">Total Withered Trees</div>
-      <div class="text-3xl font-bold mt-2 transition-colors duration-500">${data.deadTrees}</div>
-    </div>
-    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 transition-colors duration-500">
-      <div class="text-sm uppercase transition-colors duration-500">Total Focus</div>
-      <div class="text-3xl font-bold mt-2 transition-colors duration-500">${(data.totalFocusMinutes / 60).toFixed(1)}h</div>
-    </div>
+    ${makeCard('Forest Level', getForestLevel())}
+    ${makeCard('Today\'s Focus', (data.todayFocusMinutes / 60).toFixed(1) + 'h')}
+    ${makeCard('Day Streak', data.streakDays)}
+    ${makeCard('Living Trees', data.livingTrees)}
+    ${makeCard('Total Withered Trees', data.deadTrees)}
+    ${makeCard('Total Focus', (data.totalFocusMinutes / 60).toFixed(1) + 'h')}
   `;
 }
 
-function updateSoundscapeParticles() {
-  const container = el('soundscapeParticles');
-  if (!container) return;
-  const desiredParent = document.fullscreenElement || document.body;
-  if (container.parentElement !== desiredParent) desiredParent.appendChild(container);
+// VISUAL EFFECTS ENGINE (Decoupled from Soundscapes)
+let activeVisualTimeouts = new Set();
+let currentVisualTheme = null;
 
-  if (container.dataset.soundscape === data.soundscape && container.dataset.theme === data.theme) return;
+function clearVisualEffects() {
+  activeVisualTimeouts.forEach(clearTimeout);
+  activeVisualTimeouts.clear();
   
-  container.innerHTML = '';
-  container.dataset.soundscape = data.soundscape;
-  container.dataset.theme = data.theme;
+  const layer = el('visualEffectsLayer');
+  if(layer) layer.innerHTML = '';
+}
 
-  // Strict rule: Night visual theme should not display floating leaves.
-  if (data.theme === 'night' && data.soundscape === 'woodland') {
-    return; 
-  }
+function applyVisualEffects(theme) {
+  if (currentVisualTheme === theme) return;
+  currentVisualTheme = theme;
+  clearVisualEffects();
 
-  if (data.soundscape === 'fireside') {
-    for (let i = 0; i < 20; i++) {
-      const p = document.createElement('div');
-      p.className = 'particle-ember';
-      p.style.left = (Math.random() * 100) + '%';
-      p.style.setProperty('--dur', (10 + Math.random() * 15) + 's');
-      p.style.setProperty('--s', (0.3 + Math.random() * 0.7));
-      p.style.setProperty('--op', (0.15 + Math.random() * 0.45));
-      p.style.setProperty('--tx', ((Math.random() - 0.5) * 30) + 'vw');
-      p.style.animationDelay = (Math.random() * -20) + 's';
-      container.appendChild(p);
-    }
-  } else if (data.soundscape === 'woodland') {
-    for (let i = 0; i < 12; i++) {
+  const container = el('visualEffectsLayer');
+  if (!container) return;
+
+  if (theme === 'forest') {
+    for (let i = 0; i < 15; i++) {
       const p = document.createElement('div');
       p.className = 'particle-leaf';
       p.style.setProperty('--sx', (Math.random() * 100) + 'vw');
       p.style.setProperty('--ex', ((Math.random() - 0.5) * 100) + 'vw');
-      p.style.setProperty('--dur', (20 + Math.random() * 25) + 's');
+      p.style.setProperty('--dur', (15 + Math.random() * 20) + 's');
       p.style.setProperty('--op', (0.2 + Math.random() * 0.4));
       p.style.setProperty('--rot', (360 + Math.random() * 720) + 'deg');
       p.style.animationDelay = (Math.random() * -30) + 's';
       container.appendChild(p);
     }
-  } else if (data.soundscape === 'rainfall') {
-    for (let i = 0; i < 3; i++) {
-      const p = document.createElement('div');
-      p.className = 'mist-layer';
-      p.style.left = (Math.random() * 30) + '%';
-      p.style.top = (Math.random() * 30) + '%';
-      p.style.setProperty('--dur', (12 + Math.random() * 10) + 's');
-      p.style.animationDelay = (Math.random() * -15) + 's';
-      container.appendChild(p);
-    }
-  }
-}
-
-function updateNightSky() {
-  const overlay = el('nightOverlay');
-  if (!overlay) return;
-  const desiredParent = document.fullscreenElement || document.body;
-  if (overlay.parentElement !== desiredParent) desiredParent.appendChild(overlay);
-
-  if (data.theme !== 'night') {
-    overlay.classList.add('hidden');
-    overlay.innerHTML = '';
-    if (overlay.dataset.timeoutId) {
-        clearTimeout(Number(overlay.dataset.timeoutId));
-        overlay.dataset.timeoutId = '';
-    }
-    overlay.dataset.running = '';
-    return;
-  }
-  overlay.classList.remove('hidden');
-
-  if (!overlay.dataset.running) {
-    overlay.dataset.running = 'true';
+  } else if (theme === 'night') {
     const createStar = () => {
-      if (data.theme !== 'night') { overlay.dataset.running = ''; return; }
-
+      if (currentVisualTheme !== 'night') return;
       const star = document.createElement('div');
       star.className = 'shooting-star';
-      
       const r = Math.random();
       let width, duration, glow, opacity, color;
       if (r < 0.65) {
@@ -1349,29 +1250,14 @@ function updateNightSky() {
       star.style.left = (Math.random() * 90 - 10) + '%';
       star.style.top = (Math.random() * 50 - 10) + '%';
 
-      overlay.appendChild(star);
+      container.appendChild(star);
       setTimeout(() => { if(star.parentNode) star.remove(); }, duration * 1000 + 200);
 
       const nextDelay = 15000 + Math.random() * 10000;
-      overlay.dataset.timeoutId = setTimeout(createStar, nextDelay);
+      activeVisualTimeouts.add(setTimeout(createStar, nextDelay));
     };
-    const initialDelay = 1000 + Math.random() * 2000;
-    overlay.dataset.timeoutId = setTimeout(createStar, initialDelay);
-  }
-}
-
-function updateRain() {
-  const overlay = el('rainOverlay');
-  if (!overlay) return;
-  const desiredParent = document.fullscreenElement || document.body;
-  if (overlay.parentElement !== desiredParent) desiredParent.appendChild(overlay);
-
-  if (data.theme !== 'rain') {
-    overlay.classList.add('hidden');
-    overlay.innerHTML = '';
-    return;
-  }
-  if (overlay.children.length === 0) {
+    activeVisualTimeouts.add(setTimeout(createStar, 1000 + Math.random() * 2000));
+  } else if (theme === 'rain') {
     for (let i = 0; i < 140; i++) {
       const drop = document.createElement('div');
       drop.className = 'rain-drop';
@@ -1380,142 +1266,62 @@ function updateRain() {
       drop.style.animationDuration = 1.8 + Math.random() * 1.8 + 's';
       drop.style.animationDelay = '-' + Math.random() * 4 + 's';
       drop.style.opacity = 0.22 + Math.random() * 0.24;
-      overlay.appendChild(drop);
+      container.appendChild(drop);
+    }
+    for (let i = 0; i < 3; i++) {
+      const p = document.createElement('div');
+      p.className = 'mist-layer';
+      p.style.left = (Math.random() * 30) + '%';
+      p.style.top = (Math.random() * 30) + '%';
+      p.style.setProperty('--dur', (12 + Math.random() * 10) + 's');
+      p.style.animationDelay = (Math.random() * -15) + 's';
+      container.appendChild(p);
     }
   }
-  overlay.classList.remove('hidden');
 }
 
 function applyTheme() {
-  const root = el('appRoot');
-  if (!root) return;
-
-  const gradient = themes[data.theme] || themes.forest;
+  const def = THEME_DEFS[data.theme] || THEME_DEFS.forest;
   const isNight = data.theme === 'night';
+  const isFs = !!document.fullscreenElement;
 
-  document.body.className = `min-h-screen bg-gradient-to-b ${gradient.join(' ')} ${isNight ? 'text-slate-100' : 'text-slate-800'} transition-colors duration-500 ${document.fullscreenElement ? 'overflow-hidden' : ''}`;
+  document.body.className = `min-h-screen bg-gradient-to-b ${def.bg} ${def.text} transition-colors duration-500 flex flex-col items-center ${isFs ? 'fullscreen-active' : ''}`;
   
-  if(!document.fullscreenElement) {
-    root.className = `w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b ${gradient.join(' ')} p-6 md:p-12 transition-all duration-500 relative overflow-hidden flex flex-col items-center`;
+  const root = el('appRoot');
+  if(isFs) {
+    root.className = `w-full max-w-none flex-1 flex flex-col items-center justify-center p-6 md:p-12 transition-all duration-500 relative`;
+  } else {
+    root.className = `w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b ${def.bg} p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center shadow-2xl mt-4 md:mt-4 mb-4 md:mb-4`;
   }
 
-  const cardClass = isNight
-    ? 'bg-gradient-to-br from-slate-900/92 via-slate-900/88 to-indigo-950/90 border border-indigo-300/20 shadow-2xl backdrop-blur-xl'
-    : 'bg-white/85 border shadow-lg';
-
-  ['focusPage', 'forestPage', 'settingsPage'].forEach((id) => {
-    const section = el(id);
-    if (!section) return;
-    const baseClasses = Array.from(section.classList).filter((cls) =>
-      ['page-section', 'page-hidden', 'hidden', 'w-full', 'rounded-3xl', 'p-6', 'max-w-3xl', 'max-w-xl', 'mx-auto', 'space-y-4', 'mb-8', 'md:mb-12', 'lg:mb-16', 'space-y-5'].includes(cls)
-    );
-    section.className = [...baseClasses, cardClass, 'transition-colors', 'duration-500'].join(' ');
-  });
-
-  const dashboardCards = document.querySelectorAll('#dashboardGrid > div');
-  dashboardCards.forEach((card) => {
-    if (isNight) {
-      card.className = 'rounded-3xl bg-gradient-to-br from-slate-900/92 via-slate-900/88 to-indigo-950/90 border border-indigo-300/20 shadow-2xl backdrop-blur-xl p-5 transition-colors duration-500';
-    } else {
-      card.className = 'rounded-3xl bg-white/85 border shadow-lg p-5 transition-colors duration-500';
+  document.querySelectorAll('[data-theme-target]').forEach(el => {
+    const targetType = el.getAttribute('data-theme-target');
+    const baseClasses = el.getAttribute('data-base-class') || '';
+    if (def[targetType]) {
+      el.className = `${baseClasses} ${def[targetType]} transition-all duration-500`;
     }
   });
-
-  const timer = el('timer');
-  if (timer) timer.className = 'text-6xl md:text-7xl font-mono font-bold transition-colors duration-500 ' + (isNight ? 'text-violet-50 drop-shadow-[0_0_18px_rgba(167,139,250,0.45)]' : 'text-slate-800');
 
   const ring = el('progressRing');
   if (ring) {
-    ring.setAttribute('stroke', isNight ? '#a78bfa' : data.theme === 'rain' ? '#0ea5e9' : '#10b981');
-    ring.style.filter = isNight ? 'drop-shadow(0 0 10px rgba(167,139,250,0.55))' : 'none';
+    ring.setAttribute('stroke', def.ring);
+    ring.style.filter = isNight ? `drop-shadow(0 0 10px ${def.ring}88)` : 'none';
   }
-
-  const startPauseBtn = el('startPauseBtn');
-  if (startPauseBtn) {
-    startPauseBtn.className = 'btn-interactive px-6 py-3 rounded-2xl text-white font-semibold transition-all duration-200 ' + (
-      isNight ? 'bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 shadow-xl shadow-violet-900/40 hover:brightness-110' :
-      data.theme === 'rain' ? 'bg-sky-500 hover:bg-sky-600' : 'bg-emerald-500 hover:bg-emerald-600');
-  }
-
-  const phaseLabel = el('phaseLabel');
-  if (phaseLabel) phaseLabel.className = 'text-sm uppercase tracking-[0.18em] font-semibold transition-colors duration-500 ' + (isNight ? 'text-violet-200' : 'text-emerald-700');
-
-  const progressLabel = el('progressLabel');
-  if (progressLabel) progressLabel.className = 'mt-2 text-sm transition-colors duration-500 ' + (isNight ? 'text-slate-300' : 'text-slate-500');
-
-  const brandTitle = el('brandTitle');
-  if (brandTitle) {
-    brandTitle.className = 'brand-title text-4xl md:text-6xl transition-colors duration-500 ';
-    if (isNight) brandTitle.className += 'brand-title-night text-violet-50';
-    else if (data.theme === 'rain') brandTitle.className += 'brand-title-rain text-slate-800';
-    else brandTitle.className += 'text-emerald-900';
-  }
-
-  const subtitle = document.querySelector('header p');
-  if (subtitle) subtitle.className = 'mt-2 transition-colors duration-500 ' + (isNight ? 'text-slate-300' : 'text-slate-600');
-
-  const message = el('message');
-  if (message) message.className = 'mt-6 italic transition-colors duration-500 ' + (isNight ? 'text-slate-300' : 'text-slate-500');
 
   renderNav();
-
-  const fullscreenBtn = el('fullscreenBtn');
-  if (fullscreenBtn) {
-    fullscreenBtn.className = 'btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl transition-all duration-200 ' + (
-      isNight ? 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-lg hover:bg-slate-800/80' : 'bg-white/85 text-slate-800 hover:bg-white');
-  }
-  
-  const pipBtn = el('pipBtn');
-  if (pipBtn) {
-    pipBtn.className = 'btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl transition-all duration-200 ' + (
-      isNight ? 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-lg hover:bg-slate-800/80' : 'bg-white/85 text-slate-800 hover:bg-white');
-  }
-
-  const witherBtn = el('witherBtn');
-  if (witherBtn) {
-    witherBtn.className = 'btn-interactive px-6 py-3 rounded-2xl text-white font-semibold transition-all duration-200 ' + (
-      isNight ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 shadow-xl shadow-orange-900/35 hover:brightness-110' :
-      data.theme === 'rain' ? 'bg-gradient-to-r from-slate-500 to-slate-600 shadow-lg hover:brightness-110' : 'bg-amber-500 hover:bg-amber-600');
-  }
-
-  const resetBtn = el('resetBtn');
-  if (resetBtn) {
-    resetBtn.className = 'btn-interactive px-6 py-3 rounded-2xl border transition-all duration-200 font-medium ' + (
-      isNight ? 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-lg hover:bg-slate-800/80' :
-      data.theme === 'rain' ? 'border-sky-200 bg-white/90 text-slate-700 hover:bg-sky-50' : 'bg-white hover:bg-emerald-50');
-  }
-
-  const focusLabel = document.querySelector('#focusControls label');
-  if (focusLabel) focusLabel.className = 'font-medium transition-colors duration-500 ' + (isNight ? 'text-slate-300' : 'text-slate-600');
-
-  const settingsLabels = document.querySelectorAll('#settingsPage span.settings-label');
-  settingsLabels.forEach((label) => {
-    label.className = 'font-medium settings-label transition-colors duration-500 ' + (isNight ? 'text-slate-300' : 'text-slate-700');
-  });
-
-  const inputs = ['focusMinutesInput', 'breakMinutesInput', 'themeSelect', 'soundscapeSelect'];
-  inputs.forEach(id => {
-    const input = el(id);
-    if(input) {
-      input.className = 'w-full mt-2 rounded-xl border px-3 py-3 transition-colors duration-500 focus:outline-none focus:ring-2 cursor-pointer ' + (
-        isNight ? 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-inner focus:ring-violet-400/50' :
-        data.theme === 'rain' ? 'border-sky-200 bg-white/90 text-slate-800 focus:ring-sky-300/50' : 'border-emerald-200 bg-white text-slate-800 focus:ring-emerald-300/50');
-      if(id === 'focusMinutesInput') input.classList.replace('w-full', 'w-24');
-      if(id === 'focusMinutesInput') input.classList.add('text-center');
-    }
-  });
-
-  updateRain();
-  updateNightSky();
-  updateSoundscapeParticles();
-  soundEngine.setVolume(data.ambientVolume / 100);
+  applyVisualEffects(data.theme);
+  updatePiPTheme();
 }
 
 function render() {
-  renderNav();
   renderFocus();
   renderForest();
   renderDashboard();
+
+  for (const p of pages) {
+    const section = el(p + 'Page');
+    if (section && p !== page) section.classList.add('page-hidden');
+  }
 
   if (el('focusMinutesInput')) el('focusMinutesInput').value = data.focusMinutes;
   if (el('breakMinutesInput')) el('breakMinutesInput').value = data.breakMinutes;
@@ -1713,15 +1519,11 @@ function bindEvents() {
   });
 
   document.addEventListener('fullscreenchange', () => {
-    const isFs = !!document.fullscreenElement;
-    document.body.classList.toggle('fullscreen-active', isFs);
-    el('appRoot').classList.toggle('fullscreen-active', isFs);
     render();
   });
 }
 
 document.addEventListener('visibilitychange', () => {
-  // Audio continues playing in background. We only resume audio context if browser suspended it.
   if (!document.hidden && audioUnlocked) {
     if(soundEngine.ctx && soundEngine.ctx.state === 'suspended') {
       soundEngine.ctx.resume();
@@ -1732,11 +1534,6 @@ document.addEventListener('visibilitychange', () => {
 
 bindEvents();
 render();
-// Ensure pages array matches correctly initialized view
-pages.forEach(p => {
-  const section = el(p + 'Page');
-  if (section && p !== page) section.classList.add('page-hidden');
-});
 </script>
 
 <script>
