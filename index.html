@@ -6,147 +6,59 @@
 <title>Witherwood</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=JetBrains+Mono:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=JetBrains+Mono:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
+body { font-family: 'Inter', sans-serif; }
+
 @keyframes rainfall {
-  from {
-    transform: translate3d(0, -120vh, 0) rotate(12deg);
-  }
-  to {
-    transform: translate3d(-120px, 120vh, 0) rotate(12deg);
-  }
+  from { transform: translate3d(0, -120vh, 0) rotate(12deg); }
+  to { transform: translate3d(-120px, 120vh, 0) rotate(12deg); }
 }
 .rain-overlay {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 2147483645;
+  position: fixed; inset: 0; width: 100vw; height: 100vh;
+  pointer-events: none; z-index: 2147483645;
 }
 .rain-drop {
-  position: absolute;
-  top: -20%; 
-  width: 4.5px;
-  border-radius: 9999px;
-  background: linear-gradient(
-    to bottom,
-    rgba(255,255,255,0),
-    rgba(220,238,255,0.95)
-  );
+  position: absolute; top: -20%; width: 4.5px; border-radius: 9999px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(220,238,255,0.95));
   box-shadow: 0 0 7px rgba(180,220,255,0.4);
-  animation: rainfall linear infinite;
-  will-change: transform;
+  animation: rainfall linear infinite; will-change: transform;
 }
 
 @keyframes shootingStar {
-  0% {
-    transform: translate3d(0, 0, 0) rotate(var(--star-angle));
-    opacity: 0;
-  }
-  8% {
-    opacity: var(--star-opacity);
-  }
-  65% {
-    opacity: var(--star-opacity);
-  }
-  100% {
-    transform: translate3d(var(--star-travel-x), var(--star-travel-y), 0) rotate(var(--star-angle));
-    opacity: 0;
-  }
+  0% { transform: translate3d(0, 0, 0) rotate(var(--star-angle)); opacity: 0; }
+  8% { opacity: var(--star-opacity); }
+  65% { opacity: var(--star-opacity); }
+  100% { transform: translate3d(var(--star-travel-x), var(--star-travel-y), 0) rotate(var(--star-angle)); opacity: 0; }
 }
 
 .shooting-star {
-  position: absolute;
-  width: var(--star-width, 140px);
-  height: 3px;
-  border-radius: 9999px;
-  background: linear-gradient(
-    to right,
-    rgba(var(--star-color),0),
-    rgba(var(--star-color),calc(var(--star-opacity) * 0.1)) 20%,
-    rgba(var(--star-color),calc(var(--star-opacity) * 0.4)) 55%,
-    rgba(var(--star-color),var(--star-opacity)) 100%
-  );
-  box-shadow:
-    0 0 calc(var(--star-glow) * 0.5) rgba(var(--star-color),calc(var(--star-opacity) * 0.5)),
-    0 0 var(--star-glow) rgba(var(--star-color),calc(var(--star-opacity) * 0.8)),
-    0 0 calc(var(--star-glow) * 1.5) rgba(196,181,253,calc(var(--star-opacity) * 0.45));
+  position: absolute; height: 3px; border-radius: 9999px; width: var(--star-width, 140px);
+  background: linear-gradient(to right, rgba(var(--star-color),0), rgba(var(--star-color),calc(var(--star-opacity) * 0.1)) 20%, rgba(var(--star-color),calc(var(--star-opacity) * 0.4)) 55%, rgba(var(--star-color),var(--star-opacity)) 100%);
+  box-shadow: 0 0 calc(var(--star-glow) * 0.5) rgba(var(--star-color),calc(var(--star-opacity) * 0.5)), 0 0 var(--star-glow) rgba(var(--star-color),calc(var(--star-opacity) * 0.8)), 0 0 calc(var(--star-glow) * 1.5) rgba(196,181,253,calc(var(--star-opacity) * 0.45));
   animation: shootingStar var(--star-duration, 2.4s) ease-out forwards;
 }
 
 .shooting-star::after {
-  content: '';
-  position: absolute;
-  right: -1px;
-  top: 50%;
-  width: calc(var(--star-glow) * 0.6);
-  height: calc(var(--star-glow) * 0.6);
-  min-width: 4px;
-  min-height: 4px;
-  border-radius: 9999px;
-  transform: translateY(-50%);
+  content: ''; position: absolute; right: -1px; top: 50%;
+  width: calc(var(--star-glow) * 0.6); height: calc(var(--star-glow) * 0.6);
+  min-width: 4px; min-height: 4px; border-radius: 9999px; transform: translateY(-50%);
   background: radial-gradient(circle, rgba(var(--star-color),1) 0%, rgba(var(--star-color),var(--star-opacity)) 45%, rgba(var(--star-color),0) 100%);
-  box-shadow:
-    0 0 var(--star-glow) rgba(var(--star-color),var(--star-opacity)),
-    0 0 calc(var(--star-glow) * 2) rgba(196,181,253,calc(var(--star-opacity) * 0.7));
+  box-shadow: 0 0 var(--star-glow) rgba(var(--star-color),var(--star-opacity)), 0 0 calc(var(--star-glow) * 2) rgba(196,181,253,calc(var(--star-opacity) * 0.7));
 }
 
 .brand-title {
-  font-family: 'Cinzel', serif;
-  letter-spacing: 0.06em;
-  font-weight: 700;
-  text-shadow:
-    0 2px 8px rgba(16, 24, 40, 0.08),
-    0 0 20px rgba(16, 185, 129, 0.08);
+  font-family: 'Cinzel', serif; letter-spacing: 0.06em; font-weight: 700;
+  text-shadow: 0 2px 8px rgba(16, 24, 40, 0.08), 0 0 20px rgba(16, 185, 129, 0.08);
 }
-.brand-title-night {
-  text-shadow:
-    0 2px 10px rgba(0, 0, 0, 0.45),
-    0 0 24px rgba(167, 139, 250, 0.22);
-}
-.brand-title-rain {
-  text-shadow:
-    0 2px 10px rgba(15, 23, 42, 0.12),
-    0 0 24px rgba(14, 165, 233, 0.16);
-}
+.brand-title-night { text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45), 0 0 24px rgba(167, 139, 250, 0.22); }
+.brand-title-rain { text-shadow: 0 2px 10px rgba(15, 23, 42, 0.12), 0 0 24px rgba(14, 165, 233, 0.16); }
 
-@keyframes ambientIconFloat {
-  0% { transform: translateY(8px) scale(0.92); opacity: 0; }
-  15% { opacity: 0.55; }
-  80% { opacity: 0.42; }
-  100% { transform: translateY(-18px) scale(1); opacity: 0; }
-}
-
-.ambient-icon-layer {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2147483647;
-}
-.ambient-icon {
-  position: absolute;
-  font-size: 18px;
-  opacity: 0;
-  filter: blur(0.15px);
-  animation: ambientIconFloat 2.8s ease-out forwards;
-  user-select: none;
-}
-
-#soundscapeParticles {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2147483646;
-  overflow: hidden;
-}
+#soundscapeParticles { position: fixed; inset: 0; pointer-events: none; z-index: 2147483646; overflow: hidden; }
 .particle-ember {
-  position: absolute;
-  border-radius: 50%;
-  background: #ff7b00;
-  box-shadow: 0 0 6px #ff7b00, 0 0 10px #ff3c00;
-  animation: floatEmber var(--dur) ease-in infinite;
+  position: absolute; border-radius: 50%; background: #ff7b00;
+  box-shadow: 0 0 6px #ff7b00, 0 0 10px #ff3c00; animation: floatEmber var(--dur) ease-in infinite;
 }
 @keyframes floatEmber {
   0% { transform: translate3d(0, 110vh, 0) scale(var(--s)); opacity: 0; }
@@ -155,12 +67,8 @@
   100% { transform: translate3d(var(--tx), -10vh, 0) scale(calc(var(--s) * 0.5)); opacity: 0; }
 }
 .particle-leaf {
-  position: absolute;
-  background: #8bc34a;
-  width: 5px;
-  height: 5px;
-  border-radius: 50% 0 50% 0;
-  animation: floatLeaf var(--dur) linear infinite;
+  position: absolute; background: #8bc34a; width: 5px; height: 5px;
+  border-radius: 50% 0 50% 0; animation: floatLeaf var(--dur) linear infinite;
 }
 @keyframes floatLeaf {
   0% { transform: translate3d(var(--sx), -10vh, 0) rotate(0deg); opacity: 0; }
@@ -169,105 +77,79 @@
   100% { transform: translate3d(var(--ex), 110vh, 0) rotate(var(--rot)); opacity: 0; }
 }
 .mist-layer {
-  position: absolute;
-  inset: -50% -50%;
+  position: absolute; inset: -50% -50%; filter: blur(12px);
   background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.015) 0%, transparent 60%);
   animation: floatMist var(--dur) ease-in-out infinite alternate;
-  filter: blur(12px);
 }
 @keyframes floatMist {
   0% { transform: scale(1) translate3d(0, 0, 0); }
   100% { transform: scale(1.15) translate3d(3%, 3%, 0); }
 }
 
-.page-section {
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  opacity: 1;
-  transform: translateY(0);
-}
-.page-hidden {
-  opacity: 0;
-  transform: translateY(10px);
-  pointer-events: none;
-  position: absolute;
-  visibility: hidden;
-}
-body.fullscreen-active {
-  overflow: hidden;
-}
+.page-section { transition: opacity 0.2s ease, transform 0.2s ease; opacity: 1; transform: translateY(0); }
+.page-hidden { opacity: 0; transform: translateY(10px); pointer-events: none; position: absolute; visibility: hidden; }
+
+body.fullscreen-active { overflow: hidden; }
 #appRoot.fullscreen-active {
-  min-height: 100vh !important;
-  height: 100vh !important; 
-  max-width: 100% !important;
-  margin: 0 !important;
-  border-radius: 0 !important;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start !important;
-  align-items: center;
-  padding: 3rem 1rem 2rem 1rem !important; 
-  overflow-y: auto !important; 
-  overflow-x: hidden !important;
-}
-.btn-interactive {
-  transition: all 0.2s ease;
-}
-.btn-interactive:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-.btn-interactive:active {
-  transform: translateY(0) scale(0.95);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  min-height: 100vh !important; height: 100vh !important; max-width: 100% !important;
+  margin: 0 !important; border-radius: 0 !important; display: flex; flex-direction: column;
+  justify-content: flex-start !important; align-items: center; padding: 3rem 1rem 2rem 1rem !important; 
+  overflow-y: auto !important; overflow-x: hidden !important;
 }
 
-#toastContainer {
-  position: fixed;
-  top: 1.5rem;
-  right: 1.5rem;
-  z-index: 2147483647;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  pointer-events: none;
-}
+.btn-interactive { transition: all 0.2s ease; }
+.btn-interactive:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+.btn-interactive:active { transform: translateY(0) scale(0.95); box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+
+#toastContainer { position: fixed; top: 1.5rem; right: 1.5rem; z-index: 2147483647; display: flex; flex-direction: column; gap: 0.75rem; pointer-events: none; }
 .toast-msg {
-  padding: 0.875rem 1.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
-  font-weight: 500;
-  transform: translateY(-20px) scale(0.95);
-  opacity: 0;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  backdrop-filter: blur(8px);
+  padding: 0.875rem 1.5rem; border-radius: 1rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+  font-weight: 500; transform: translateY(-20px) scale(0.95); opacity: 0;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(8px);
 }
-.toast-msg.toast-show {
-  transform: translateY(0) scale(1);
-  opacity: 1;
-}
+.toast-msg.toast-show { transform: translateY(0) scale(1); opacity: 1; }
 
-/* Fix for Toggle Switch Flinching */
-input[type="checkbox"] {
-  transform: translateZ(0); /* Force hardware acceleration */
-  backface-visibility: hidden; 
-  -webkit-font-smoothing: subpixel-antialiased;
+.custom-range { -webkit-appearance: none; appearance: none; background: transparent; outline: none; height: 24px; }
+.custom-range::-webkit-slider-runnable-track {
+  width: 100%; height: 6px; border-radius: 9999px;
+  background: var(--range-track, rgba(16, 185, 129, 0.15)); transition: background 0.5s ease;
 }
+.custom-range::-webkit-slider-thumb {
+  -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; margin-top: -6px; cursor: pointer;
+  background: var(--range-thumb, #10b981); box-shadow: var(--range-glow, 0 0 12px rgba(16, 185, 129, 0.4));
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+.custom-range::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.custom-range:focus-visible::-webkit-slider-thumb { box-shadow: var(--range-glow, 0 0 12px rgba(16, 185, 129, 0.4)), 0 0 0 4px var(--range-ring, rgba(16, 185, 129, 0.25)); }
 
+.custom-range::-moz-range-track {
+  width: 100%; height: 6px; border-radius: 9999px;
+  background: var(--range-track, rgba(16, 185, 129, 0.15)); transition: background 0.5s ease;
+}
+.custom-range::-moz-range-thumb {
+  height: 18px; width: 18px; border: none; border-radius: 50%; cursor: pointer;
+  background: var(--range-thumb, #10b981); box-shadow: var(--range-glow, 0 0 12px rgba(16, 185, 129, 0.4));
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+.custom-range::-moz-range-thumb:hover { transform: scale(1.15); }
+.custom-range:focus-visible::-moz-range-thumb { box-shadow: var(--range-glow, 0 0 12px rgba(16, 185, 129, 0.4)), 0 0 0 4px var(--range-ring, rgba(16, 185, 129, 0.25)); }
+
+input[type="checkbox"] { transform: translateZ(0); backface-visibility: hidden; -webkit-font-smoothing: subpixel-antialiased; }
 </style>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#f7f4ea">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 </head>
 <body class="min-h-screen bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 text-slate-800 transition-colors duration-500">
+
 <div id="rainOverlay" class="rain-overlay hidden"></div>
 <div id="nightOverlay" class="rain-overlay hidden"></div>
 <div id="soundscapeParticles"></div>
 <div id="toastContainer"></div>
 
-<!-- Confirm Reset Modal -->
 <div id="confirmModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[9999] hidden flex items-center justify-center opacity-0 transition-opacity duration-200">
   <div class="bg-white rounded-3xl p-6 max-w-sm mx-4 shadow-2xl transform scale-95 transition-transform duration-200">
-    <h3 class="text-xl font-bold mb-2">Reset All Data?</h3>
+    <h3 class="text-xl font-bold mb-2 text-slate-800">Reset All Data?</h3>
     <p class="text-slate-600 mb-6">This will permanently remove your forest and all statistics.</p>
     <div class="flex justify-end gap-3">
       <button id="confirmCancel" class="btn-interactive px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">Cancel</button>
@@ -279,14 +161,11 @@ input[type="checkbox"] {
 <div class="min-h-screen p-4 md:p-8 pb-10 md:pb-16 flex flex-col items-center transition-all duration-500">
   <div id="appRoot" class="w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center">
     <div class="w-full max-w-4xl space-y-8 relative z-10 flex flex-col items-center">
+      
       <header class="flex flex-col items-center text-center gap-4 w-full relative">
         <div class="absolute right-0 top-0 flex gap-2">
-          <button id="pipBtn" class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl transition-colors duration-500" title="Mini Player" aria-label="Mini Player">
-            ◱
-          </button>
-          <button id="fullscreenBtn" class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl transition-colors duration-500" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">
-            ⛶
-          </button>
+          <button id="pipBtn" class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl transition-colors duration-500" title="Mini Player" aria-label="Mini Player">◱</button>
+          <button id="fullscreenBtn" class="btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl transition-colors duration-500" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">⛶</button>
         </div>
         <div class="mt-4 md:mt-0">
           <h1 id="brandTitle" class="brand-title text-4xl md:text-6xl transition-colors duration-500">🌲 Witherwood</h1>
@@ -297,27 +176,17 @@ input[type="checkbox"] {
       <nav id="nav" class="flex flex-wrap justify-center gap-3 w-full"></nav>
 
       <div class="w-full relative flex justify-center">
+        
         <section id="focusPage" class="page-section w-full rounded-3xl bg-white/85 border shadow-lg p-6 max-w-3xl mb-8 md:mb-12 lg:mb-16">
           <div class="max-w-lg mx-auto text-center">
             <div id="phaseLabel" class="text-sm uppercase tracking-wide text-emerald-700 transition-colors duration-500 font-semibold">Focus Session</div>
 
             <div class="mt-4 flex justify-center">
               <div class="relative w-64 h-64 md:w-72 md:h-72">
-                <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
-                  <circle cx="70" cy="70" r="60" fill="none" stroke="#d1fae5" stroke-width="8" class="transition-colors duration-500" />
-                  <circle
-                    id="progressRing"
-                    cx="70"
-                    cy="70"
-                    r="60"
-                    fill="none"
-                    stroke="#10b981"
-                    stroke-width="8"
-                    stroke-linecap="round"
-                    stroke-dasharray="376.99"
-                    stroke-dashoffset="0"
-                    class="transition-all duration-300 ease-in-out"
-                  />
+                <!-- SVG ViewBox expanded to 160x160 for proper glow padding -->
+                <svg class="w-full h-full -rotate-90 overflow-visible" viewBox="0 0 160 160">
+                  <circle id="progressRingBg" cx="80" cy="80" r="60" fill="none" stroke-width="8" class="transition-colors duration-500" />
+                  <circle id="progressRing" cx="80" cy="80" r="60" fill="none" stroke="#10b981" stroke-width="8" stroke-linecap="round" stroke-dasharray="376.99" stroke-dashoffset="0" class="transition-all duration-300 ease-in-out" />
                 </svg>
 
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
@@ -329,14 +198,7 @@ input[type="checkbox"] {
 
             <div id="focusControls" class="mt-6 flex items-center justify-center gap-3">
               <label class="transition-colors duration-500">Focus (min)</label>
-              <input
-                id="focusMinutesInput"
-                type="number"
-                min="1"
-                max="180"
-                value="25"
-                class="w-24 rounded-xl border px-3 py-2 transition-colors duration-500 text-center"
-              />
+              <input id="focusMinutesInput" type="number" min="1" max="180" value="25" class="w-24 rounded-xl border px-3 py-2 transition-colors duration-500 text-center" />
             </div>
 
             <div id="saplings" class="mt-5 text-lg font-medium transition-colors duration-500"></div>
@@ -371,14 +233,7 @@ input[type="checkbox"] {
 
           <label class="block">
             <span class="font-medium settings-label transition-colors duration-500">Break Minutes</span>
-            <input
-              id="breakMinutesInput"
-              type="number"
-              min="1"
-              max="60"
-              value="5"
-              class="w-full mt-2 rounded-xl border px-3 py-3 transition-colors duration-500"
-            />
+            <input id="breakMinutesInput" type="number" min="1" max="60" value="5" class="w-full mt-2 rounded-xl border px-3 py-3 transition-colors duration-500" />
           </label>
 
           <div class="pt-4 border-t border-slate-200/60">
@@ -390,17 +245,9 @@ input[type="checkbox"] {
             <label class="block">
               <div class="flex items-center justify-between mb-2">
                 <span class="font-medium settings-label transition-colors duration-500">Ambient Volume</span>
-                <span id="ambientVolumeLabel" class="text-sm text-slate-500 font-medium">50%</span>
+                <span id="ambientVolumeLabel" class="text-sm font-medium transition-colors duration-500">50%</span>
               </div>
-              <input
-                id="ambientVolumeInput"
-                type="range"
-                min="0"
-                max="100"
-                step="1"
-                value="50"
-                class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-500"
-              />
+              <input id="ambientVolumeInput" type="range" min="0" max="100" step="1" value="50" class="custom-range w-full cursor-pointer" />
             </label>
           </div>
 
@@ -427,25 +274,20 @@ input[type="checkbox"] {
             <div>
               <h3 class="font-semibold settings-label transition-colors duration-500 mb-2">Data Management</h3>
               <div class="flex flex-wrap gap-3">
-                <button id="exportDataBtn" class="btn-interactive px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium">
-                  📤 Export Backup
-                </button>
-                <button id="importDataBtn" class="btn-interactive px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-medium">
-                  📥 Import Backup
-                </button>
+                <button id="exportDataBtn" class="btn-interactive px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium">📤 Export Backup</button>
+                <button id="importDataBtn" class="btn-interactive px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-medium">📥 Import Backup</button>
                 <input id="importFileInput" type="file" accept=".json" style="display:none" />
               </div>
             </div>
             <div class="pt-4 border-t border-slate-200/60">
               <h3 class="font-semibold settings-label transition-colors duration-500 text-rose-500 mb-2">Danger Zone</h3>
               <p class="text-sm text-slate-500 transition-colors duration-500 mb-3">Permanently clears your forest and all saved statistics.</p>
-              <button id="resetAllBtn" class="btn-interactive px-5 py-2.5 rounded-xl bg-rose-500 text-white hover:bg-rose-600 transition-colors font-medium">
-                Reset All Data
-              </button>
+              <button id="resetAllBtn" class="btn-interactive px-5 py-2.5 rounded-xl bg-rose-500 text-white hover:bg-rose-600 transition-colors font-medium">Reset All Data</button>
             </div>
           </div>
         </section>
       </div>
+
     </div>
   </div>
 </div>
@@ -453,29 +295,17 @@ input[type="checkbox"] {
 <script>
 const STORAGE_KEY = 'witherwood-data';
 const DEFAULTS = {
-  focusMinutes: 25,
-  breakMinutes: 5,
-  theme: 'forest',
-  soundscape: 'woodland',
-  ambientSoundEnabled: false,
-  ambientVolume: 50,
-  livingTrees: 0,
-  deadTrees: 0,
-  totalFocusMinutes: 0,
-  todayFocusMinutes: 0,
-  streakDays: 0,
-  bestDayMinutes: 0,
-  lastFocusDate: '',
-  breaksEnabled: true,
+  focusMinutes: 25, breakMinutes: 5, theme: 'forest', soundscape: 'woodland',
+  ambientSoundEnabled: false, ambientVolume: 50, livingTrees: 0, deadTrees: 0,
+  totalFocusMinutes: 0, todayFocusMinutes: 0, streakDays: 0, bestDayMinutes: 0,
+  lastFocusDate: '', breaksEnabled: true,
 };
 
 let data;
 try {
   data = { ...DEFAULTS, ...(JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || {}) };
   if (!data.soundscape) data.soundscape = 'woodland';
-} catch {
-  data = { ...DEFAULTS };
-}
+} catch { data = { ...DEFAULTS }; }
 
 let page = 'focus';
 let phase = 'focus';
@@ -493,7 +323,7 @@ const labels = { focus: '⏱ Focus', forest: '🌲 Forest', dashboard: '📊 Das
 
 const themes = {
   forest: ['from-emerald-50', 'via-lime-50', 'to-teal-100'],
-  night: ['from-slate-950', 'via-slate-900', 'to-indigo-950'],
+  night: ['from-[#0a0f1c]', 'via-[#0f1429]', 'to-[#151b36]'],
   rain: ['from-sky-100', 'via-slate-200', 'to-blue-300'],
 };
 
@@ -518,18 +348,10 @@ const AUDIO_CONFIG = {
 
 class SoundscapeEngine {
   constructor() {
-    this.ctx = null;
-    this.masterGain = null;
-    this.activeAmbience = new Set();
-    this.activeEvents = new Set();
-    this.timeouts = new Set();
-    this.baseVolume = 0.5;
-    this.enabled = false;
-    this.currentSoundscape = null;
-    this.ambienceMonitor = null;
-    this.buffers = new Map();
-    this.loading = false;
-    
+    this.ctx = null; this.masterGain = null; this.activeAmbience = new Set();
+    this.activeEvents = new Set(); this.timeouts = new Set(); this.baseVolume = 0.5;
+    this.enabled = false; this.currentSoundscape = null; this.ambienceMonitor = null;
+    this.buffers = new Map(); this.loading = false;
     this.state = { common: 0, medium: 0, lastPlayed: {} };
   }
 
@@ -555,22 +377,15 @@ class SoundscapeEngine {
     if (!config) return;
 
     const allSrcs = [
-      ...(config.ambience || []),
-      ...(config.common || []),
-      ...(config.medium || []),
-      ...(config.rare || []),
-      ...(config.woosh || []),
-      ...(config.owl || []),
-      ...(config.thunder || []),
-      ...(config.wind || [])
+      ...(config.ambience || []), ...(config.common || []), ...(config.medium || []),
+      ...(config.rare || []), ...(config.woosh || []), ...(config.owl || []),
+      ...(config.thunder || []), ...(config.wind || [])
     ];
 
     let toLoad = allSrcs.filter(src => !this.buffers.has(src));
-    
     if (toLoad.length > 0) {
       showToast('Loading soundscape...', 'info');
       this.loading = true;
-      
       await Promise.all(toLoad.map(async (src) => {
         try {
           const response = await fetch(src);
@@ -578,16 +393,10 @@ class SoundscapeEngine {
           const arrayBuffer = await response.arrayBuffer();
           const audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
           this.buffers.set(src, audioBuffer);
-        } catch (e) {
-          console.warn('Failed to load audio:', src, e);
-        }
+        } catch (e) { console.warn('Failed to load audio:', src, e); }
       }));
-
       this.loading = false;
-      
-      if (this.currentSoundscape === type && this.enabled) {
-        showToast('Soundscape ready.', 'success');
-      }
+      if (this.currentSoundscape === type && this.enabled) showToast('Soundscape ready.', 'success');
     }
   }
 
@@ -601,20 +410,12 @@ class SoundscapeEngine {
     this.enabled = enabled;
     this.currentSoundscape = soundscape;
 
-    if (isTurningOff) {
-      this.detachAndFadeOutAll(2);
-      return;
-    }
+    if (isTurningOff) { this.detachAndFadeOutAll(2); return; }
 
     if(enabled) {
       await this.loadSoundscape(soundscape);
-      
       if (!this.enabled || this.currentSoundscape !== soundscape) return;
-
-      if (isSwitching) {
-        this.detachAndFadeOutAll(6);
-      }
-
+      if (isSwitching) this.detachAndFadeOutAll(6);
       if (this.activeAmbience.size === 0 || isSwitching) {
         this.startAmbience(soundscape);
         this.startEvents(soundscape);
@@ -624,20 +425,13 @@ class SoundscapeEngine {
 
   detachAndFadeOutAll(duration = 6) {
     if (!this.ctx) return;
-    
-    this.timeouts.forEach(clearTimeout);
-    this.timeouts.clear();
-    
-    if(this.ambienceMonitor) {
-      clearInterval(this.ambienceMonitor);
-      this.ambienceMonitor = null;
-    }
+    this.timeouts.forEach(clearTimeout); this.timeouts.clear();
+    if(this.ambienceMonitor) { clearInterval(this.ambienceMonitor); this.ambienceMonitor = null; }
 
     const now = this.ctx.currentTime;
     const fadeItems = [...this.activeAmbience, ...this.activeEvents];
     
-    this.activeAmbience.clear();
-    this.activeEvents.clear();
+    this.activeAmbience.clear(); this.activeEvents.clear();
     this.state = { common: 0, medium: 0, lastPlayed: {} };
 
     fadeItems.forEach(w => {
@@ -650,10 +444,7 @@ class SoundscapeEngine {
 
   playAudio(src, isAmbience = false, onEnd = null) {
     const buffer = this.buffers.get(src);
-    if (!buffer) {
-      if (onEnd) onEnd();
-      return null;
-    }
+    if (!buffer) { if (onEnd) onEnd(); return null; }
 
     const source = this.ctx.createBufferSource();
     source.buffer = buffer;
@@ -677,34 +468,23 @@ class SoundscapeEngine {
 
     gainNode.gain.value = 0;
     
-    if (panner) {
-      source.connect(panner);
-      panner.connect(gainNode);
-    } else {
-      source.connect(gainNode);
-    }
+    if (panner) { source.connect(panner); panner.connect(gainNode); } 
+    else { source.connect(gainNode); }
     
     gainNode.connect(this.masterGain);
 
     const now = this.ctx.currentTime;
     const fadeDuration = isAmbience ? 8 : 1.5;
-    
     gainNode.gain.linearRampToValueAtTime(targetVol, now + fadeDuration);
 
     const wrapper = { source, gainNode, targetVol, duration: buffer.duration, startTime: now };
     
-    if(isAmbience) {
-      this.activeAmbience.add(wrapper);
-    } else {
-      this.activeEvents.add(wrapper);
-    }
+    if(isAmbience) this.activeAmbience.add(wrapper);
+    else this.activeEvents.add(wrapper);
 
     source.onended = () => {
-      if(isAmbience) {
-        this.activeAmbience.delete(wrapper);
-      } else {
-        this.activeEvents.delete(wrapper);
-      }
+      if(isAmbience) this.activeAmbience.delete(wrapper);
+      else this.activeEvents.delete(wrapper);
       if(onEnd) onEnd();
     };
 
@@ -715,26 +495,19 @@ class SoundscapeEngine {
   startAmbience(type) {
     const tracks = AUDIO_CONFIG[type]?.ambience;
     if (!tracks || tracks.length === 0) return;
-    
     let currentIndex = Math.floor(Math.random() * tracks.length);
     
     const playNext = () => {
       if(!this.enabled || this.currentSoundscape !== type) return;
-      
       const track = tracks[currentIndex];
       const wrapper = this.playAudio(track, true);
-      
       if (!wrapper) return;
 
       const crossfadeDuration = Math.min(8, wrapper.duration / 2);
       const crossfadeTime = wrapper.duration - crossfadeDuration;
       
       const checkCrossfade = setInterval(() => {
-        if(!this.enabled || this.currentSoundscape !== type) {
-          clearInterval(checkCrossfade);
-          return;
-        }
-        
+        if(!this.enabled || this.currentSoundscape !== type) { clearInterval(checkCrossfade); return; }
         const elapsed = this.ctx.currentTime - wrapper.startTime;
         if(elapsed >= crossfadeTime) {
           clearInterval(checkCrossfade);
@@ -747,10 +520,8 @@ class SoundscapeEngine {
           wrapper.gainNode.gain.linearRampToValueAtTime(0, now + crossfadeDuration);
         }
       }, 500);
-      
       this.ambienceMonitor = checkCrossfade;
     };
-    
     playNext();
   }
 
@@ -774,50 +545,27 @@ class SoundscapeEngine {
   }
 
   triggerEvent(src, nextScheduleFn) {
-    if(!src) {
-      if(nextScheduleFn) nextScheduleFn();
-      return;
-    }
-    
-    if(this.activeEvents.size > 0) {
-      this.schedule(() => this.triggerEvent(src, nextScheduleFn), 10000, 30000);
-      return;
-    }
+    if(!src) { if(nextScheduleFn) nextScheduleFn(); return; }
+    if(this.activeEvents.size > 0) { this.schedule(() => this.triggerEvent(src, nextScheduleFn), 10000, 30000); return; }
     this.playAudio(src, false, nextScheduleFn);
   }
 
   startEvents(type) {
-    if(type === 'woodland') {
-      this.scheduleWoodland();
-    } else if (type === 'fireside') {
-      this.scheduleFiresideWoosh();
-      this.scheduleFiresideOwl();
-    } else if (type === 'rainfall') {
-      this.scheduleRainThunder();
-      this.scheduleRainWind();
-    }
+    if(type === 'woodland') this.scheduleWoodland();
+    else if (type === 'fireside') { this.scheduleFiresideWoosh(); this.scheduleFiresideOwl(); }
+    else if (type === 'rainfall') { this.scheduleRainThunder(); this.scheduleRainWind(); }
   }
 
   scheduleWoodland() {
     this.schedule(() => {
-      let pool = AUDIO_CONFIG.woodland.common;
-      let tier = 'common';
-      
+      let pool = AUDIO_CONFIG.woodland.common; let tier = 'common';
       if(this.state.common >= (2 + Math.floor(Math.random()*2))) {
-        pool = AUDIO_CONFIG.woodland.medium;
-        tier = 'medium';
-        this.state.common = 0;
-        this.state.medium++;
-        
+        pool = AUDIO_CONFIG.woodland.medium; tier = 'medium';
+        this.state.common = 0; this.state.medium++;
         if(this.state.medium >= (2 + Math.floor(Math.random()*2))) {
-          pool = AUDIO_CONFIG.woodland.rare;
-          tier = 'rare';
-          this.state.medium = 0;
+          pool = AUDIO_CONFIG.woodland.rare; tier = 'rare'; this.state.medium = 0;
         }
-      } else {
-        this.state.common++;
-      }
-      
+      } else { this.state.common++; }
       const track = this.getRandomTrack(pool, tier);
       this.triggerEvent(track, () => this.scheduleWoodland());
     }, 120000, 360000); 
@@ -851,12 +599,9 @@ class SoundscapeEngine {
     }, 720000, 900000); 
   }
 }
-
 const soundEngine = new SoundscapeEngine();
 
-function el(id) {
-  return document.getElementById(id);
-}
+function el(id) { return document.getElementById(id); }
 
 function showToast(message, type = 'info') {
   const container = el('toastContainer');
@@ -869,14 +614,8 @@ function showToast(message, type = 'info') {
   toast.textContent = message;
   container.appendChild(toast);
   
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => toast.classList.add('toast-show'));
-  });
-  
-  setTimeout(() => {
-    toast.classList.remove('toast-show');
-    setTimeout(() => toast.remove(), 400);
-  }, 4000);
+  requestAnimationFrame(() => { requestAnimationFrame(() => toast.classList.add('toast-show')); });
+  setTimeout(() => { toast.classList.remove('toast-show'); setTimeout(() => toast.remove(), 400); }, 4000);
 }
 
 function showConfirmModal(title, text, onConfirm) {
@@ -888,59 +627,42 @@ function showConfirmModal(title, text, onConfirm) {
   modal.querySelector('p').textContent = text;
   
   modal.classList.remove('hidden');
-  requestAnimationFrame(() => {
-    modal.classList.remove('opacity-0');
-    modal.firstElementChild.classList.remove('scale-95');
-  });
+  requestAnimationFrame(() => { modal.classList.remove('opacity-0'); modal.firstElementChild.classList.remove('scale-95'); });
   
   const close = () => {
-    modal.classList.add('opacity-0');
-    modal.firstElementChild.classList.add('scale-95');
+    modal.classList.add('opacity-0'); modal.firstElementChild.classList.add('scale-95');
     setTimeout(() => modal.classList.add('hidden'), 200);
-    yesBtn.onclick = null;
-    cancelBtn.onclick = null;
+    yesBtn.onclick = null; cancelBtn.onclick = null;
   };
   
-  yesBtn.onclick = () => {
-    onConfirm();
-    close();
-  };
+  yesBtn.onclick = () => { onConfirm(); close(); };
   cancelBtn.onclick = close;
 }
 
 function playCompletionSound() {
   if (!audioUnlocked || !data.ambientSoundEnabled) return;
   try {
-    soundEngine.init();
-    const ctx = soundEngine.ctx;
+    soundEngine.init(); const ctx = soundEngine.ctx;
     if(ctx.state === 'suspended') ctx.resume();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+    osc.type = 'sine'; osc.frequency.setValueAtTime(880, ctx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 1.5);
     gain.gain.setValueAtTime(0, ctx.currentTime);
     gain.gain.linearRampToValueAtTime(0.15 * soundEngine.baseVolume, ctx.currentTime + 0.05);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 2);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(); osc.stop(ctx.currentTime + 2);
   } catch(e) {}
 }
 
-function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
 
 function exportBackup() {
   const backup = { version: 1, exportedAt: new Date().toISOString(), data };
   const blob = new Blob([JSON.stringify(backup, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
   a.download = `Witherwood_Backup_${new Date().toISOString().split('T')[0]}.json`;
-  a.click();
-  URL.revokeObjectURL(a.href);
+  a.click(); URL.revokeObjectURL(a.href);
 }
 
 function importBackup(file) {
@@ -951,20 +673,13 @@ function importBackup(file) {
       if (!backup.data) throw new Error('Invalid backup');
       data = { ...DEFAULTS, ...backup.data };
       if (!data.soundscape) data.soundscape = 'woodland';
-      save();
-      resetTimer();
-      render();
-      showToast('Backup restored successfully!', 'success');
-    } catch (e) {
-      showToast('Invalid backup file.', 'error');
-    }
+      save(); resetTimer(); render(); showToast('Backup restored successfully!', 'success');
+    } catch (e) { showToast('Invalid backup file.', 'error'); }
   };
   reader.readAsText(file);
 }
 
-function fmt(seconds) {
-  return String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
-}
+function fmt(seconds) { return String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0'); }
 
 function getIcons() {
   if (data.theme === 'rain') return { sapling: '💧', living: '💧', dead: '☁️' };
@@ -989,24 +704,15 @@ function witherTree() {
 
 async function switchPage(newPage) {
   if (page === newPage) return;
-  const oldEl = el(page + 'Page');
-  const newEl = el(newPage + 'Page');
-  
-  if(oldEl) {
-    oldEl.classList.add('page-hidden');
-  }
+  const oldEl = el(page + 'Page'); const newEl = el(newPage + 'Page');
+  if(oldEl) oldEl.classList.add('page-hidden');
   
   await new Promise(r => setTimeout(r, 200));
   
   if(oldEl) oldEl.classList.add('hidden');
-  if(newEl) {
-    newEl.classList.remove('hidden');
-    void newEl.offsetWidth; 
-    newEl.classList.remove('page-hidden');
-  }
+  if(newEl) { newEl.classList.remove('hidden'); void newEl.offsetWidth; newEl.classList.remove('page-hidden'); }
   
-  page = newPage;
-  renderNav();
+  page = newPage; renderNav();
 }
 
 function renderNav() {
@@ -1037,67 +743,74 @@ function renderNav() {
 }
 
 async function togglePiP() {
-  if (pipWindow) {
-    pipWindow.close();
-    return;
-  }
-
+  if (pipWindow) { pipWindow.close(); return; }
   if ('documentPictureInPicture' in window) {
     try {
-      pipWindow = await documentPictureInPicture.requestWindow({
-        width: 330,
-        height: 390
-      });
+      pipWindow = await documentPictureInPicture.requestWindow({ width: 320, height: 400 });
       setupPiP(pipWindow);
       pipWindow.addEventListener('pagehide', () => { pipWindow = null; });
-    } catch (e) {
-      fallbackPiP();
-    }
-  } else {
-    fallbackPiP();
-  }
+    } catch (e) { fallbackPiP(); }
+  } else { fallbackPiP(); }
 }
 
 function fallbackPiP() {
-  pipWindow = window.open('', 'Witherwood Mini Player', 'width=330,height=390');
+  pipWindow = window.open('', 'Witherwood Mini Player', 'width=320,height=400');
   if (pipWindow) {
     setupPiP(pipWindow);
     pipWindow.addEventListener('beforeunload', () => { pipWindow = null; });
-  } else {
-    showToast('Popup blocked. Please allow popups for the Mini Player.', 'error');
-  }
+  } else { showToast('Popup blocked. Please allow popups for the Mini Player.', 'error'); }
 }
 
 function setupPiP(win) {
-  const fontLink = win.document.createElement('link');
-  fontLink.rel = 'stylesheet';
-  fontLink.href = 'https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=JetBrains+Mono:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap';
-  win.document.head.appendChild(fontLink);
+  const isNight = data.theme === 'night';
+  const isRain = data.theme === 'rain';
+  
+  const bgColor = isNight ? '#0a0f1c' : isRain ? '#e0f2fe' : '#ecfdf5';
+  const textColor = isNight ? '#e2e8f0' : '#1e293b';
+  const timerColor = isNight ? '#f8fafc' : '#0f172a';
+  const phaseColor = isNight ? '#a78bfa' : isRain ? '#0284c7' : '#059669';
+  const accentColor = isNight ? 'rgba(167, 139, 250, 0.4)' : isRain ? 'rgba(14, 165, 233, 0.4)' : 'rgba(16, 185, 129, 0.4)';
+  const btnBg = isNight ? 'linear-gradient(to right, #4f46e5, #7c3aed)' : isRain ? '#0ea5e9' : '#10b981';
 
   const style = win.document.createElement('style');
-  style.id = 'pipThemeStyles';
-  style.textContent = getPipThemeCSS();
+  style.textContent = `
+    body { 
+      font-family: 'Inter', system-ui, sans-serif; 
+      display: flex; flex-direction: column; align-items: center; justify-content: center; 
+      height: 100vh; margin: 0; background: ${bgColor}; color: ${textColor}; 
+      text-align: center; overflow: hidden; user-select: none;
+      transition: background 0.5s ease;
+    }
+    .container {
+      background: ${isNight ? 'rgba(30, 41, 59, 0.4)' : 'rgba(255, 255, 255, 0.6)'};
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid ${isNight ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'};
+      border-radius: 24px; padding: 2rem;
+      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1), 0 0 20px ${accentColor};
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .timer { 
+      font-size: 4.5rem; font-family: 'JetBrains Mono', monospace; font-weight: 700; 
+      margin: 1rem 0; line-height: 1; letter-spacing: -2px; color: ${timerColor};
+      text-shadow: 0 0 20px ${accentColor};
+    }
+    .phase { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.2em; color: ${phaseColor}; font-weight: 700; }
+    .controls { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+    button { 
+      padding: 0.75rem 1.5rem; border-radius: 12px; border: none; font-weight: 600; 
+      cursor: pointer; font-size: 0.95rem; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); 
+    }
+    button:hover { transform: translateY(-2px); box-shadow: 0 8px 15px -3px rgba(0,0,0,0.1); }
+    button:active { transform: scale(0.95); }
+    .btn-primary { background: ${btnBg}; color: white; border: 1px solid rgba(255,255,255,0.1); }
+    .btn-secondary { background: ${isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'}; color: ${textColor}; }
+  `;
   win.document.head.appendChild(style);
-
   win.document.title = "Witherwood";
-
   win.document.body.innerHTML = `
-    <div class="pip-container">
-      <div class="pip-header">
-        <span class="pip-logo">🌲 Witherwood</span>
-        <div class="phase" id="pipPhase">Focus Session</div>
-      </div>
-      
-      <div class="timer-card">
-        <div class="ring-wrapper">
-          <svg viewBox="0 0 140 140" class="progress-svg">
-            <circle cx="70" cy="70" r="58" class="ring-bg"></circle>
-            <circle id="pipProgressRing" cx="70" cy="70" r="58" class="ring-fill"></circle>
-          </svg>
-          <div class="timer" id="pipTimer">25:00</div>
-        </div>
-      </div>
-
+    <div class="container">
+      <div class="phase" id="pipPhase">Focus Session</div>
+      <div class="timer" id="pipTimer">25:00</div>
       <div class="controls">
         <button id="pipStartBtn" class="btn-primary">Start</button>
         <button id="pipResetBtn" class="btn-secondary">Reset</button>
@@ -1106,206 +819,13 @@ function setupPiP(win) {
   `;
 
   pipElements = {
-    phase: win.document.getElementById('pipPhase'),
-    timer: win.document.getElementById('pipTimer'),
-    startBtn: win.document.getElementById('pipStartBtn'),
-    resetBtn: win.document.getElementById('pipResetBtn'),
-    ring: win.document.getElementById('pipProgressRing'),
-    styleTag: style
+    phase: win.document.getElementById('pipPhase'), timer: win.document.getElementById('pipTimer'),
+    startBtn: win.document.getElementById('pipStartBtn'), resetBtn: win.document.getElementById('pipResetBtn')
   };
 
   pipElements.startBtn.onclick = () => { isRunning ? pauseTimer() : startTimer(); };
   pipElements.resetBtn.onclick = () => { resetTimer(); };
-
   renderFocus();
-}
-
-function getPipThemeCSS() {
-  const isNight = data.theme === 'night';
-  const isRain = data.theme === 'rain';
-
-  let bgGradient = 'linear-gradient(145deg, #0f172a 0%, #064e3b 50%, #022c22 100%)';
-  let cardBg = 'rgba(255, 255, 255, 0.08)';
-  let cardBorder = 'rgba(255, 255, 255, 0.14)';
-  let timerColor = '#f0fdf4';
-  let timerGlow = 'rgba(52, 211, 153, 0.35)';
-  let accentColor = '#10b981';
-  let accentHover = '#059669';
-  let phaseColor = '#a7f3d0';
-  let ringFill = '#10b981';
-  let ringBg = 'rgba(255, 255, 255, 0.08)';
-
-  if (isNight) {
-    bgGradient = 'linear-gradient(145deg, #090d16 0%, #0f172a 45%, #1e1b4b 100%)';
-    cardBg = 'rgba(15, 23, 42, 0.55)';
-    cardBorder = 'rgba(167, 139, 250, 0.22)';
-    timerColor = '#f5f3ff';
-    timerGlow = 'rgba(167, 139, 250, 0.45)';
-    accentColor = '#8b5cf6';
-    accentHover = '#7c3aed';
-    phaseColor = '#c4b5fd';
-    ringFill = '#a78bfa';
-    ringBg = 'rgba(167, 139, 250, 0.12)';
-  } else if (isRain) {
-    bgGradient = 'linear-gradient(145deg, #0f172a 0%, #0c4a6e 50%, #082f49 100%)';
-    cardBg = 'rgba(255, 255, 255, 0.09)';
-    cardBorder = 'rgba(186, 230, 253, 0.2)';
-    timerColor = '#f0f9ff';
-    timerGlow = 'rgba(56, 189, 248, 0.38)';
-    accentColor = '#0ea5e9';
-    accentHover = '#0284c7';
-    phaseColor = '#7dd3fc';
-    ringFill = '#38bdf8';
-    ringBg = 'rgba(255, 255, 255, 0.09)';
-  }
-
-  return `
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      width: 100vw;
-      background: ${bgGradient};
-      color: #ffffff;
-      text-align: center;
-      overflow: hidden;
-      user-select: none;
-      padding: 1rem;
-      transition: background 0.5s ease;
-    }
-    .pip-container {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .pip-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.2rem;
-      margin-top: 0.2rem;
-    }
-    .pip-logo {
-      font-family: 'Cinzel', serif;
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      opacity: 0.85;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.9);
-    }
-    .phase {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: ${phaseColor};
-      font-weight: 700;
-      opacity: 0.95;
-    }
-    .timer-card {
-      width: 100%;
-      max-width: 250px;
-      padding: 0.8rem;
-      background: ${cardBg};
-      border: 1px solid ${cardBorder};
-      border-radius: 1.5rem;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-    }
-    .ring-wrapper {
-      position: relative;
-      width: 170px;
-      height: 170px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .progress-svg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      transform: rotate(-90deg);
-    }
-    .ring-bg {
-      fill: none;
-      stroke: ${ringBg};
-      stroke-width: 6;
-    }
-    .ring-fill {
-      fill: none;
-      stroke: ${ringFill};
-      stroke-width: 6;
-      stroke-linecap: round;
-      stroke-dasharray: 364.42;
-      stroke-dashoffset: 0;
-      transition: stroke-dashoffset 0.3s ease-in-out, stroke 0.4s ease;
-      filter: drop-shadow(0 0 6px ${timerGlow});
-    }
-    .timer {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 2.75rem;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      color: ${timerColor};
-      text-shadow: 0 0 16px ${timerGlow};
-      z-index: 2;
-    }
-    .controls {
-      display: flex;
-      gap: 0.65rem;
-      width: 100%;
-      max-width: 250px;
-      margin-bottom: 0.2rem;
-    }
-    button {
-      flex: 1;
-      padding: 0.75rem 1rem;
-      border-radius: 1rem;
-      border: none;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      letter-spacing: 0.02em;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-    }
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
-    }
-    button:active {
-      transform: translateY(0) scale(0.96);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    }
-    .btn-primary {
-      background: ${accentColor};
-      color: #ffffff;
-    }
-    .btn-primary:hover {
-      background: ${accentHover};
-    }
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.12);
-      color: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(8px);
-    }
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-  `;
 }
 
 function renderFocus() {
@@ -1331,53 +851,38 @@ function renderFocus() {
   }
 
   if (pipWindow && pipElements.timer) {
-    if (pipElements.styleTag) {
-      pipElements.styleTag.textContent = getPipThemeCSS();
-    }
     pipElements.timer.textContent = timeStr;
     pipElements.phase.textContent = phaseStr;
     pipElements.startBtn.textContent = startStr;
-
-    if (pipElements.ring) {
-      const total = (phase === 'focus' ? data.focusMinutes : data.breakMinutes) * 60;
-      const circumference = 364.42; 
-      pipElements.ring.style.strokeDashoffset = circumference * (1 - secondsLeft / Math.max(1, total));
-    }
+    if (phase === 'break') { pipElements.phase.style.color = '#38bdf8'; } 
+    else { pipElements.phase.style.color = data.theme === 'night' ? '#a78bfa' : data.theme === 'rain' ? '#0284c7' : '#059669'; }
   }
 }
 
 function getForestLevel() {
   const hours = data.todayFocusMinutes / 60;
-  if (hours < 1) return '🌱 Sapling Grove';
-  if (hours < 2) return '🌿 Young Woodland';
-  if (hours < 3.5) return '🌳 Flourishing Forest';
-  if (hours < 5) return '🦉 Ancient Canopy';
-  if (hours < 6.5) return '🍄 Enchanted Wilds';
-  if (hours < 8) return '👑 Mythic Witherwood';
+  if (hours < 1) return '🌱 Sapling Grove'; if (hours < 2) return '🌿 Young Woodland';
+  if (hours < 3.5) return '🌳 Flourishing Forest'; if (hours < 5) return '🦉 Ancient Canopy';
+  if (hours < 6.5) return '🍄 Enchanted Wilds'; if (hours < 8) return '👑 Mythic Witherwood';
   return '☀️ Zenith of Stillness';
 }
 
 function getLocalDateString() {
   const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
+  const year = now.getFullYear(); const month = String(now.getMonth() + 1).padStart(2, '0'); const day = String(now.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
 function updateDailyStats(minutes) {
   const today = getLocalDateString();
   if (data.lastFocusDate !== today) {
-    if (!data.lastFocusDate) {
-      data.streakDays = 1;
-    } else {
-      const prev = new Date(data.lastFocusDate + 'T00:00:00');
-      const curr = new Date(today + 'T00:00:00');
+    if (!data.lastFocusDate) { data.streakDays = 1; } 
+    else {
+      const prev = new Date(data.lastFocusDate + 'T00:00:00'); const curr = new Date(today + 'T00:00:00');
       const diffDays = Math.round((curr - prev) / 86400000);
       data.streakDays = diffDays === 1 ? Math.max(1, data.streakDays + 1) : 1;
     }
-    data.todayFocusMinutes = 0;
-    data.lastFocusDate = today;
+    data.todayFocusMinutes = 0; data.lastFocusDate = today;
   }
   data.todayFocusMinutes += minutes;
   data.bestDayMinutes = Math.max(data.bestDayMinutes, data.todayFocusMinutes);
@@ -1385,22 +890,15 @@ function updateDailyStats(minutes) {
 
 function renderForest() {
   const icons = getIcons();
-  if (el('forestSummary')) {
-    el('forestSummary').textContent = `${data.livingTrees} living trees • ${data.deadTrees} withered trees • ${getForestLevel()}`;
-  }
+  if (el('forestSummary')) { el('forestSummary').textContent = `${data.livingTrees} living trees • ${data.deadTrees} withered trees • ${getForestLevel()}`; }
   const grid = el('forestGrid');
   if (!grid) return;
   grid.innerHTML = '';
   for (let i = 0; i < Math.min(120, data.livingTrees); i++) {
-    const span = document.createElement('span');
-    span.textContent = icons.living;
-    grid.appendChild(span);
+    const span = document.createElement('span'); span.textContent = icons.living; grid.appendChild(span);
   }
   for (let i = 0; i < Math.min(30, data.deadTrees); i++) {
-    const span = document.createElement('span');
-    span.textContent = icons.dead;
-    span.className = 'opacity-50';
-    grid.appendChild(span);
+    const span = document.createElement('span'); span.textContent = icons.dead; span.className = 'opacity-50'; grid.appendChild(span);
   }
 }
 
@@ -1440,21 +938,15 @@ function updateSoundscapeParticles() {
   if (!container) return;
   const desiredParent = document.fullscreenElement || document.body;
   if (container.parentElement !== desiredParent) desiredParent.appendChild(container);
-
   if (container.dataset.soundscape === data.soundscape && container.dataset.theme === data.theme) return;
   
   container.innerHTML = '';
-  container.dataset.soundscape = data.soundscape;
-  container.dataset.theme = data.theme;
-
-  if (data.theme === 'night' && data.soundscape === 'woodland') {
-    return; 
-  }
+  container.dataset.soundscape = data.soundscape; container.dataset.theme = data.theme;
+  if (data.theme === 'night' && data.soundscape === 'woodland') return; 
 
   if (data.soundscape === 'fireside') {
     for (let i = 0; i < 20; i++) {
-      const p = document.createElement('div');
-      p.className = 'particle-ember';
+      const p = document.createElement('div'); p.className = 'particle-ember';
       p.style.left = (Math.random() * 100) + '%';
       p.style.setProperty('--dur', (10 + Math.random() * 15) + 's');
       p.style.setProperty('--s', (0.3 + Math.random() * 0.7));
@@ -1465,8 +957,7 @@ function updateSoundscapeParticles() {
     }
   } else if (data.soundscape === 'woodland') {
     for (let i = 0; i < 12; i++) {
-      const p = document.createElement('div');
-      p.className = 'particle-leaf';
+      const p = document.createElement('div'); p.className = 'particle-leaf';
       p.style.setProperty('--sx', (Math.random() * 100) + 'vw');
       p.style.setProperty('--ex', ((Math.random() - 0.5) * 100) + 'vw');
       p.style.setProperty('--dur', (20 + Math.random() * 25) + 's');
@@ -1477,10 +968,8 @@ function updateSoundscapeParticles() {
     }
   } else if (data.soundscape === 'rainfall') {
     for (let i = 0; i < 3; i++) {
-      const p = document.createElement('div');
-      p.className = 'mist-layer';
-      p.style.left = (Math.random() * 30) + '%';
-      p.style.top = (Math.random() * 30) + '%';
+      const p = document.createElement('div'); p.className = 'mist-layer';
+      p.style.left = (Math.random() * 30) + '%'; p.style.top = (Math.random() * 30) + '%';
       p.style.setProperty('--dur', (12 + Math.random() * 10) + 's');
       p.style.animationDelay = (Math.random() * -15) + 's';
       container.appendChild(p);
@@ -1495,14 +984,9 @@ function updateNightSky() {
   if (overlay.parentElement !== desiredParent) desiredParent.appendChild(overlay);
 
   if (data.theme !== 'night') {
-    overlay.classList.add('hidden');
-    overlay.innerHTML = '';
-    if (overlay.dataset.timeoutId) {
-        clearTimeout(Number(overlay.dataset.timeoutId));
-        overlay.dataset.timeoutId = '';
-    }
-    overlay.dataset.running = '';
-    return;
+    overlay.classList.add('hidden'); overlay.innerHTML = '';
+    if (overlay.dataset.timeoutId) { clearTimeout(Number(overlay.dataset.timeoutId)); overlay.dataset.timeoutId = ''; }
+    overlay.dataset.running = ''; return;
   }
   overlay.classList.remove('hidden');
 
@@ -1510,41 +994,24 @@ function updateNightSky() {
     overlay.dataset.running = 'true';
     const createStar = () => {
       if (data.theme !== 'night') { overlay.dataset.running = ''; return; }
-
-      const star = document.createElement('div');
-      star.className = 'shooting-star';
-      
+      const star = document.createElement('div'); star.className = 'shooting-star';
       const r = Math.random();
       let width, duration, glow, opacity, color;
-      if (r < 0.65) {
-          width = 30 + Math.random() * 40; duration = 0.4 + Math.random() * 0.4;
-          glow = 1 + Math.random() * 2; opacity = 0.1 + Math.random() * 0.15; color = '255, 255, 255';
-      } else if (r < 0.95) {
-          width = 80 + Math.random() * 60; duration = 0.8 + Math.random() * 0.6;
-          glow = 4 + Math.random() * 4; opacity = 0.3 + Math.random() * 0.25; color = '220, 230, 255'; 
-      } else {
-          width = 180 + Math.random() * 150; duration = 1.6 + Math.random() * 1.4;
-          glow = 15 + Math.random() * 10; opacity = 0.8 + Math.random() * 0.2; color = '255, 230, 200'; 
-      }
-
-      const angle = 10 + Math.random() * 35;
-      const distance = 800 + Math.random() * 400; 
-
-      star.style.setProperty('--star-width', `${width}px`);
-      star.style.setProperty('--star-duration', `${duration}s`);
-      star.style.setProperty('--star-glow', `${glow}px`);
-      star.style.setProperty('--star-opacity', opacity);
+      if (r < 0.65) { width = 30 + Math.random() * 40; duration = 0.4 + Math.random() * 0.4; glow = 1 + Math.random() * 2; opacity = 0.1 + Math.random() * 0.15; color = '255, 255, 255'; }
+      else if (r < 0.95) { width = 80 + Math.random() * 60; duration = 0.8 + Math.random() * 0.6; glow = 4 + Math.random() * 4; opacity = 0.3 + Math.random() * 0.25; color = '220, 230, 255'; }
+      else { width = 180 + Math.random() * 150; duration = 1.6 + Math.random() * 1.4; glow = 15 + Math.random() * 10; opacity = 0.8 + Math.random() * 0.2; color = '255, 230, 200'; }
+      
+      const angle = 10 + Math.random() * 35; const distance = 800 + Math.random() * 400; 
+      star.style.setProperty('--star-width', `${width}px`); star.style.setProperty('--star-duration', `${duration}s`);
+      star.style.setProperty('--star-glow', `${glow}px`); star.style.setProperty('--star-opacity', opacity);
       star.style.setProperty('--star-angle', `${angle}deg`);
       star.style.setProperty('--star-travel-x', `${distance * Math.cos(angle * Math.PI/180)}px`);
       star.style.setProperty('--star-travel-y', `${distance * Math.sin(angle * Math.PI/180)}px`);
       star.style.setProperty('--star-color', color);
-
-      star.style.left = (Math.random() * 90 - 10) + '%';
-      star.style.top = (Math.random() * 50 - 10) + '%';
+      star.style.left = (Math.random() * 90 - 10) + '%'; star.style.top = (Math.random() * 50 - 10) + '%';
 
       overlay.appendChild(star);
       setTimeout(() => { if(star.parentNode) star.remove(); }, duration * 1000 + 200);
-
       const nextDelay = 15000 + Math.random() * 10000;
       overlay.dataset.timeoutId = setTimeout(createStar, nextDelay);
     };
@@ -1559,17 +1026,12 @@ function updateRain() {
   const desiredParent = document.fullscreenElement || document.body;
   if (overlay.parentElement !== desiredParent) desiredParent.appendChild(overlay);
 
-  if (data.theme !== 'rain') {
-    overlay.classList.add('hidden');
-    overlay.innerHTML = '';
-    return;
-  }
+  if (data.theme !== 'rain') { overlay.classList.add('hidden'); overlay.innerHTML = ''; return; }
+  
   if (overlay.children.length === 0) {
     for (let i = 0; i < 140; i++) {
-      const drop = document.createElement('div');
-      drop.className = 'rain-drop';
-      drop.style.left = Math.random() * 100 + '%';
-      drop.style.height = 28 + Math.random() * 36 + 'px';
+      const drop = document.createElement('div'); drop.className = 'rain-drop';
+      drop.style.left = Math.random() * 100 + '%'; drop.style.height = 28 + Math.random() * 36 + 'px';
       drop.style.animationDuration = 1.8 + Math.random() * 1.8 + 's';
       drop.style.animationDelay = '-' + Math.random() * 4 + 's';
       drop.style.opacity = 0.22 + Math.random() * 0.24;
@@ -1581,14 +1043,14 @@ function updateRain() {
 
 function applyTheme() {
   const root = el('appRoot');
+  if (!root) return;
+
   const gradient = themes[data.theme] || themes.forest;
   const isNight = data.theme === 'night';
+  const isRain = data.theme === 'rain';
 
   document.body.className = `min-h-screen bg-gradient-to-b ${gradient.join(' ')} ${isNight ? 'text-slate-100' : 'text-slate-800'} transition-colors duration-500 ${document.fullscreenElement ? 'overflow-hidden' : ''}`;
-  
-  if (root) {
-    root.className = `w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b ${gradient.join(' ')} p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center ${document.fullscreenElement ? 'fullscreen-active' : ''}`;
-  }
+  root.className = `w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b ${gradient.join(' ')} p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center ${document.fullscreenElement ? 'fullscreen-active' : ''}`;
 
   const cardClass = isNight
     ? 'bg-gradient-to-br from-slate-900/92 via-slate-900/88 to-indigo-950/90 border border-indigo-300/20 shadow-2xl backdrop-blur-xl'
@@ -1615,9 +1077,14 @@ function applyTheme() {
   const timer = el('timer');
   if (timer) timer.className = 'text-6xl md:text-7xl font-mono font-bold transition-colors duration-500 ' + (isNight ? 'text-violet-50 drop-shadow-[0_0_18px_rgba(167,139,250,0.45)]' : 'text-slate-800');
 
+  const progressRingBg = el('progressRingBg');
+  if (progressRingBg) {
+    progressRingBg.setAttribute('stroke', isNight ? 'rgba(255,255,255,0.05)' : isRain ? '#dbeafe' : '#d1fae5');
+  }
+
   const ring = el('progressRing');
   if (ring) {
-    ring.setAttribute('stroke', isNight ? '#a78bfa' : data.theme === 'rain' ? '#0ea5e9' : '#10b981');
+    ring.setAttribute('stroke', isNight ? '#a78bfa' : isRain ? '#0ea5e9' : '#10b981');
     ring.style.filter = isNight ? 'drop-shadow(0 0 10px rgba(167,139,250,0.55))' : 'none';
   }
 
@@ -1625,7 +1092,7 @@ function applyTheme() {
   if (startPauseBtn) {
     startPauseBtn.className = 'btn-interactive px-6 py-3 rounded-2xl text-white font-semibold transition-all duration-200 ' + (
       isNight ? 'bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 shadow-xl shadow-violet-900/40 hover:brightness-110' :
-      data.theme === 'rain' ? 'bg-sky-500 hover:bg-sky-600' : 'bg-emerald-500 hover:bg-emerald-600');
+      isRain ? 'bg-sky-500 hover:bg-sky-600' : 'bg-emerald-500 hover:bg-emerald-600');
   }
 
   const phaseLabel = el('phaseLabel');
@@ -1638,7 +1105,7 @@ function applyTheme() {
   if (brandTitle) {
     brandTitle.className = 'brand-title text-4xl md:text-6xl transition-colors duration-500 ';
     if (isNight) brandTitle.className += 'brand-title-night text-violet-50';
-    else if (data.theme === 'rain') brandTitle.className += 'brand-title-rain text-slate-800';
+    else if (isRain) brandTitle.className += 'brand-title-rain text-slate-800';
     else brandTitle.className += 'text-emerald-900';
   }
 
@@ -1646,9 +1113,10 @@ function applyTheme() {
   if (subtitle) subtitle.className = 'mt-2 transition-colors duration-500 ' + (isNight ? 'text-slate-300' : 'text-slate-600');
 
   const message = el('message');
-  if (message) message.className = 'mt-6 italic transition-colors duration-500 ' + (isNight ? 'text-slate-300' : 'text-slate-500');
+  if (message) message.className = 'mt-6 italic transition-colors duration-500 ' + (isNight ? 'text-[#c4b5fd]/70' : 'text-slate-500');
 
-  renderNav();
+  const ambientVolumeLabel = el('ambientVolumeLabel');
+  if (ambientVolumeLabel) ambientVolumeLabel.className = 'text-sm font-medium transition-colors duration-500 ' + (isNight ? 'text-[#c4b5fd]/80' : 'text-slate-500');
 
   const fullscreenBtn = el('fullscreenBtn');
   if (fullscreenBtn) {
@@ -1666,14 +1134,14 @@ function applyTheme() {
   if (witherBtn) {
     witherBtn.className = 'btn-interactive px-6 py-3 rounded-2xl text-white font-semibold transition-all duration-200 ' + (
       isNight ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 shadow-xl shadow-orange-900/35 hover:brightness-110' :
-      data.theme === 'rain' ? 'bg-gradient-to-r from-slate-500 to-slate-600 shadow-lg hover:brightness-110' : 'bg-amber-500 hover:bg-amber-600');
+      isRain ? 'bg-gradient-to-r from-slate-500 to-slate-600 shadow-lg hover:brightness-110' : 'bg-amber-500 hover:bg-amber-600');
   }
 
   const resetBtn = el('resetBtn');
   if (resetBtn) {
     resetBtn.className = 'btn-interactive px-6 py-3 rounded-2xl border transition-all duration-200 font-medium ' + (
       isNight ? 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-lg hover:bg-slate-800/80' :
-      data.theme === 'rain' ? 'border-sky-200 bg-white/90 text-slate-700 hover:bg-sky-50' : 'bg-white hover:bg-emerald-50');
+      isRain ? 'border-sky-200 bg-white/90 text-slate-700 hover:bg-sky-50' : 'bg-white hover:bg-emerald-50');
   }
 
   const focusLabel = document.querySelector('#focusControls label');
@@ -1690,11 +1158,28 @@ function applyTheme() {
     if(input) {
       input.className = 'w-full mt-2 rounded-xl border px-3 py-3 transition-colors duration-500 focus:outline-none focus:ring-2 cursor-pointer ' + (
         isNight ? 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-inner focus:ring-violet-400/50' :
-        data.theme === 'rain' ? 'border-sky-200 bg-white/90 text-slate-800 focus:ring-sky-300/50' : 'border-emerald-200 bg-white text-slate-800 focus:ring-emerald-300/50');
+        isRain ? 'border-sky-200 bg-white/90 text-slate-800 focus:ring-sky-300/50' : 'border-emerald-200 bg-white text-slate-800 focus:ring-emerald-300/50');
       if(id === 'focusMinutesInput') input.classList.replace('w-full', 'w-24');
       if(id === 'focusMinutesInput') input.classList.add('text-center');
     }
   });
+
+  if (isNight) {
+    document.documentElement.style.setProperty('--range-track', 'rgba(255, 255, 255, 0.08)');
+    document.documentElement.style.setProperty('--range-thumb', '#a78bfa');
+    document.documentElement.style.setProperty('--range-glow', '0 0 12px rgba(167, 139, 250, 0.5)');
+    document.documentElement.style.setProperty('--range-ring', 'rgba(167, 139, 250, 0.25)');
+  } else if (isRain) {
+    document.documentElement.style.setProperty('--range-track', 'rgba(14, 165, 233, 0.15)');
+    document.documentElement.style.setProperty('--range-thumb', '#0ea5e9');
+    document.documentElement.style.setProperty('--range-glow', '0 0 12px rgba(14, 165, 233, 0.4)');
+    document.documentElement.style.setProperty('--range-ring', 'rgba(14, 165, 233, 0.25)');
+  } else {
+    document.documentElement.style.setProperty('--range-track', 'rgba(16, 185, 129, 0.15)');
+    document.documentElement.style.setProperty('--range-thumb', '#10b981');
+    document.documentElement.style.setProperty('--range-glow', '0 0 12px rgba(16, 185, 129, 0.4)');
+    document.documentElement.style.setProperty('--range-ring', 'rgba(16, 185, 129, 0.25)');
+  }
 
   updateRain();
   updateNightSky();
@@ -1703,10 +1188,7 @@ function applyTheme() {
 }
 
 function render() {
-  renderNav();
-  renderFocus();
-  renderForest();
-  renderDashboard();
+  renderNav(); renderFocus(); renderForest(); renderDashboard();
 
   if (el('focusMinutesInput')) el('focusMinutesInput').value = data.focusMinutes;
   if (el('breakMinutesInput')) el('breakMinutesInput').value = data.breakMinutes;
@@ -1728,42 +1210,30 @@ function render() {
 
 function startTimer() {
   if (isRunning) return;
-
   isRunning = true;
   const endTimestamp = Date.now() + secondsLeft * 1000;
 
   intervalId = setInterval(() => {
     secondsLeft = Math.max(0, Math.round((endTimestamp - Date.now()) / 1000));
-
     if (secondsLeft <= 0) {
-      clearInterval(intervalId);
-      intervalId = null;
-      isRunning = false;
-
+      clearInterval(intervalId); intervalId = null; isRunning = false;
       playCompletionSound();
 
       if (phase === 'focus') {
-        data.livingTrees += healthyTrees;
-        data.totalFocusMinutes += data.focusMinutes;
-        updateDailyStats(data.focusMinutes);
-        save(); 
+        data.livingTrees += healthyTrees; data.totalFocusMinutes += data.focusMinutes;
+        updateDailyStats(data.focusMinutes); save(); 
 
         if (data.breaksEnabled) {
-          phase = 'break';
-          secondsLeft = data.breakMinutes * 60;
+          phase = 'break'; secondsLeft = data.breakMinutes * 60;
           showToast('Focus session complete. Enjoy your break!', 'success');
           setMessage('Your forest grew peacefully today.');
         } else {
-          phase = 'focus';
-          healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
-          secondsLeft = data.focusMinutes * 60;
+          phase = 'focus'; healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10)); secondsLeft = data.focusMinutes * 60;
           showToast('Focus session complete. Great job!', 'success');
           setMessage('New saplings are ready to grow.');
         }
       } else {
-        phase = 'focus';
-        healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
-        secondsLeft = data.focusMinutes * 60;
+        phase = 'focus'; healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10)); secondsLeft = data.focusMinutes * 60;
         showToast('Break time is over. Ready to focus?', 'info');
         setMessage('New saplings are ready to grow.');
       }
@@ -1774,31 +1244,24 @@ function startTimer() {
 }
 
 function pauseTimer() {
-  isRunning = false;
-  clearInterval(intervalId);
-  render();
+  isRunning = false; clearInterval(intervalId); render();
 }
 
 function resetAllData() {
   showConfirmModal('Reset ALL saved data?', 'This will permanently remove your forest and all statistics.', () => {
     const { theme, soundscape, ambientSoundEnabled, ambientVolume, focusMinutes, breakMinutes, breaksEnabled } = data;
     data = { ...DEFAULTS, theme, soundscape, ambientSoundEnabled, ambientVolume, focusMinutes, breakMinutes, breaksEnabled };
-    save(); 
-    resetTimer();
-    switchPage('focus');
+    save(); resetTimer(); switchPage('focus');
     showToast('A new forest begins.', 'info');
-    setMessage('A new forest begins.');
-    render();
+    setMessage('A new forest begins.'); render();
   });
 }
 
 function resetTimer() {
-  pauseTimer();
-  phase = 'focus';
+  pauseTimer(); phase = 'focus';
   healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
   secondsLeft = data.focusMinutes * 60;
-  setMessage('A calm mind nurtures strong roots.');
-  render();
+  setMessage('A calm mind nurtures strong roots.'); render();
 }
 
 function bindEvents() {
@@ -1809,113 +1272,70 @@ function bindEvents() {
   el('pipBtn')?.addEventListener('click', togglePiP);
 
   el('focusMinutesInput')?.addEventListener('input', (e) => {
-    const value = e.target.value.trim();
-    if (value === '') return;
-    const parsed = Number(value);
-    if (!Number.isFinite(parsed)) return;
+    const value = e.target.value.trim(); if (value === '') return;
+    const parsed = Number(value); if (!Number.isFinite(parsed)) return;
     data.focusMinutes = Math.max(1, Math.min(180, parsed));
     healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
     if (!isRunning && phase === 'focus') secondsLeft = data.focusMinutes * 60;
-    save();
-    render();
+    save(); render();
   });
 
-  el('focusMinutesInput')?.addEventListener('blur', (e) => {
-    if (e.target.value.trim() === '') e.target.value = data.focusMinutes;
-  });
-
+  el('focusMinutesInput')?.addEventListener('blur', (e) => { if (e.target.value.trim() === '') e.target.value = data.focusMinutes; });
+  
   el('breakMinutesInput')?.addEventListener('input', (e) => {
-    const value = e.target.value.trim();
-    if (value === '') return;
-    const parsed = Number(value);
-    if (!Number.isFinite(parsed)) return;
+    const value = e.target.value.trim(); if (value === '') return;
+    const parsed = Number(value); if (!Number.isFinite(parsed)) return;
     data.breakMinutes = Math.max(1, Math.min(60, parsed));
-    save();
-    render();
+    save(); render();
   });
 
-  el('breakMinutesInput')?.addEventListener('blur', (e) => {
-    if (e.target.value.trim() === '') e.target.value = data.breakMinutes;
-  });
+  el('breakMinutesInput')?.addEventListener('blur', (e) => { if (e.target.value.trim() === '') e.target.value = data.breakMinutes; });
 
-  el('breaksEnabledToggle')?.addEventListener('change', (e) => {
-    data.breaksEnabled = e.target.checked;
-    save();
-    render();
-  });
-
-  el('themeSelect')?.addEventListener('change', (e) => {
-    data.theme = e.target.value;
-    save();
-    render();
-  });
-
+  el('breaksEnabledToggle')?.addEventListener('change', (e) => { data.breaksEnabled = e.target.checked; save(); render(); });
+  el('themeSelect')?.addEventListener('change', (e) => { data.theme = e.target.value; save(); render(); });
+  
   el('soundscapeSelect')?.addEventListener('change', (e) => {
-    data.soundscape = e.target.value;
-    save();
-    soundEngine.apply(data.soundscape, data.ambientSoundEnabled);
-    render();
+    data.soundscape = e.target.value; save(); soundEngine.apply(data.soundscape, data.ambientSoundEnabled); render();
   });
 
   el('ambientSoundToggle')?.addEventListener('change', (e) => {
-    data.ambientSoundEnabled = e.target.checked;
-    save();
-    soundEngine.apply(data.soundscape, data.ambientSoundEnabled);
-    render();
+    data.ambientSoundEnabled = e.target.checked; save(); soundEngine.apply(data.soundscape, data.ambientSoundEnabled); render();
   });
 
   el('ambientVolumeInput')?.addEventListener('input', (e) => {
     data.ambientVolume = Math.max(0, Math.min(100, Number(e.target.value) || 0));
-    save();
-    soundEngine.setVolume(data.ambientVolume / 100);
-    render();
+    save(); soundEngine.setVolume(data.ambientVolume / 100); render();
   });
 
   el('fullscreenBtn')?.addEventListener('click', async () => {
-    const root = el('appRoot');
-    if (!root) return;
-    if (!document.fullscreenElement) {
-      await root.requestFullscreen().catch(() => {});
-    } else {
-      await document.exitFullscreen().catch(() => {});
-    }
+    const root = el('appRoot'); if (!root) return;
+    if (!document.fullscreenElement) { await root.requestFullscreen().catch(() => {}); } 
+    else { await document.exitFullscreen().catch(() => {}); }
   });
 
   window.addEventListener('keydown', (e) => {
-    if (e.code === 'Space' && isRunning && phase === 'focus') {
-      e.preventDefault();
-      witherTree();
-    }
+    if (e.code === 'Space' && isRunning && phase === 'focus') { e.preventDefault(); witherTree(); }
   });
 
   const unlockAudio = () => {
-    audioUnlocked = true;
-    soundEngine.apply(data.soundscape, data.ambientSoundEnabled);
-    soundEngine.setVolume(data.ambientVolume / 100);
-    document.removeEventListener('click', unlockAudio);
+    audioUnlocked = true; soundEngine.apply(data.soundscape, data.ambientSoundEnabled);
+    soundEngine.setVolume(data.ambientVolume / 100); document.removeEventListener('click', unlockAudio);
   };
   document.addEventListener('click', unlockAudio);
 
   el('exportDataBtn')?.addEventListener('click', exportBackup);
   el('importDataBtn')?.addEventListener('click', () => { el('importFileInput')?.click(); });
-  el('importFileInput')?.addEventListener('change', (e) => {
-    const file = e.target.files?.[0];
-    if (file) importBackup(file);
-  });
+  el('importFileInput')?.addEventListener('change', (e) => { const file = e.target.files?.[0]; if (file) importBackup(file); });
 
   document.addEventListener('fullscreenchange', () => {
-    const isFs = !!document.fullscreenElement;
-    document.body.classList.toggle('fullscreen-active', isFs);
-    el('appRoot').classList.toggle('fullscreen-active', isFs);
-    render();
+    const isFs = !!document.fullscreenElement; document.body.classList.toggle('fullscreen-active', isFs);
+    el('appRoot').classList.toggle('fullscreen-active', isFs); render();
   });
 }
 
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden && audioUnlocked) {
-    if(soundEngine.ctx && soundEngine.ctx.state === 'suspended') {
-      soundEngine.ctx.resume();
-    }
+    if(soundEngine.ctx && soundEngine.ctx.state === 'suspended') soundEngine.ctx.resume();
     render();
   }
 });
@@ -1935,15 +1355,9 @@ if ('serviceWorker' in navigator) {
     try {
       const registration = await navigator.serviceWorker.register('./service-worker.js');
       registration.update();
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        window.location.reload();
-      });
-      setInterval(() => {
-        registration.update();
-      }, 60000);
-    } catch (err) {
-      console.warn('Service worker registration failed:', err);
-    }
+      navigator.serviceWorker.addEventListener('controllerchange', () => { window.location.reload(); });
+      setInterval(() => { registration.update(); }, 60000);
+    } catch (err) { console.warn('Service worker registration failed:', err); }
   });
 }
 </script>
