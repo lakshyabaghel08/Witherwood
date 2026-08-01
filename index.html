@@ -97,6 +97,16 @@ body.fullscreen-active { overflow: hidden; }
   overflow-y: auto !important; overflow-x: hidden !important;
 }
 
+body.fullscreen-active::-webkit-scrollbar,
+#appRoot.fullscreen-active::-webkit-scrollbar {
+  display: none;
+}
+body.fullscreen-active,
+#appRoot.fullscreen-active {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 .btn-interactive { transition: all 0.2s ease; }
 .btn-interactive:not(label):hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
 .btn-interactive:not(label):active { transform: translateY(0) scale(0.95); box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
@@ -264,6 +274,8 @@ input[type="checkbox"] { transform: translateZ(0); backface-visibility: hidden; 
                 <option value="woodland">🍃 Woodland</option>
                 <option value="fireside">🔥 Fireside</option>
                 <option value="rainfall">🌧️ Rainfall</option>
+                <option value="ocean">🌊 Ocean</option>
+                <option value="lotr">🧝 LOTR</option>
               </select>
             </label>
           </div>
@@ -327,20 +339,26 @@ const themes = {
 
 const AUDIO_CONFIG = {
   woodland: {
-    ambience: ['sounds/AMBIENCE/forest_01.mp3', 'sounds/AMBIENCE/forest_02.mp3'],
-    common: ['sounds/WOODLAND/robin.mp3', 'sounds/WOODLAND/sparrow.mp3', 'sounds/WOODLAND/cuckoo.mp3', 'sounds/WOODLAND/bird_flying.mp3'],
-    medium: ['sounds/WOODLAND/woodpecker.mp3', 'sounds/WOODLAND/squirrel.mp3', 'sounds/WOODLAND/gust_wind.mp3'],
-    rare: ['sounds/WOODLAND/owl_01.mp3', 'sounds/WOODLAND/owl_02.mp3', 'sounds/WOODLAND/owl_03.mp3']
+    ambience: ['audio/AMBIENCE/forest_01.mp3', 'audio/AMBIENCE/forest_02.mp3'],
+    common: ['audio/WOODLAND/robin.mp3', 'audio/WOODLAND/sparrow.mp3', 'audio/WOODLAND/cuckoo.mp3', 'audio/WOODLAND/bird_flying.mp3', 'audio/WOODLAND/WIND CHIME.mp3'],
+    medium: ['audio/WOODLAND/woodpecker.mp3', 'audio/WOODLAND/squirrel.mp3', 'audio/WOODLAND/gust_wind.mp3'],
+    rare: ['audio/WOODLAND/owl_01.mp3', 'audio/WOODLAND/owl_02.mp3', 'audio/WOODLAND/owl_03.mp3']
   },
   fireside: {
-    ambience: ['sounds/AMBIENCE/fireplace_01.mp3', 'sounds/AMBIENCE/fireplace_02.mp3'],
-    woosh: ['sounds/FIRE/fire_woosh_01.mp3', 'sounds/FIRE/fire_woosh_02.mp3'],
-    owl: ['sounds/FIRE/owl_01.mp3', 'sounds/FIRE/owl_02.mp3', 'sounds/FIRE/owl_03.mp3']
+    ambience: ['audio/AMBIENCE/fireplace_01.mp3', 'audio/AMBIENCE/fireplace_02.mp3'],
+    woosh: ['audio/FIRE/fire_woosh_01.mp3', 'audio/FIRE/fire_woosh_02.mp3'],
+    owl: ['audio/FIRE/owl_01.mp3', 'audio/FIRE/owl_02.mp3', 'audio/FIRE/owl_03.mp3']
   },
   rainfall: {
-    ambience: ['sounds/AMBIENCE/rain_01.mp3'],
-    thunder: ['sounds/RAIN/thunder_01.mp3', 'sounds/RAIN/thunder_02.mp3', 'sounds/RAIN/thunder_03.mp3'],
-    wind: ['sounds/WOODLAND/gust_wind.mp3']
+    ambience: ['audio/AMBIENCE/rain_01.mp3'],
+    thunder: ['audio/RAIN/thunder_01.mp3', 'audio/RAIN/thunder_02.mp3', 'audio/RAIN/thunder_03.mp3']
+  },
+  ocean: {
+    ambience: ['audio/AMBIENCE/ocean_01.wav'],
+    events: ['audio/OCEAN/ocean_dolphin_01.mp3', 'audio/OCEAN/ocean_seagull_01.mp3', 'audio/OCEAN/ocean_seagull_02.mp3']
+  },
+  lotr: {
+    ambience: ['audio/AMBIENCE/lotr_01.mp3']
   }
 };
 
@@ -377,7 +395,7 @@ class SoundscapeEngine {
     const allSrcs = [
       ...(config.ambience || []), ...(config.common || []), ...(config.medium || []),
       ...(config.rare || []), ...(config.woosh || []), ...(config.owl || []),
-      ...(config.thunder || []), ...(config.wind || [])
+      ...(config.thunder || []), ...(config.events || [])
     ];
 
     let toLoad = allSrcs.filter(src => !this.buffers.has(src));
@@ -551,7 +569,8 @@ class SoundscapeEngine {
   startEvents(type) {
     if(type === 'woodland') this.scheduleWoodland();
     else if (type === 'fireside') { this.scheduleFiresideWoosh(); this.scheduleFiresideOwl(); }
-    else if (type === 'rainfall') { this.scheduleRainThunder(); this.scheduleRainWind(); }
+    else if (type === 'rainfall') { this.scheduleRainThunder(); }
+    else if (type === 'ocean') { this.scheduleOceanEvents(); }
   }
 
   scheduleWoodland() {
@@ -590,11 +609,47 @@ class SoundscapeEngine {
     }, 420000, 600000); 
   }
 
-  scheduleRainWind() {
+  scheduleOceanEvents() {
     this.schedule(() => {
-      const track = this.getRandomTrack(AUDIO_CONFIG.rainfall.wind, 'wind');
-      this.triggerEvent(track, () => this.scheduleRainWind());
-    }, 720000, 900000); 
+      const track = this.getRandomTrack(AUDIO_CONFIG.ocean.events, 'ocean_events');
+      this.triggerEvent(track, () => this.scheduleOceanEvents());
+    }, 120000, 300000); 
+  }
+
+  async preloadBell() {
+    if (!this.ctx) this.init();
+    const src = 'audio/timer_bell.mp3';
+    if (!this.buffers.has(src)) {
+      try {
+        const response = await fetch(src);
+        const arrayBuffer = await response.arrayBuffer();
+        const audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
+        this.buffers.set(src, audioBuffer);
+      } catch(e) { console.warn('Could not preload timer bell', e); }
+    }
+  }
+
+  async playGlobalBell() {
+    if (!this.ctx) this.init();
+    if(this.ctx.state === 'suspended') this.ctx.resume();
+    
+    const src = 'audio/timer_bell.mp3';
+    if (!this.buffers.has(src)) {
+      await this.preloadBell();
+    }
+
+    const buffer = this.buffers.get(src);
+    if (!buffer) return;
+
+    const source = this.ctx.createBufferSource();
+    source.buffer = buffer;
+    const gainNode = this.ctx.createGain();
+    gainNode.gain.value = this.baseVolume;
+    
+    source.connect(gainNode);
+    gainNode.connect(this.masterGain);
+    
+    source.start(this.ctx.currentTime);
   }
 }
 const soundEngine = new SoundscapeEngine();
@@ -638,19 +693,8 @@ function showConfirmModal(title, text, onConfirm) {
 }
 
 function playCompletionSound() {
-  if (!audioUnlocked || !data.ambientSoundEnabled) return;
-  try {
-    soundEngine.init(); const ctx = soundEngine.ctx;
-    if(ctx.state === 'suspended') ctx.resume();
-    const osc = ctx.createOscillator(); const gain = ctx.createGain();
-    osc.type = 'sine'; osc.frequency.setValueAtTime(880, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 1.5);
-    gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.15 * soundEngine.baseVolume, ctx.currentTime + 0.05);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2);
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(); osc.stop(ctx.currentTime + 2);
-  } catch(e) {}
+  if (!audioUnlocked) return;
+  soundEngine.playGlobalBell();
 }
 
 function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
@@ -1389,8 +1433,11 @@ function bindEvents() {
   });
 
   const unlockAudio = () => {
-    audioUnlocked = true; soundEngine.apply(data.soundscape, data.ambientSoundEnabled);
-    soundEngine.setVolume(data.ambientVolume / 100); document.removeEventListener('click', unlockAudio);
+    audioUnlocked = true; 
+    soundEngine.apply(data.soundscape, data.ambientSoundEnabled);
+    soundEngine.setVolume(data.ambientVolume / 100); 
+    soundEngine.preloadBell();
+    document.removeEventListener('click', unlockAudio);
   };
   document.addEventListener('click', unlockAudio);
 
