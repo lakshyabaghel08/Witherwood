@@ -350,27 +350,27 @@ const themes = {
 
 const AUDIO_CONFIG = {
   woodland: {
-    ambience: ['audio/AMBIENCE/forest_01.mp3', 'audio/AMBIENCE/forest_02.mp3'],
-    common: ['audio/WOODLAND/robin.mp3', 'audio/WOODLAND/sparrow.mp3', 'audio/WOODLAND/cuckoo.mp3', 'audio/WOODLAND/bird_flying.mp3', 'audio/WOODLAND/WIND CHIME.mp3'],
-    medium: ['audio/WOODLAND/woodpecker.mp3', 'audio/WOODLAND/squirrel.mp3', 'audio/WOODLAND/gust_wind.mp3'],
-    rare: ['audio/WOODLAND/owl_01.mp3', 'audio/WOODLAND/owl_02.mp3', 'audio/WOODLAND/owl_03.mp3']
+    ambience: ['sounds/AMBIENCE/forest_01.mp3', 'sounds/AMBIENCE/forest_02.mp3'],
+    common: ['sounds/WOODLAND/robin.mp3', 'sounds/WOODLAND/sparrow.mp3', 'sounds/WOODLAND/cuckoo.mp3', 'sounds/WOODLAND/bird_flying.mp3', 'sounds/WOODLAND/WIND CHIME.mp3'],
+    medium: ['sounds/WOODLAND/woodpecker.mp3', 'sounds/WOODLAND/squirrel.mp3', 'sounds/WOODLAND/gust_wind.mp3'],
+    rare: ['sounds/WOODLAND/owl_01.mp3', 'sounds/WOODLAND/owl_02.mp3', 'sounds/WOODLAND/owl_03.mp3']
   },
   fireside: {
-    ambience: ['audio/AMBIENCE/fireplace_01.mp3', 'audio/AMBIENCE/fireplace_02.mp3'],
-    woosh: ['audio/FIRE/fire_woosh_01.mp3', 'audio/FIRE/fire_woosh_02.mp3'],
-    owl: ['audio/FIRE/owl_01.mp3', 'audio/FIRE/owl_02.mp3', 'audio/FIRE/owl_03.mp3']
+    ambience: ['sounds/AMBIENCE/fireplace_01.mp3', 'sounds/AMBIENCE/fireplace_02.mp3'],
+    woosh: ['sounds/FIRE/fire_woosh_01.mp3', 'sounds/FIRE/fire_woosh_02.mp3'],
+    owl: ['sounds/FIRE/owl_01.mp3', 'sounds/FIRE/owl_02.mp3', 'sounds/FIRE/owl_03.mp3']
   },
   rainfall: {
-    ambience: ['audio/AMBIENCE/rain_01.mp3'],
-    thunder: ['audio/RAIN/thunder_01.mp3', 'audio/RAIN/thunder_02.mp3', 'audio/RAIN/thunder_03.mp3'],
-    wind: ['audio/WOODLAND/gust_wind.mp3']
+    ambience: ['sounds/AMBIENCE/rain_01.mp3'],
+    thunder: ['sounds/RAIN/thunder_01.mp3', 'sounds/RAIN/thunder_02.mp3', 'sounds/RAIN/thunder_03.mp3'],
+    wind: ['sounds/WOODLAND/gust_wind.mp3']
   },
   ocean: {
-    ambience: ['audio/AMBIENCE/ocean_01.mp3'],
-    events: ['audio/OCEAN/ocean_dolphin_01.mp3', 'audio/OCEAN/ocean_seagull_01.mp3', 'audio/OCEAN/ocean_seagull_02.mp3']
+    ambience: ['sounds/AMBIENCE/ocean_01.mp3'],
+    events: ['sounds/OCEAN/ocean_dolphin_01.mp3', 'sounds/OCEAN/ocean_seagull_01.mp3', 'sounds/OCEAN/ocean_seagull_02.mp3']
   },
   lotr: {
-    ambience: ['audio/AMBIENCE/lotr_01.mp3']
+    ambience: ['sounds/AMBIENCE/lotr_01.mp3']
   }
 };
 
@@ -421,7 +421,10 @@ class SoundscapeEngine {
           const arrayBuffer = await response.arrayBuffer();
           const audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
           this.buffers.set(src, audioBuffer);
-        } catch (e) { console.warn('Failed to load audio:', src, e); }
+        } catch (e) { 
+          console.warn('Failed to load audio:', src, e); 
+          showToast(`File not found: ${src}`, 'error'); // Specific path error for debugging
+        }
       }));
       this.loading = false;
       hideSoundscapeLoader();
@@ -631,10 +634,11 @@ class SoundscapeEngine {
 
   async preloadBell() {
     if (!this.ctx) this.init();
-    const src = 'audio/timer_bell.mp3';
+    const src = 'sounds/timer_bell.mp3';
     if (!this.buffers.has(src)) {
       try {
         const response = await fetch(src);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const arrayBuffer = await response.arrayBuffer();
         const audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
         this.buffers.set(src, audioBuffer);
@@ -646,7 +650,7 @@ class SoundscapeEngine {
     if (!this.ctx) this.init();
     if(this.ctx.state === 'suspended') this.ctx.resume();
     
-    const src = 'audio/timer_bell.mp3';
+    const src = 'sounds/timer_bell.mp3';
     if (!this.buffers.has(src)) {
       await this.preloadBell();
     }
@@ -932,7 +936,6 @@ function renderFocus() {
     ring.style.strokeDashoffset = circumference * (1 - secondsLeft / Math.max(1, total));
   }
 
-  // Update Mini Player
   if (pipWindow && pipElements.timer) {
     pipElements.timer.textContent = timeStr;
     pipElements.phase.textContent = phaseStr;
@@ -1001,13 +1004,11 @@ function renderForest() {
   const deadCount = data.deadTrees;
 
   const landscapeContainer = document.createElement('div');
-  // Removed forced minimum height and justify-end; now naturally stacks in the center
   landscapeContainer.className = 'w-full flex flex-col items-center justify-center py-4 gap-8 md:gap-12 relative';
 
   function createTreeZone(count, iconStr, extraClasses, scale, opacity) {
     if (count <= 0) return null;
     const zone = document.createElement('div');
-    // Replaced manual positioning with a clean, centered flex layout using standard gaps
     zone.className = `w-full flex flex-wrap justify-center items-center gap-3 sm:gap-5 relative ${extraClasses}`;
     zone.style.opacity = opacity;
     zone.style.transform = `scale(${scale})`;
@@ -1015,10 +1016,7 @@ function renderForest() {
     for (let i = 0; i < count; i++) {
       const span = document.createElement('span');
       span.textContent = iconStr;
-      
-      // Removed offsets to ensure perfectly straight lines while keeping the nice hover effect
       span.className = 'inline-block transition-transform duration-500 hover:scale-125 hover:-translate-y-2 cursor-default select-none drop-shadow-md';
-      
       zone.appendChild(span);
     }
     return zone;
