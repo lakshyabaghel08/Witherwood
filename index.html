@@ -157,6 +157,17 @@ input[type="checkbox"] { transform: translateZ(0); backface-visibility: hidden; 
 <div id="soundscapeParticles"></div>
 <div id="toastContainer"></div>
 
+<div id="soundscapeLoader" class="fixed top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-[2000] px-6 py-4 rounded-3xl backdrop-blur-xl shadow-2xl border flex items-center gap-4 transition-all duration-400 pointer-events-none opacity-0 scale-95">
+  <svg class="animate-spin h-7 w-7 text-current opacity-80" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+  </svg>
+  <div class="flex flex-col pr-2">
+    <span class="text-[15px] font-semibold tracking-wide">Preparing soundscape...</span>
+    <span id="soundscapeLoaderSubtitle" class="text-[13px] opacity-75 font-medium mt-0.5">Gathering the rain...</span>
+  </div>
+</div>
+
 <div id="confirmModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[9999] hidden flex items-center justify-center opacity-0 transition-opacity duration-200">
   <div class="bg-white rounded-3xl p-6 max-w-sm mx-4 shadow-2xl transform scale-95 transition-transform duration-200">
     <h3 class="text-xl font-bold mb-2 text-slate-800">Reset All Data?</h3>
@@ -275,7 +286,7 @@ input[type="checkbox"] { transform: translateZ(0); backface-visibility: hidden; 
                 <option value="fireside">🔥 Fireside</option>
                 <option value="rainfall">🌧️ Rainfall</option>
                 <option value="ocean">🌊 Ocean</option>
-                <option value="lotr">🧝 LOTR</option>
+                <option value="lotr">🧝 LOTR Ambience</option>
               </select>
             </label>
           </div>
@@ -351,10 +362,11 @@ const AUDIO_CONFIG = {
   },
   rainfall: {
     ambience: ['audio/AMBIENCE/rain_01.mp3'],
-    thunder: ['audio/RAIN/thunder_01.mp3', 'audio/RAIN/thunder_02.mp3', 'audio/RAIN/thunder_03.mp3']
+    thunder: ['audio/RAIN/thunder_01.mp3', 'audio/RAIN/thunder_02.mp3', 'audio/RAIN/thunder_03.mp3'],
+    wind: ['audio/WOODLAND/gust_wind.mp3']
   },
   ocean: {
-    ambience: ['audio/AMBIENCE/ocean_01.wav'],
+    ambience: ['audio/AMBIENCE/ocean_01.mp3'],
     events: ['audio/OCEAN/ocean_dolphin_01.mp3', 'audio/OCEAN/ocean_seagull_01.mp3', 'audio/OCEAN/ocean_seagull_02.mp3']
   },
   lotr: {
@@ -395,12 +407,12 @@ class SoundscapeEngine {
     const allSrcs = [
       ...(config.ambience || []), ...(config.common || []), ...(config.medium || []),
       ...(config.rare || []), ...(config.woosh || []), ...(config.owl || []),
-      ...(config.thunder || []), ...(config.events || [])
+      ...(config.thunder || []), ...(config.wind || []), ...(config.events || [])
     ];
 
     let toLoad = allSrcs.filter(src => !this.buffers.has(src));
     if (toLoad.length > 0) {
-      showToast('Loading soundscape...', 'info');
+      showSoundscapeLoader(type);
       this.loading = true;
       await Promise.all(toLoad.map(async (src) => {
         try {
@@ -412,6 +424,7 @@ class SoundscapeEngine {
         } catch (e) { console.warn('Failed to load audio:', src, e); }
       }));
       this.loading = false;
+      hideSoundscapeLoader();
       if (this.currentSoundscape === type && this.enabled) showToast('Soundscape ready.', 'success');
     }
   }
@@ -669,6 +682,28 @@ function showToast(message, type = 'info') {
   
   requestAnimationFrame(() => { requestAnimationFrame(() => toast.classList.add('toast-show')); });
   setTimeout(() => { toast.classList.remove('toast-show'); setTimeout(() => toast.remove(), 400); }, 4000);
+}
+
+function showSoundscapeLoader(type) {
+  const loader = el('soundscapeLoader');
+  if (!loader) return;
+  const titles = {
+    woodland: 'Listening to the forest...',
+    rainfall: 'Gathering the rain...',
+    fireside: 'Lighting the fire...',
+    ocean: 'Listening to the waves...',
+    lotr: 'Entering Middle-earth...'
+  };
+  el('soundscapeLoaderSubtitle').textContent = titles[type] || 'Preparing audio...';
+  loader.classList.remove('opacity-0', 'scale-95');
+  loader.classList.add('opacity-100', 'scale-100');
+}
+
+function hideSoundscapeLoader() {
+  const loader = el('soundscapeLoader');
+  if (!loader) return;
+  loader.classList.remove('opacity-100', 'scale-100');
+  loader.classList.add('opacity-0', 'scale-95');
 }
 
 function showConfirmModal(title, text, onConfirm) {
@@ -1272,12 +1307,21 @@ function applyTheme() {
     const input = el(id);
     if(input) {
       input.className = 'w-full mt-2 rounded-xl border px-3 py-3 transition-colors duration-500 focus:outline-none focus:ring-2 cursor-pointer ' + (
-        isNight ? 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-inner focus:ring-violet-400/50' :
-        isRain ? 'border-sky-200 bg-white/90 text-slate-800 focus:ring-sky-300/50' : 'border-emerald-200 bg-white text-slate-800 focus:ring-emerald-300/50');
+        isNight ? 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-inner focus:ring-indigo-500/50' :
+        isRain ? 'border-sky-200 bg-white/90 text-slate-800 focus:ring-sky-400/50' : 'border-emerald-200 bg-white text-slate-800 focus:ring-emerald-400/50');
       if(id === 'focusMinutesInput') input.classList.replace('w-full', 'w-24');
       if(id === 'focusMinutesInput') input.classList.add('text-center');
     }
   });
+
+  const loader = el('soundscapeLoader');
+  if (loader) {
+    const isVisible = loader.classList.contains('opacity-100');
+    loader.className = 'fixed top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-[2000] px-6 py-4 rounded-3xl backdrop-blur-xl shadow-2xl border flex items-center gap-4 transition-all duration-400 pointer-events-none ' +
+      (isVisible ? 'opacity-100 scale-100 ' : 'opacity-0 scale-95 ') +
+      (isNight ? 'bg-slate-900/80 border-indigo-500/20 text-slate-100 shadow-indigo-900/30' : 
+       isRain ? 'bg-white/85 border-sky-200 shadow-sky-900/10 text-slate-800' : 'bg-white/85 border-emerald-200 shadow-emerald-900/10 text-slate-800');
+  }
 
   if (isNight) {
     document.documentElement.style.setProperty('--range-track', 'rgba(255, 255, 255, 0.08)');
