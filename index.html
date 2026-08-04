@@ -84,8 +84,8 @@ body.fullscreen-active::-webkit-scrollbar,
 }
 body.fullscreen-active,
 #appRoot.fullscreen-active {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .btn-interactive { transition: all 0.2s ease; }
@@ -194,7 +194,7 @@ input[type="checkbox"] { transform: translateZ(0); backface-visibility: hidden; 
                 </svg>
 
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <div id="timer" class="text-6xl md:text-7xl font-mono font-bold transition-colors duration-500">25:00</div>
+                  <div id="timer" class="text-5xl md:text-6xl font-mono font-bold transition-colors duration-500">25:00</div>
                   <div id="progressLabel" class="mt-2 text-sm text-slate-500 transition-colors duration-500"></div>
                 </div>
               </div>
@@ -238,6 +238,17 @@ input[type="checkbox"] { transform: translateZ(0); backface-visibility: hidden; 
             <span class="font-medium settings-label transition-colors duration-500">Break Minutes</span>
             <input id="breakMinutesInput" type="number" min="1" max="60" value="5" class="w-full mt-2 rounded-xl border px-3 py-3 transition-colors duration-500" />
           </label>
+
+          <div class="pt-4 border-t border-slate-200/60">
+            <label class="flex items-center gap-3 cursor-pointer mb-4">
+              <input id="mindfulnessEnabledToggle" type="checkbox" class="w-5 h-5 text-emerald-500 rounded border-slate-300 focus:ring-emerald-500" />
+              <span class="font-medium settings-label transition-colors duration-500">Enable Mindfulness Bell</span>
+            </label>
+            <label class="block cursor-pointer">
+              <span class="font-medium settings-label transition-colors duration-500">Bell Interval (minutes)</span>
+              <input id="mindfulnessIntervalInput" type="number" min="1" max="60" value="5" class="w-full mt-2 rounded-xl border px-3 py-3 transition-colors duration-500" />
+            </label>
+          </div>
 
           <div class="pt-4 border-t border-slate-200/60">
             <label class="flex items-center gap-3 cursor-pointer mb-4">
@@ -303,7 +314,7 @@ const DEFAULTS = {
   focusMinutes: 25, breakMinutes: 5, theme: 'forest', soundscape: 'woodland',
   ambientSoundEnabled: false, ambientVolume: 50, livingTrees: 0, deadTrees: 0,
   totalFocusMinutes: 0, todayFocusMinutes: 0, streakDays: 0, bestDayMinutes: 0,
-  lastFocusDate: '', breaksEnabled: true,
+  lastFocusDate: '', breaksEnabled: true, mindfulnessEnabled: false, mindfulnessInterval: 5,
 };
 
 let data;
@@ -407,7 +418,7 @@ class SoundscapeEngine {
           this.buffers.set(src, audioBuffer);
         } catch (e) { 
           console.warn('Failed to load audio:', src, e); 
-          showToast(`File not found: ${src}`, 'error'); // Specific path error for debugging
+          showToast(`File not found: ${src}`, 'error');
         }
       }));
       this.loading = false;
@@ -616,27 +627,28 @@ class SoundscapeEngine {
     }, 120000, 300000); 
   }
 
-  async preloadBell() {
+  async preloadBells() {
     if (!this.ctx) this.init();
-    const src = 'sounds/timer_bell.mp3';
-    if (!this.buffers.has(src)) {
-      try {
-        const response = await fetch(src);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const arrayBuffer = await response.arrayBuffer();
-        const audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
-        this.buffers.set(src, audioBuffer);
-      } catch(e) { console.warn('Could not preload timer bell', e); }
+    const files = ['sounds/time%20up.mp3', 'sounds/mindfullness%20bell.mp3'];
+    for (const src of files) {
+      if (!this.buffers.has(src)) {
+        try {
+          const response = await fetch(src);
+          const arrayBuffer = await response.arrayBuffer();
+          const audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
+          this.buffers.set(src, audioBuffer);
+        } catch(e) { console.warn('Could not preload bell:', src, e); }
+      }
     }
   }
 
-  async playGlobalBell() {
+  async playBell(type) {
     if (!this.ctx) this.init();
     if(this.ctx.state === 'suspended') this.ctx.resume();
     
-    const src = 'sounds/timer_bell.mp3';
+    const src = type === 'timeup' ? 'sounds/time%20up.mp3' : 'sounds/mindfullness%20bell.mp3';
     if (!this.buffers.has(src)) {
-      await this.preloadBell();
+      await this.preloadBells();
     }
 
     const buffer = this.buffers.get(src);
@@ -645,10 +657,10 @@ class SoundscapeEngine {
     const source = this.ctx.createBufferSource();
     source.buffer = buffer;
     const gainNode = this.ctx.createGain();
-    gainNode.gain.value = this.baseVolume;
+    gainNode.gain.value = 0.8;
     
     source.connect(gainNode);
-    gainNode.connect(this.masterGain);
+    gainNode.connect(this.ctx.destination);
     
     source.start(this.ctx.currentTime);
   }
@@ -717,7 +729,12 @@ function showConfirmModal(title, text, onConfirm) {
 
 function playCompletionSound() {
   if (!audioUnlocked) return;
-  soundEngine.playGlobalBell();
+  soundEngine.playBell('timeup');
+}
+
+function playMindfulnessSound() {
+  if (!audioUnlocked) return;
+  soundEngine.playBell('mindfulness');
 }
 
 function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
@@ -837,66 +854,113 @@ function setupPiP(win) {
   const isNight = data.theme === 'night';
   const isRain = data.theme === 'rain';
   
-  const bgColor = isNight ? '#0a0f1c' : isRain ? '#e0f2fe' : '#ecfdf5';
-  const textColor = isNight ? '#e2e8f0' : '#1e293b';
-  const timerColor = isNight ? '#f8fafc' : '#0f172a';
-  const phaseColor = isNight ? '#a78bfa' : isRain ? '#0284c7' : '#059669';
-  const accentColor = isNight ? 'rgba(167, 139, 250, 0.4)' : isRain ? 'rgba(14, 165, 233, 0.4)' : 'rgba(16, 185, 129, 0.4)';
-  const btnBg = isNight ? 'linear-gradient(to right, #4f46e5, #7c3aed)' : isRain ? '#0ea5e9' : '#10b981';
+  const bgColor = isNight ? '#070a14' : isRain ? '#e0f2fe' : '#ecfdf5';
+  const textColor = isNight ? '#f1f5f9' : '#0f172a';
+  const phaseColor = isNight ? '#c084fc' : isRain ? '#0284c7' : '#047857';
+  const subColor = isNight ? '#94a3b8' : '#64748b';
+  const accentGlow = isNight ? 'rgba(192, 132, 252, 0.35)' : isRain ? 'rgba(14, 165, 233, 0.35)' : 'rgba(16, 185, 129, 0.35)';
+  const ringBgColor = isNight ? 'rgba(255, 255, 255, 0.07)' : isRain ? 'rgba(14, 165, 233, 0.12)' : 'rgba(16, 185, 129, 0.12)';
+  
+  const gradStart = isNight ? '#c084fc' : isRain ? '#38bdf8' : '#34d399';
+  const gradEnd = isNight ? '#6366f1' : isRain ? '#0284c7' : '#059669';
 
   const style = win.document.createElement('style');
   style.textContent = `
+    * { box-sizing: border-box; }
     body { 
-      font-family: 'Inter', system-ui, sans-serif; 
+      font-family: 'Inter', system-ui, -apple-system, sans-serif; 
       display: flex; flex-direction: column; align-items: center; justify-content: center; 
-      height: 100vh; margin: 0; background: ${bgColor}; color: ${textColor}; 
+      width: 100vw; height: 100vh; margin: 0; padding: 3vmin; background: ${bgColor}; color: ${textColor}; 
       text-align: center; overflow: hidden; user-select: none;
       transition: background 0.5s ease;
     }
     .container {
-      background: ${isNight ? 'rgba(30, 41, 59, 0.4)' : 'rgba(255, 255, 255, 0.6)'};
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border: 1px solid ${isNight ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'};
-      border-radius: 24px; padding: 2rem;
-      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1), 0 0 20px ${accentColor};
-      display: flex; flex-direction: column; align-items: center;
+      position: relative;
+      width: 100%; height: 100%;
+      background: ${isNight ? 'linear-gradient(145deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.7))' : isRain ? 'linear-gradient(145deg, rgba(255, 255, 255, 0.7), rgba(224, 242, 254, 0.5))' : 'linear-gradient(145deg, rgba(255, 255, 255, 0.7), rgba(236, 253, 245, 0.5))'};
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid ${isNight ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.6)'};
+      border-radius: min(28px, 6vmin); padding: 2vmin;
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.2);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .container:hover {
+      transform: scale(0.985);
+      box-shadow: 0 25px 50px -12px ${accentGlow};
+    }
+    .circle-box {
+      position: relative; width: min(80vmin, 85vw); height: min(80vmin, 85vw);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ambient-glow {
+      position: absolute; inset: 10%; border-radius: 50%;
+      background: ${accentGlow}; filter: blur(25px); opacity: 0.6;
+      animation: pulseGlow 4s ease-in-out infinite alternate;
+    }
+    @keyframes pulseGlow {
+      0% { transform: scale(0.92); opacity: 0.4; }
+      100% { transform: scale(1.08); opacity: 0.7; }
+    }
+    .pip-ring-svg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      transform: rotate(-90deg); overflow: visible; z-index: 1;
+      filter: drop-shadow(0 0 10px ${accentGlow});
+    }
+    .content-box {
+      position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .phase-badge { 
+      font-size: max(10px, 3.2vmin); text-transform: uppercase; letter-spacing: 0.2em; 
+      color: ${phaseColor}; font-weight: 700; margin-bottom: 0.5vmin;
+      text-shadow: 0 0 8px ${accentGlow};
     }
     .timer { 
-      font-size: 4.5rem; font-family: 'JetBrains Mono', monospace; font-weight: 700; 
-      margin: 1rem 0; line-height: 1; letter-spacing: -2px; color: ${timerColor};
-      text-shadow: 0 0 20px ${accentColor};
+      font-size: max(22px, 12vmin); font-family: 'JetBrains Mono', monospace; font-weight: 800; 
+      line-height: 1; letter-spacing: -1.5px; color: ${textColor};
+      text-shadow: 0 2px 10px rgba(0,0,0,0.15), 0 0 20px ${accentGlow};
     }
-    .phase { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.2em; color: ${phaseColor}; font-weight: 700; }
-    .controls { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
-    button { 
-      padding: 0.75rem 1.5rem; border-radius: 12px; border: none; font-weight: 600; 
-      cursor: pointer; font-size: 0.95rem; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); 
+    .sub-label {
+      font-size: max(9px, 2.8vmin); font-weight: 600; color: ${subColor}; margin-top: 1vmin;
+      opacity: 0.9;
     }
-    button:hover { transform: translateY(-2px); box-shadow: 0 8px 15px -3px rgba(0,0,0,0.1); }
-    button:active { transform: scale(0.95); }
-    .btn-primary { background: ${btnBg}; color: white; border: 1px solid rgba(255,255,255,0.1); }
-    .btn-secondary { background: ${isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'}; color: ${textColor}; }
   `;
   win.document.head.appendChild(style);
   win.document.title = "Witherwood";
   win.document.body.innerHTML = `
-    <div class="container">
-      <div class="phase" id="pipPhase">Focus Session</div>
-      <div class="timer" id="pipTimer">25:00</div>
-      <div class="controls">
-        <button id="pipStartBtn" class="btn-primary">Start</button>
-        <button id="pipResetBtn" class="btn-secondary">Reset</button>
+    <div class="container" id="pipContainer" title="Click anywhere to Play / Pause">
+      <div class="circle-box">
+        <div class="ambient-glow"></div>
+        <svg class="pip-ring-svg" viewBox="0 0 160 160">
+          <defs>
+            <linearGradient id="pipGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="${gradStart}" />
+              <stop offset="100%" stop-color="${gradEnd}" />
+            </linearGradient>
+          </defs>
+          <circle id="pipRingBg" cx="80" cy="80" r="60" fill="none" stroke="${ringBgColor}" stroke-width="8" />
+          <circle id="pipRing" cx="80" cy="80" r="60" fill="none" stroke="url(#pipGradient)" stroke-width="8" stroke-linecap="round" stroke-dasharray="376.99" stroke-dashoffset="0" />
+        </svg>
+        <div class="content-box">
+          <div class="phase-badge" id="pipPhase">FOCUS</div>
+          <div class="timer" id="pipTimer">25:00</div>
+          <div class="sub-label" id="pipSub">🌱 0 saplings</div>
+        </div>
       </div>
     </div>
   `;
 
   pipElements = {
-    phase: win.document.getElementById('pipPhase'), timer: win.document.getElementById('pipTimer'),
-    startBtn: win.document.getElementById('pipStartBtn'), resetBtn: win.document.getElementById('pipResetBtn')
+    container: win.document.getElementById('pipContainer'),
+    phase: win.document.getElementById('pipPhase'),
+    timer: win.document.getElementById('pipTimer'),
+    sub: win.document.getElementById('pipSub'),
+    ring: win.document.getElementById('pipRing'),
+    ringBg: win.document.getElementById('pipRingBg')
   };
 
-  pipElements.startBtn.onclick = () => { isRunning ? pauseTimer() : startTimer(); };
-  pipElements.resetBtn.onclick = () => { resetTimer(); };
+  pipElements.container.onclick = () => { isRunning ? pauseTimer() : startTimer(); };
+
   renderFocus();
 }
 
@@ -913,21 +977,21 @@ function renderFocus() {
   
   if (el('startPauseBtn')) el('startPauseBtn').textContent = startStr;
 
+  const total = (phase === 'focus' ? data.focusMinutes : data.breakMinutes) * 60;
+  const circumference = 376.99;
+  const dashOffset = circumference * (1 - secondsLeft / Math.max(1, total));
+
   const ring = el('progressRing');
   if (ring) {
-    const total = (phase === 'focus' ? data.focusMinutes : data.breakMinutes) * 60;
-    const circumference = 376.99;
-    ring.style.strokeDashoffset = circumference * (1 - secondsLeft / Math.max(1, total));
+    ring.style.strokeDashoffset = dashOffset;
   }
 
   if (pipWindow && pipElements.timer) {
     pipElements.timer.textContent = timeStr;
-    pipElements.phase.textContent = phaseStr;
-    pipElements.startBtn.textContent = startStr;
-    if (phase === 'break') {
-      pipElements.phase.style.color = '#38bdf8';
-    } else {
-      pipElements.phase.style.color = '#a78bfa';
+    if (pipElements.phase) pipElements.phase.textContent = phase === 'focus' ? 'FOCUS' : 'BREAK';
+    if (pipElements.sub) pipElements.sub.textContent = `${icons.sapling} ${healthyTrees} saplings`;
+    if (pipElements.ring) {
+      pipElements.ring.style.strokeDashoffset = dashOffset;
     }
   }
 }
@@ -1076,7 +1140,6 @@ function updateThemeParticles() {
   container.innerHTML = '';
   container.dataset.theme = data.theme;
 
-  // The forest theme exclusively controls the falling leaves.
   if (data.theme === 'forest') {
     for (let i = 0; i < 12; i++) {
       const p = document.createElement('div'); p.className = 'particle-leaf';
@@ -1189,7 +1252,7 @@ function applyTheme() {
   });
 
   const timer = el('timer');
-  if (timer) timer.className = 'text-6xl md:text-7xl font-mono font-bold transition-colors duration-500 ' + (isNight ? 'text-violet-50 drop-shadow-[0_0_18px_rgba(167,139,250,0.45)]' : 'text-slate-800');
+  if (timer) timer.className = 'text-5xl md:text-6xl font-mono font-bold transition-colors duration-500 ' + (isNight ? 'text-violet-50 drop-shadow-[0_0_18px_rgba(167,139,250,0.45)]' : 'text-slate-800');
 
   const progressRingBg = el('progressRingBg');
   if (progressRingBg) {
@@ -1266,7 +1329,7 @@ function applyTheme() {
     label.className = 'font-medium settings-label transition-colors duration-500 ' + (isNight ? 'text-slate-300' : 'text-slate-700');
   });
 
-  const inputs = ['focusMinutesInput', 'breakMinutesInput', 'themeSelect', 'soundscapeSelect'];
+  const inputs = ['focusMinutesInput', 'breakMinutesInput', 'mindfulnessIntervalInput', 'themeSelect', 'soundscapeSelect'];
   inputs.forEach(id => {
     const input = el(id);
     if(input) {
@@ -1316,6 +1379,8 @@ function render() {
   if (el('focusMinutesInput')) el('focusMinutesInput').value = data.focusMinutes;
   if (el('breakMinutesInput')) el('breakMinutesInput').value = data.breakMinutes;
   if (el('breaksEnabledToggle')) el('breaksEnabledToggle').checked = data.breaksEnabled;
+  if (el('mindfulnessEnabledToggle')) el('mindfulnessEnabledToggle').checked = data.mindfulnessEnabled;
+  if (el('mindfulnessIntervalInput')) el('mindfulnessIntervalInput').value = data.mindfulnessInterval;
   if (el('themeSelect')) el('themeSelect').value = data.theme;
   if (el('soundscapeSelect')) el('soundscapeSelect').value = data.soundscape;
   if (el('ambientSoundToggle')) el('ambientSoundToggle').checked = data.ambientSoundEnabled;
@@ -1335,9 +1400,21 @@ function startTimer() {
   if (isRunning) return;
   isRunning = true;
   const endTimestamp = Date.now() + secondsLeft * 1000;
+  let previousSeconds = secondsLeft;
 
   intervalId = setInterval(() => {
     secondsLeft = Math.max(0, Math.round((endTimestamp - Date.now()) / 1000));
+    
+    // Mindfulness Bell Logic
+    if (phase === 'focus' && data.mindfulnessEnabled && isRunning && secondsLeft > 0 && secondsLeft !== previousSeconds) {
+        const elapsed = (data.focusMinutes * 60) - secondsLeft;
+        const intervalSecs = data.mindfulnessInterval * 60;
+        if (elapsed > 0 && elapsed % intervalSecs === 0) {
+            playMindfulnessSound();
+        }
+    }
+    previousSeconds = secondsLeft;
+
     if (secondsLeft <= 0) {
       clearInterval(intervalId); intervalId = null; isRunning = false;
       playCompletionSound();
@@ -1415,6 +1492,18 @@ function bindEvents() {
   el('breakMinutesInput')?.addEventListener('blur', (e) => { if (e.target.value.trim() === '') e.target.value = data.breakMinutes; });
 
   el('breaksEnabledToggle')?.addEventListener('change', (e) => { data.breaksEnabled = e.target.checked; save(); render(); });
+  
+  el('mindfulnessEnabledToggle')?.addEventListener('change', (e) => { data.mindfulnessEnabled = e.target.checked; save(); render(); });
+  
+  el('mindfulnessIntervalInput')?.addEventListener('input', (e) => {
+    const value = e.target.value.trim(); if (value === '') return;
+    const parsed = Number(value); if (!Number.isFinite(parsed)) return;
+    data.mindfulnessInterval = Math.max(1, Math.min(60, parsed));
+    save(); render();
+  });
+
+  el('mindfulnessIntervalInput')?.addEventListener('blur', (e) => { if (e.target.value.trim() === '') e.target.value = data.mindfulnessInterval; });
+
   el('themeSelect')?.addEventListener('change', (e) => { data.theme = e.target.value; save(); render(); });
   
   el('soundscapeSelect')?.addEventListener('change', (e) => {
@@ -1444,7 +1533,7 @@ function bindEvents() {
     audioUnlocked = true; 
     soundEngine.apply(data.soundscape, data.ambientSoundEnabled);
     soundEngine.setVolume(data.ambientVolume / 100); 
-    soundEngine.preloadBell();
+    soundEngine.preloadBells();
     document.removeEventListener('click', unlockAudio);
   };
   document.addEventListener('click', unlockAudio);
