@@ -11,6 +11,65 @@
 <style>
 body { font-family: 'Inter', sans-serif; }
 
+/* Refined Subtle View Transitions */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* 1. Forest Transition: Gentle Organic Meadow Bloom */
+[data-transition-to="forest"]::view-transition-old(root) {
+  animation: fadeOutSoft 0.85s ease forwards;
+}
+[data-transition-to="forest"]::view-transition-new(root) {
+  animation: forestSproutSubtle 0.95s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+@keyframes forestSproutSubtle {
+  0% { clip-path: circle(20% at 50% 50%); opacity: 0; filter: saturate(1.05); }
+  40% { opacity: 0.8; }
+  100% { clip-path: circle(150% at 50% 50%); opacity: 1; filter: saturate(1); }
+}
+
+/* 2. Rain Transition: Soft Mist Downpour Veil */
+[data-transition-to="rain"]::view-transition-old(root) {
+  animation: fadeOutSoft 0.85s ease forwards;
+}
+[data-transition-to="rain"]::view-transition-new(root) {
+  animation: rainCascadeSubtle 0.95s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+@keyframes rainCascadeSubtle {
+  0% { clip-path: inset(0 0 70% 0); opacity: 0; filter: blur(3px); }
+  50% { opacity: 0.85; }
+  100% { clip-path: inset(0 0 0% 0); opacity: 1; filter: blur(0px); }
+}
+
+/* 3. Night Transition: Velvet Twilight Dissolve */
+[data-transition-to="night"]::view-transition-old(root) {
+  animation: fadeOutSoft 0.85s ease forwards;
+}
+[data-transition-to="night"]::view-transition-new(root) {
+  animation: nightEclipseSubtle 0.95s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+@keyframes nightEclipseSubtle {
+  0% { opacity: 0; filter: brightness(0.85); }
+  100% { opacity: 1; filter: brightness(1); }
+}
+
+@keyframes fadeOutSoft {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Base Fallback Component Transitions */
+body, #appRoot, .page-section, .btn-interactive, .flip-digit, .flip-half, .brand-title {
+  transition: background-color 0.85s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.85s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.85s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.85s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.85s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
 @keyframes rainfall {
   from { transform: translate3d(0, -120vh, 0) rotate(12deg); }
   to { transform: translate3d(-120px, 120vh, 0) rotate(12deg); }
@@ -18,6 +77,7 @@ body { font-family: 'Inter', sans-serif; }
 .rain-overlay {
   position: fixed; inset: 0; width: 100vw; height: 100vh;
   pointer-events: none; z-index: 2147483645;
+  transition: opacity 0.85s ease;
 }
 .rain-drop {
   position: absolute; top: -20%; width: 4.5px; border-radius: 9999px;
@@ -55,7 +115,7 @@ body { font-family: 'Inter', sans-serif; }
 .brand-title-night { text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45), 0 0 24px rgba(167, 139, 250, 0.22); }
 .brand-title-rain { text-shadow: 0 2px 10px rgba(15, 23, 42, 0.12), 0 0 24px rgba(14, 165, 233, 0.16); }
 
-#themeParticles { position: fixed; inset: 0; pointer-events: none; z-index: 2147483646; overflow: hidden; }
+#themeParticles { position: fixed; inset: 0; pointer-events: none; z-index: 2147483646; overflow: hidden; transition: opacity 0.85s ease; }
 .particle-leaf {
   position: absolute; background: #8bc34a; width: 5px; height: 5px;
   border-radius: 50% 0 50% 0; animation: floatLeaf var(--dur) linear infinite;
@@ -67,7 +127,7 @@ body { font-family: 'Inter', sans-serif; }
   100% { transform: translate3d(var(--ex), 110vh, 0) rotate(var(--rot)); opacity: 0; }
 }
 
-.page-section { transition: opacity 0.2s ease, transform 0.2s ease; opacity: 1; transform: translateY(0); }
+.page-section { opacity: 1; transform: translateY(0); }
 .page-hidden { opacity: 0; transform: translateY(10px); pointer-events: none; position: absolute; visibility: hidden; }
 
 body.fullscreen-active { overflow: hidden; }
@@ -88,7 +148,112 @@ body.fullscreen-active,
   scrollbar-width: none;
 }
 
-.btn-interactive { transition: all 0.2s ease; }
+/* Dedicated Flip Clock Fullscreen Rules */
+body.fc-fullscreen-active #appRoot {
+  padding: 0 !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
+}
+
+body.fc-fullscreen-active #appRoot > div {
+  height: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+}
+
+body.fc-fullscreen-active #appRoot > div > div.w-full {
+  height: 100% !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+body.fc-fullscreen-active #nav,
+body.fc-fullscreen-active header,
+body.fc-fullscreen-active #pipBtn,
+body.fc-fullscreen-active #fcFullscreenBtn,
+body.fc-fullscreen-active #focusControls,
+body.fc-fullscreen-active #saplings,
+body.fc-fullscreen-active #startPauseBtn,
+body.fc-fullscreen-active #witherBtn,
+body.fc-fullscreen-active #resetBtn,
+body.fc-fullscreen-active #message,
+body.fc-fullscreen-active #phaseLabel,
+body.fc-fullscreen-active #flipProgressLabel {
+  display: none !important;
+}
+
+body.fc-fullscreen-active #focusPage {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+body.fc-fullscreen-active #focusPage > div {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+body.fc-fullscreen-active #focusPage > div > div.mt-4 {
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+body.fc-fullscreen-active #flipClockContainer {
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+body.fc-fullscreen-active .flip-clock { 
+  gap: 12px; 
+  cursor: pointer; 
+}
+
+body.fc-fullscreen-active .flip-digit {
+  width: clamp(4.5rem, min(18vw, 40vh), 12rem);
+  height: clamp(6.5rem, min(27vw, 60vh), 18rem);
+  font-size: clamp(4.5rem, min(18vw, 40vh), 12rem);
+  border-radius: 16px;
+}
+body.fc-fullscreen-active .flip-half { border-radius: 16px; }
+body.fc-fullscreen-active .flip-half.top { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+body.fc-fullscreen-active .flip-half.bottom { border-top-left-radius: 0; border-top-right-radius: 0; }
+body.fc-fullscreen-active .flip-half .val {
+  height: clamp(6.5rem, min(27vw, 60vh), 18rem);
+  line-height: clamp(6.5rem, min(27vw, 60vh), 18rem);
+}
+body.fc-fullscreen-active .flip-colon { 
+  font-size: clamp(4rem, min(15vw, 35vh), 10rem); 
+}
+
 .btn-interactive:not(label):hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
 .btn-interactive:not(label):active { transform: translateY(0) scale(0.95); box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
 
@@ -126,12 +291,100 @@ body.fullscreen-active,
 .custom-range:focus-visible::-moz-range-thumb { box-shadow: var(--range-glow, 0 0 12px rgba(16, 185, 129, 0.4)), 0 0 0 4px var(--range-ring, rgba(16, 185, 129, 0.25)); }
 
 input[type="checkbox"] { transform: translateZ(0); backface-visibility: hidden; -webkit-font-smoothing: subpixel-antialiased; }
+
+/* Flip Clock Styles with Specular Highlights & Depth */
+.flip-clock {
+  display: flex; gap: 8px; font-family: 'JetBrains Mono', monospace; font-weight: 700;
+  align-items: center; justify-content: center; user-select: none;
+}
+.flip-group { display: flex; gap: 4px; }
+.flip-colon {
+  font-size: clamp(3rem, 10vw, 4.5rem); 
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 0.12em; 
+  opacity: 0.8;
+  color: var(--fc-text, #065f46);
+  animation: pulseColon 2s infinite ease-in-out;
+}
+@keyframes pulseColon { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.4; } }
+
+.flip-digit {
+  position: relative; width: clamp(3.2rem, 11vw, 5rem); height: clamp(4.8rem, 16.5vw, 7.5rem);
+  background: var(--fc-bg-bottom, #ffffff); color: var(--fc-text, #065f46);
+  border-radius: 8px; font-size: clamp(3.2rem, 11vw, 5rem);
+  text-align: center; perspective: 1200px;
+  box-shadow: var(--fc-shadow), inset 0 0 0 1px var(--fc-border);
+}
+
+.flip-half {
+  position: absolute; left: 0; right: 0; height: 50%; overflow: hidden;
+  color: var(--fc-text, #065f46);
+  border-radius: 8px; backface-visibility: hidden; transform-style: preserve-3d;
+}
+
+.flip-half.top {
+  top: 0; transform-origin: bottom; background: var(--fc-bg-top);
+  border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+  border-bottom: 1px solid var(--fc-split);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -2px 10px rgba(0,0,0,0.04);
+}
+
+.flip-half.bottom {
+  bottom: 0; transform-origin: top; background: var(--fc-bg-bottom);
+  border-top-left-radius: 0; border-top-right-radius: 0;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.04);
+}
+
+.flip-half .val {
+  position: absolute; left: 0; width: 100%;
+  height: clamp(4.8rem, 16.5vw, 7.5rem); 
+  line-height: clamp(4.8rem, 16.5vw, 7.5rem);
+}
+
+.flip-half.top .val { top: 0; }
+.flip-half.bottom .val { bottom: 0; }
+
+.flip-flap.top { 
+  z-index: 2; 
+  animation: flipTop 300ms cubic-bezier(0.37, 0, 0.63, 1) forwards; 
+}
+
+.flip-flap.bottom { 
+  z-index: 2; 
+  transform: rotateX(90deg); 
+  animation: flipBottom 300ms cubic-bezier(0.37, 0, 0.63, 1) 300ms forwards; 
+}
+
+@keyframes flipTop {
+  0% { transform: rotateX(0deg); filter: brightness(1); }
+  100% { transform: rotateX(-90deg); filter: brightness(0.6); }
+}
+@keyframes flipBottom {
+  0% { transform: rotateX(90deg); filter: brightness(0.6); }
+  100% { transform: rotateX(0deg); filter: brightness(1); }
+}
+
+/* Tiered Canopy Atmospheric Fog */
+.canopy-layer-fog {
+  position: absolute; inset: -4px -16px;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 75%);
+  pointer-events: none; z-index: 1; filter: blur(6px);
+}
+.canopy-layer-fog-night {
+  background: radial-gradient(ellipse at center, rgba(139,92,246,0.15) 0%, rgba(15,23,42,0) 75%);
+}
+.canopy-layer-fog-rain {
+  background: radial-gradient(ellipse at center, rgba(186,230,253,0.3) 0%, rgba(224,242,254,0) 75%);
+}
 </style>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#f7f4ea">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 </head>
-<body class="min-h-screen bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 text-slate-800 transition-colors duration-500">
+<body class="min-h-screen bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 text-slate-800">
 
 <div id="rainOverlay" class="rain-overlay hidden"></div>
 <div id="nightOverlay" class="rain-overlay hidden"></div>
@@ -157,24 +410,27 @@ input[type="checkbox"] { transform: translateZ(0); backface-visibility: hidden; 
   </div>
 </div>
 
-<div class="min-h-screen p-4 md:p-8 pb-10 md:pb-16 flex flex-col items-center transition-all duration-500">
-  <div id="appRoot" class="w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center">
+<div class="min-h-screen p-4 md:p-8 pb-10 md:pb-16 flex flex-col items-center">
+  <div id="appRoot" class="w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b from-emerald-50 via-lime-50 to-teal-100 p-6 md:p-10 relative overflow-hidden flex flex-col items-center">
     
-    <button id="pipBtn" class="fixed top-6 left-6 z-[2000] backdrop-blur-md btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl transition-colors duration-500" title="Mini Player" aria-label="Mini Player">
+    <button id="pipBtn" class="fixed top-6 left-6 z-[2000] backdrop-blur-md btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl" title="Mini Player" aria-label="Mini Player">
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="6" width="18" height="12" rx="2" ry="2"></rect>
         <rect x="12" y="11" width="7" height="5" rx="1" ry="1"></rect>
       </svg>
     </button>
     
-    <button id="fullscreenBtn" class="fixed top-6 right-6 z-[2000] backdrop-blur-md btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl transition-colors duration-500" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">⛶</button>
+    <button id="fullscreenBtn" class="fixed top-6 right-6 z-[2000] backdrop-blur-md btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">⛶</button>
+    
+    <!-- Dedicated Flip Clock Fullscreen Button -->
+    <button id="fcFullscreenBtn" class="fixed top-[76px] right-[28px] z-[2000] backdrop-blur-md btn-interactive w-9 h-9 flex items-center justify-center rounded-xl border text-lg hidden" title="Fullscreen Flip Clock" aria-label="Fullscreen Flip Clock">◫</button>
 
     <div class="w-full max-w-4xl space-y-8 relative z-10 flex flex-col items-center">
       
       <header class="flex flex-col items-center text-center gap-4 w-full relative">
         <div>
-          <h1 id="brandTitle" class="brand-title text-4xl md:text-6xl transition-colors duration-500">🌲 Witherwood</h1>
-          <p class="text-slate-600 mt-2 transition-colors duration-500">Every 10 minutes of focus plants a tree.</p>
+          <h1 id="brandTitle" class="brand-title text-4xl md:text-6xl">🌲 Witherwood</h1>
+          <p class="text-slate-600 mt-2">Every 10 minutes of focus plants a tree.</p>
         </div>
       </header>
 
@@ -184,41 +440,48 @@ input[type="checkbox"] { transform: translateZ(0); backface-visibility: hidden; 
         
         <section id="focusPage" class="page-section w-full rounded-3xl bg-white/85 border shadow-lg p-6 max-w-3xl mb-8 md:mb-12 lg:mb-16">
           <div class="max-w-lg mx-auto text-center">
-            <div id="phaseLabel" class="text-sm uppercase tracking-wide text-emerald-700 transition-colors duration-500 font-semibold">Focus Session</div>
+            <div id="phaseLabel" class="text-sm uppercase tracking-wide text-emerald-700 font-semibold">Focus Session</div>
 
-            <div class="mt-4 flex justify-center">
-              <div class="relative w-64 h-64 md:w-72 md:h-72">
+            <div class="mt-4 flex flex-col items-center justify-center w-full">
+              <!-- Circular Timer -->
+              <div id="circularTimerContainer" class="relative w-64 h-64 md:w-72 md:h-72 flex justify-center">
                 <svg class="w-full h-full -rotate-90 overflow-visible" viewBox="0 0 160 160">
-                  <circle id="progressRingBg" cx="80" cy="80" r="60" fill="none" stroke-width="8" class="transition-colors duration-500" />
+                  <circle id="progressRingBg" cx="80" cy="80" r="60" fill="none" stroke-width="8" />
                   <circle id="progressRing" cx="80" cy="80" r="60" fill="none" stroke="#10b981" stroke-width="8" stroke-linecap="round" stroke-dasharray="376.99" stroke-dashoffset="0" class="transition-all duration-300 ease-in-out" />
                 </svg>
 
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <div id="timer" class="text-5xl md:text-6xl font-mono font-bold transition-colors duration-500">25:00</div>
-                  <div id="progressLabel" class="mt-2 text-sm text-slate-500 transition-colors duration-500"></div>
+                  <div id="timer" class="text-5xl md:text-6xl font-mono font-bold">25:00</div>
+                  <div id="progressLabel" class="mt-2 text-sm text-slate-500"></div>
                 </div>
+              </div>
+
+              <!-- Flip Clock Timer -->
+              <div id="flipClockContainer" class="hidden flex-col items-center justify-center my-6 w-full">
+                <div id="flipClockRenderer"></div>
+                <div id="flipProgressLabel" class="mt-8 text-sm text-slate-500 text-center"></div>
               </div>
             </div>
 
             <div id="focusControls" class="mt-6 flex items-center justify-center gap-3">
-              <label class="transition-colors duration-500">Focus (min)</label>
-              <input id="focusMinutesInput" type="number" min="1" max="180" value="25" class="w-24 rounded-xl border px-3 py-2 transition-colors duration-500 text-center" />
+              <label>Focus (min)</label>
+              <input id="focusMinutesInput" type="number" min="1" max="180" value="25" class="w-24 rounded-xl border px-3 py-2 text-center" />
             </div>
 
-            <div id="saplings" class="mt-5 text-lg font-medium transition-colors duration-500"></div>
+            <div id="saplings" class="mt-5 text-lg font-medium"></div>
 
             <div class="flex flex-wrap justify-center gap-4 mt-6">
-              <button id="startPauseBtn" class="btn-interactive px-6 py-3 rounded-2xl bg-emerald-500 text-white font-semibold transition-colors duration-500">Start</button>
-              <button id="witherBtn" class="btn-interactive px-6 py-3 rounded-2xl bg-amber-500 text-white font-semibold transition-colors duration-500">🍂 Wither Tree</button>
-              <button id="resetBtn" class="btn-interactive px-6 py-3 rounded-2xl border bg-white transition-colors duration-500 font-medium">Reset</button>
+              <button id="startPauseBtn" class="btn-interactive px-6 py-3 rounded-2xl bg-emerald-500 text-white font-semibold">Start</button>
+              <button id="witherBtn" class="btn-interactive px-6 py-3 rounded-2xl bg-amber-500 text-white font-semibold">🍂 Wither Tree</button>
+              <button id="resetBtn" class="btn-interactive px-6 py-3 rounded-2xl border bg-white font-medium">Reset</button>
             </div>
 
-            <p id="message" class="mt-6 italic text-slate-500 transition-colors duration-500">“A calm mind nurtures strong roots.”</p>
+            <p id="message" class="mt-6 italic text-slate-500">“A calm mind nurtures strong roots.”</p>
           </div>
         </section>
 
         <section id="forestPage" class="page-section page-hidden w-full rounded-3xl bg-white/85 border shadow-lg p-6 max-w-3xl">
-          <h2 class="text-2xl font-semibold mb-6 transition-colors duration-500">Your Forest</h2>
+          <h2 class="text-2xl font-semibold mb-6">Your Forest</h2>
           <div id="forestGrid" class="flex flex-wrap text-xl justify-center w-full"></div>
         </section>
 
@@ -227,56 +490,56 @@ input[type="checkbox"] { transform: translateZ(0); backface-visibility: hidden; 
         </section>
 
         <section id="settingsPage" class="page-section page-hidden w-full rounded-3xl bg-white/85 border shadow-lg p-6 max-w-xl space-y-5">
-          <h2 class="text-2xl font-semibold transition-colors duration-500 mb-2">Settings</h2>
+          <h2 class="text-2xl font-semibold mb-2">Settings</h2>
 
           <label class="flex items-center gap-3 cursor-pointer">
             <input id="breaksEnabledToggle" type="checkbox" class="w-5 h-5 text-emerald-500 rounded border-slate-300 focus:ring-emerald-500" />
-            <span class="font-medium settings-label transition-colors duration-500">Enable Break Sessions</span>
+            <span class="font-medium settings-label">Enable Break Sessions</span>
           </label>
 
           <label class="block cursor-pointer">
-            <span class="font-medium settings-label transition-colors duration-500">Break Minutes</span>
-            <input id="breakMinutesInput" type="number" min="1" max="60" value="5" class="w-full mt-2 rounded-xl border px-3 py-3 transition-colors duration-500" />
+            <span class="font-medium settings-label">Break Minutes</span>
+            <input id="breakMinutesInput" type="number" min="1" max="60" value="5" class="w-full mt-2 rounded-xl border px-3 py-3" />
           </label>
 
           <div class="pt-4 border-t border-slate-200/60">
             <label class="flex items-center gap-3 cursor-pointer mb-4">
               <input id="mindfulnessEnabledToggle" type="checkbox" class="w-5 h-5 text-emerald-500 rounded border-slate-300 focus:ring-emerald-500" />
-              <span class="font-medium settings-label transition-colors duration-500">Enable Mindfulness Bell</span>
+              <span class="font-medium settings-label">Enable Mindfulness Bell</span>
             </label>
             <label class="block cursor-pointer">
-              <span class="font-medium settings-label transition-colors duration-500">Bell Interval (minutes)</span>
-              <input id="mindfulnessIntervalInput" type="number" min="1" max="60" value="5" class="w-full mt-2 rounded-xl border px-3 py-3 transition-colors duration-500" />
+              <span class="font-medium settings-label">Bell Interval (minutes)</span>
+              <input id="mindfulnessIntervalInput" type="number" min="1" max="60" value="5" class="w-full mt-2 rounded-xl border px-3 py-3" />
             </label>
           </div>
 
           <div class="pt-4 border-t border-slate-200/60">
             <label class="flex items-center gap-3 cursor-pointer mb-4">
               <input id="ambientSoundToggle" type="checkbox" class="w-5 h-5 text-emerald-500 rounded border-slate-300 focus:ring-emerald-500" />
-              <span class="font-medium settings-label transition-colors duration-500">Enable Ambient Sound</span>
+              <span class="font-medium settings-label">Enable Ambient Sound</span>
             </label>
 
             <label class="block">
               <div class="flex items-center justify-between mb-2">
-                <span class="font-medium settings-label transition-colors duration-500">Ambient Volume</span>
-                <span id="ambientVolumeLabel" class="text-sm font-medium transition-colors duration-500">50%</span>
+                <span class="font-medium settings-label">Ambient Volume</span>
+                <span id="ambientVolumeLabel" class="text-sm font-medium">50%</span>
               </div>
               <input id="ambientVolumeInput" type="range" min="0" max="100" step="1" value="50" class="custom-range w-full cursor-pointer" />
             </label>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-4 border-t border-slate-200/60">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-4 border-t border-slate-200/60">
             <label class="block cursor-pointer">
-              <span class="font-medium settings-label transition-colors duration-500">Visual Theme</span>
-              <select id="themeSelect" class="w-full mt-2 rounded-xl border px-3 py-3 transition-colors duration-500 cursor-pointer">
+              <span class="font-medium settings-label">Visual Theme</span>
+              <select id="themeSelect" class="w-full mt-2 rounded-xl border px-3 py-3 cursor-pointer">
                 <option value="forest">🌲 Forest</option>
                 <option value="night">🌙 Night</option>
                 <option value="rain">🌧️ Rain</option>
               </select>
             </label>
             <label class="block cursor-pointer">
-              <span class="font-medium settings-label transition-colors duration-500">Soundscape</span>
-              <select id="soundscapeSelect" class="w-full mt-2 rounded-xl border px-3 py-3 transition-colors duration-500 cursor-pointer">
+              <span class="font-medium settings-label">Soundscape</span>
+              <select id="soundscapeSelect" class="w-full mt-2 rounded-xl border px-3 py-3 cursor-pointer">
                 <option value="woodland">🍃 Woodland</option>
                 <option value="fireside">🔥 Fireside</option>
                 <option value="rainfall">🌧️ Rainfall</option>
@@ -284,11 +547,18 @@ input[type="checkbox"] { transform: translateZ(0); backface-visibility: hidden; 
                 <option value="lotr">🧝 LOTR Ambience</option>
               </select>
             </label>
+            <label class="block cursor-pointer">
+              <span class="font-medium settings-label">Timer Display</span>
+              <select id="timerDisplaySelect" class="w-full mt-2 rounded-xl border px-3 py-3 cursor-pointer">
+                <option value="circular">⏱️ Circular</option>
+                <option value="flip">📟 Flip Clock</option>
+              </select>
+            </label>
           </div>
 
           <div class="pt-6 border-t border-slate-200/60 space-y-4">
             <div>
-              <h3 class="font-semibold settings-label transition-colors duration-500 mb-2">Data Management</h3>
+              <h3 class="font-semibold settings-label mb-2">Data Management</h3>
               <div class="flex flex-wrap gap-3">
                 <button id="exportDataBtn" class="btn-interactive px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium">📤 Export Backup</button>
                 <button id="importDataBtn" class="btn-interactive px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-medium">📥 Import Backup</button>
@@ -296,9 +566,9 @@ input[type="checkbox"] { transform: translateZ(0); backface-visibility: hidden; 
               </div>
             </div>
             <div class="pt-4 border-t border-slate-200/60">
-              <h3 class="font-semibold settings-label transition-colors duration-500 text-rose-500 mb-2">Danger Zone</h3>
-              <p class="text-sm text-slate-500 transition-colors duration-500 mb-3">Permanently clears your forest and all saved statistics.</p>
-              <button id="resetAllBtn" class="btn-interactive px-5 py-2.5 rounded-xl bg-rose-500 text-white hover:bg-rose-600 transition-colors font-medium">Reset All Data</button>
+              <h3 class="font-semibold settings-label text-rose-500 mb-2">Danger Zone</h3>
+              <p class="text-sm text-slate-500 mb-3">Permanently clears your forest and all saved statistics.</p>
+              <button id="resetAllBtn" class="btn-interactive px-5 py-2.5 rounded-xl bg-rose-500 text-white hover:bg-rose-600 font-medium">Reset All Data</button>
             </div>
           </div>
         </section>
@@ -315,12 +585,14 @@ const DEFAULTS = {
   ambientSoundEnabled: false, ambientVolume: 50, livingTrees: 0, deadTrees: 0,
   totalFocusMinutes: 0, todayFocusMinutes: 0, streakDays: 0, bestDayMinutes: 0,
   lastFocusDate: '', breaksEnabled: true, mindfulnessEnabled: false, mindfulnessInterval: 5,
+  timerDisplay: 'circular'
 };
 
 let data;
 try {
   data = { ...DEFAULTS, ...(JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || {}) };
   if (!data.soundscape) data.soundscape = 'woodland';
+  if (!data.timerDisplay) data.timerDisplay = 'circular';
 } catch { data = { ...DEFAULTS }; }
 
 let page = 'focus';
@@ -333,6 +605,8 @@ let healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
 
 let pipWindow = null;
 let pipElements = {};
+let flipClock = null;
+let isFcFullscreen = false;
 
 const pages = ['focus', 'forest', 'dashboard', 'settings'];
 const labels = { focus: '⏱ Focus', forest: '🌲 Forest', dashboard: '📊 Dashboard', settings: '⚙️ Settings' };
@@ -418,7 +692,6 @@ class SoundscapeEngine {
           this.buffers.set(src, audioBuffer);
         } catch (e) { 
           console.warn('Failed to load audio:', src, e); 
-          showToast(`File not found: ${src}`, 'error');
         }
       }));
       this.loading = false;
@@ -637,7 +910,7 @@ class SoundscapeEngine {
           const arrayBuffer = await response.arrayBuffer();
           const audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
           this.buffers.set(src, audioBuffer);
-        } catch(e) { console.warn('Could not preload bell:', src, e); }
+        } catch(e) { }
       }
     }
   }
@@ -667,7 +940,125 @@ class SoundscapeEngine {
 }
 const soundEngine = new SoundscapeEngine();
 
+// Haptic Micro-Feedback Handler
+function triggerHaptic(type = 'light') {
+  if (!('vibrate' in navigator)) return;
+  try {
+    if (type === 'light') navigator.vibrate(12);
+    else if (type === 'medium') navigator.vibrate(25);
+    else if (type === 'heavy') navigator.vibrate([35, 40, 35]);
+    else if (type === 'success') navigator.vibrate([15, 60, 25, 60, 40]);
+  } catch (e) {}
+}
+
+class FlipClock {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.digits = {};
+    this.renderedTime = "";
+    this.initDOM();
+  }
+  
+  initDOM() {
+    this.container.innerHTML = `
+      <div class="flip-clock" role="timer" aria-live="off" aria-label="Timer">
+        <div class="flip-group" id="fc-min">
+          ${this.createDigitDOM('m1')}
+          ${this.createDigitDOM('m0')}
+        </div>
+        <div class="flip-colon">:</div>
+        <div class="flip-group" id="fc-sec">
+          ${this.createDigitDOM('s1')}
+          ${this.createDigitDOM('s0')}
+        </div>
+      </div>
+    `;
+    ['m1','m0','s1','s0'].forEach(id => {
+      this.digits[id] = { el: document.getElementById(`digit-${id}`), val: '0', timeoutId: null };
+    });
+  }
+  
+  createDigitDOM(id) {
+    return `
+      <div class="flip-digit" id="digit-${id}" aria-hidden="true">
+        <div class="flip-half top"><div class="val">0</div></div>
+        <div class="flip-half bottom"><div class="val">0</div></div>
+      </div>`;
+  }
+  
+  update(secondsLeft) {
+    const m = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
+    const s = String(secondsLeft % 60).padStart(2, '0');
+    const newTime = m + s;
+    
+    if (this.renderedTime === newTime) return;
+
+    const ids = ['m1','m0','s1','s0'];
+    for(let i=0; i<4; i++) {
+      if (this.renderedTime === "") {
+        this.digits[ids[i]].val = newTime[i];
+        this.digits[ids[i]].el.querySelectorAll('.val').forEach(v => v.textContent = newTime[i]);
+      } else if (this.renderedTime[i] !== newTime[i]) {
+        this.flipDigit(ids[i], newTime[i]);
+      }
+    }
+    this.renderedTime = newTime;
+  }
+  
+  flipDigit(id, newVal) {
+    const digit = this.digits[id];
+    const el = digit.el;
+    const oldVal = digit.val;
+    if(oldVal === newVal) return;
+    digit.val = newVal;
+
+    if (digit.timeoutId) {
+      clearTimeout(digit.timeoutId);
+      digit.timeoutId = null;
+    }
+
+    el.querySelectorAll('.flip-flap').forEach(n => n.remove());
+
+    const topStatic = el.querySelector('.top:not(.flip-flap) .val');
+    const bottomStatic = el.querySelector('.bottom:not(.flip-flap) .val');
+    
+    topStatic.textContent = newVal;
+    bottomStatic.textContent = oldVal;
+
+    const flapTop = document.createElement('div');
+    flapTop.className = 'flip-half top flip-flap';
+    flapTop.innerHTML = `<div class="val">${oldVal}</div>`;
+
+    const flapBottom = document.createElement('div');
+    flapBottom.className = 'flip-half bottom flip-flap';
+    flapBottom.innerHTML = `<div class="val">${newVal}</div>`;
+
+    el.appendChild(flapTop);
+    el.appendChild(flapBottom);
+
+    digit.timeoutId = setTimeout(() => {
+      bottomStatic.textContent = newVal;
+      if (flapTop.parentNode) flapTop.remove();
+      if (flapBottom.parentNode) flapBottom.remove();
+      digit.timeoutId = null;
+    }, 600);
+  }
+}
+
 function el(id) { return document.getElementById(id); }
+
+function ensureClass(node, className, add) {
+  if (!node) return;
+  if (add && !node.classList.contains(className)) node.classList.add(className);
+  else if (!add && node.classList.contains(className)) node.classList.remove(className);
+}
+
+function updateTextContentSafe(id, text) {
+  const node = el(id);
+  if (node && node.textContent !== text) {
+    node.textContent = text;
+  }
+}
 
 function showToast(message, type = 'info') {
   const container = el('toastContainer');
@@ -755,6 +1146,7 @@ function importBackup(file) {
       if (!backup.data) throw new Error('Invalid backup');
       data = { ...DEFAULTS, ...backup.data };
       if (!data.soundscape) data.soundscape = 'woodland';
+      if (!data.timerDisplay) data.timerDisplay = 'circular';
       save();
       resetTimer();
       render();
@@ -777,12 +1169,12 @@ function getIcons() {
 }
 
 function setMessage(text) {
-  const message = el('message');
-  if (message) message.textContent = `“${text}”`;
+  updateTextContentSafe('message', `“${text}”`);
 }
 
 function witherTree() {
   if (!isRunning || phase !== 'focus') return;
+  triggerHaptic('heavy');
   healthyTrees = Math.max(0, healthyTrees - 1);
   data.deadTrees += 1;
   save();
@@ -793,6 +1185,7 @@ function witherTree() {
 
 async function switchPage(newPage) {
   if (page === newPage) return;
+  triggerHaptic('light');
   const oldEl = el(page + 'Page'); const newEl = el(newPage + 'Page');
   if(oldEl) oldEl.classList.add('page-hidden');
   
@@ -817,12 +1210,12 @@ function renderNav() {
     
     if (isNight) {
       button.className = isActive
-        ? 'btn-interactive px-5 py-2.5 rounded-2xl border border-indigo-400/30 bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.4)] transition-all duration-200 font-medium'
-        : 'btn-interactive px-5 py-2.5 rounded-2xl border border-slate-700/50 bg-slate-800/80 text-slate-300 shadow-sm hover:bg-slate-700/90 hover:text-white hover:shadow-lg hover:shadow-indigo-900/20 transition-all duration-200';
+        ? 'btn-interactive px-5 py-2.5 rounded-2xl border border-indigo-400/30 bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.4)] font-medium'
+        : 'btn-interactive px-5 py-2.5 rounded-2xl border border-slate-700/50 bg-slate-800/80 text-slate-300 shadow-sm hover:bg-slate-700/90 hover:text-white hover:shadow-lg hover:shadow-indigo-900/20';
     } else {
       button.className = isActive
-        ? 'btn-interactive px-5 py-2.5 rounded-2xl border shadow-sm bg-emerald-500 text-white transition-all duration-200 font-medium'
-        : 'btn-interactive px-5 py-2.5 rounded-2xl border shadow-sm bg-white/85 text-slate-700 hover:bg-white transition-all duration-200';
+        ? 'btn-interactive px-5 py-2.5 rounded-2xl border shadow-sm bg-emerald-500 text-white font-medium'
+        : 'btn-interactive px-5 py-2.5 rounded-2xl border shadow-sm bg-white/85 text-slate-700 hover:bg-white';
     }
 
     button.textContent = labels[p];
@@ -970,28 +1363,62 @@ function renderFocus() {
   const phaseStr = phase === 'focus' ? 'Focus Session' : 'Break Time';
   const startStr = isRunning ? 'Pause' : 'Start';
 
-  if (el('phaseLabel')) el('phaseLabel').textContent = phaseStr;
-  if (el('timer')) el('timer').textContent = timeStr;
-  if (el('saplings')) el('saplings').textContent = `${icons.sapling} ${healthyTrees} saplings`;
-  if (el('progressLabel')) el('progressLabel').textContent = `${icons.sapling} ${healthyTrees} saplings to protect`;
-  
-  if (el('startPauseBtn')) el('startPauseBtn').textContent = startStr;
+  updateTextContentSafe('phaseLabel', phaseStr);
+  updateTextContentSafe('saplings', `${icons.sapling} ${healthyTrees} saplings`);
+  updateTextContentSafe('startPauseBtn', startStr);
 
   const total = (phase === 'focus' ? data.focusMinutes : data.breakMinutes) * 60;
   const circumference = 376.99;
   const dashOffset = circumference * (1 - secondsLeft / Math.max(1, total));
+  const dashOffsetStr = String(dashOffset);
 
-  const ring = el('progressRing');
-  if (ring) {
-    ring.style.strokeDashoffset = dashOffset;
+  const circContainer = el('circularTimerContainer');
+  const flipContainer = el('flipClockContainer');
+  const fcFsBtn = el('fcFullscreenBtn');
+
+  if (data.timerDisplay === 'flip') {
+    ensureClass(circContainer, 'hidden', true);
+    ensureClass(flipContainer, 'hidden', false);
+    ensureClass(flipContainer, 'flex', true);
+    if (!isFcFullscreen) ensureClass(fcFsBtn, 'hidden', false);
+    
+    if (!flipClock) flipClock = new FlipClock('flipClockRenderer');
+    flipClock.update(secondsLeft);
+    
+    updateTextContentSafe('flipProgressLabel', `${icons.sapling} ${healthyTrees} saplings to protect`);
+    
+    const renderer = el('flipClockRenderer');
+    if (renderer) {
+      const mins = Math.floor(secondsLeft / 60);
+      const secs = secondsLeft % 60;
+      const newAria = `${mins} minutes ${secs} seconds`;
+      if (renderer.getAttribute('aria-label') !== newAria) {
+        renderer.setAttribute('aria-label', newAria);
+      }
+    }
+  } else {
+    ensureClass(circContainer, 'hidden', false);
+    ensureClass(flipContainer, 'hidden', true);
+    ensureClass(flipContainer, 'flex', false);
+    ensureClass(fcFsBtn, 'hidden', true);
+
+    updateTextContentSafe('timer', timeStr);
+    updateTextContentSafe('progressLabel', `${icons.sapling} ${healthyTrees} saplings to protect`);
+    
+    const ring = el('progressRing');
+    if (ring && ring.style.strokeDashoffset !== dashOffsetStr) {
+      ring.style.strokeDashoffset = dashOffsetStr;
+    }
   }
 
   if (pipWindow && pipElements.timer) {
-    pipElements.timer.textContent = timeStr;
-    if (pipElements.phase) pipElements.phase.textContent = phase === 'focus' ? 'FOCUS' : 'BREAK';
-    if (pipElements.sub) pipElements.sub.textContent = `${icons.sapling} ${healthyTrees} saplings`;
-    if (pipElements.ring) {
-      pipElements.ring.style.strokeDashoffset = dashOffset;
+    if (pipElements.timer.textContent !== timeStr) pipElements.timer.textContent = timeStr;
+    const pipPhaseStr = phase === 'focus' ? 'FOCUS' : 'BREAK';
+    if (pipElements.phase && pipElements.phase.textContent !== pipPhaseStr) pipElements.phase.textContent = pipPhaseStr;
+    const pipSubStr = `${icons.sapling} ${healthyTrees} saplings`;
+    if (pipElements.sub && pipElements.sub.textContent !== pipSubStr) pipElements.sub.textContent = pipSubStr;
+    if (pipElements.ring && pipElements.ring.style.strokeDashoffset !== dashOffsetStr) {
+      pipElements.ring.style.strokeDashoffset = dashOffsetStr;
     }
   }
 }
@@ -1038,6 +1465,7 @@ function updateDailyStats(minutes) {
   data.bestDayMinutes = Math.max(data.bestDayMinutes, data.todayFocusMinutes);
 }
 
+// Tiered Forest Canopy with atmospheric depth
 function renderForest() {
   const icons = getIcons();
   
@@ -1052,36 +1480,64 @@ function renderForest() {
   const deadCount = data.deadTrees;
 
   const landscapeContainer = document.createElement('div');
-  landscapeContainer.className = 'w-full flex flex-col items-center justify-center py-4 gap-8 md:gap-12 relative';
+  landscapeContainer.className = 'w-full flex flex-col items-center justify-center py-6 gap-6 md:gap-8 relative overflow-hidden';
 
-  function createTreeZone(count, iconStr, extraClasses, scale, opacity) {
+  const isNight = data.theme === 'night';
+  const isRain = data.theme === 'rain';
+  const fogClass = isNight ? 'canopy-layer-fog canopy-layer-fog-night' : isRain ? 'canopy-layer-fog canopy-layer-fog-rain' : 'canopy-layer-fog';
+
+  function createCanopyLayer(count, iconStr, tierName, fontSizeClass, scale, opacity, blurPx, zIndex) {
     if (count <= 0) return null;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'w-full relative flex flex-col items-center';
+    wrapper.style.zIndex = zIndex;
+
+    const fog = document.createElement('div');
+    fog.className = fogClass;
+    wrapper.appendChild(fog);
+
+    const label = document.createElement('div');
+    label.className = 'text-[11px] uppercase tracking-widest opacity-40 font-semibold mb-2 pointer-events-none';
+    label.textContent = `${tierName} (${count})`;
+    wrapper.appendChild(label);
+
     const zone = document.createElement('div');
-    zone.className = `w-full flex flex-wrap justify-center items-center gap-3 sm:gap-5 relative ${extraClasses}`;
+    zone.className = `w-full flex flex-wrap justify-center items-center gap-3 sm:gap-6 relative ${fontSizeClass}`;
     zone.style.opacity = opacity;
     zone.style.transform = `scale(${scale})`;
-    
+    if (blurPx > 0) zone.style.filter = `blur(${blurPx}px)`;
+    zone.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+
     for (let i = 0; i < count; i++) {
       const span = document.createElement('span');
       span.textContent = iconStr;
-      span.className = 'inline-block transition-transform duration-500 hover:scale-125 hover:-translate-y-2 cursor-default select-none drop-shadow-md';
+      span.className = 'inline-block transition-transform duration-300 hover:scale-125 hover:-translate-y-2 cursor-default select-none drop-shadow-md';
+      span.onmouseenter = () => triggerHaptic('light');
       zone.appendChild(span);
     }
-    return zone;
+    wrapper.appendChild(zone);
+    return wrapper;
   }
 
-  const ancientZone = createTreeZone(ancientCount, icons.ancient, 'text-5xl md:text-6xl z-10', 0.85, 0.9);
+  // Layer 1: Distant Ancient Canopy (Deep background, softened, elevated perspective)
+  const ancientZone = createCanopyLayer(ancientCount, icons.ancient, 'Elder Canopy', 'text-5xl md:text-6xl', 0.85, 0.7, 0.6, 10);
   if (ancientZone) landscapeContainer.appendChild(ancientZone);
   
-  const matureZone = createTreeZone(matureCount, icons.mature, 'text-4xl md:text-5xl z-20', 0.95, 0.95);
+  // Layer 2: Mid-range Mature Grove (Midground depth)
+  const matureZone = createCanopyLayer(matureCount, icons.mature, 'Mature Grove', 'text-4xl md:text-5xl', 0.95, 0.88, 0, 20);
   if (matureZone) landscapeContainer.appendChild(matureZone);
   
-  const saplingZone = createTreeZone(saplingCount, icons.sapling, 'text-3xl md:text-4xl z-30', 1.05, 1);
+  // Layer 3: Foreground Saplings (Crisp, close, fully opaque)
+  const saplingZone = createCanopyLayer(saplingCount, icons.sapling, 'Young Flora', 'text-3xl md:text-4xl', 1.05, 1, 0, 30);
   if (saplingZone) landscapeContainer.appendChild(saplingZone);
 
+  // Layer 4: Forest Floor (Withering remains)
   if (deadCount > 0) {
-    const deadZone = createTreeZone(Math.min(deadCount, 50), icons.dead, 'text-2xl md:text-3xl z-0 mt-4 pt-6 border-t border-current border-opacity-10 grayscale', 0.9, 0.6);
-    if (deadZone) landscapeContainer.appendChild(deadZone);
+    const deadZone = createCanopyLayer(Math.min(deadCount, 50), icons.dead, 'Fallen Roots', 'text-2xl md:text-3xl grayscale', 0.9, 0.55, 0, 5);
+    if (deadZone) {
+      deadZone.classList.add('mt-2', 'pt-4', 'border-t', 'border-current', 'border-opacity-10');
+      landscapeContainer.appendChild(deadZone);
+    }
   }
 
   if (data.livingTrees === 0 && deadCount === 0) {
@@ -1101,30 +1557,30 @@ function renderDashboard() {
   const tier = getForestTier();
   
   grid.innerHTML = `
-    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 transition-colors duration-500 flex flex-col justify-center">
-      <div class="text-sm uppercase transition-colors duration-500 opacity-80 mb-2">Forest Level</div>
-      <div class="text-2xl font-bold transition-colors duration-500 leading-tight truncate">${tier.icon} ${tier.name}</div>
-      <div class="text-sm font-medium transition-colors duration-500 opacity-70 mt-1 truncate">${tier.title}</div>
+    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 flex flex-col justify-center">
+      <div class="text-sm uppercase opacity-80 mb-2">Forest Level</div>
+      <div class="text-2xl font-bold leading-tight truncate">${tier.icon} ${tier.name}</div>
+      <div class="text-sm font-medium opacity-70 mt-1 truncate">${tier.title}</div>
     </div>
-    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 transition-colors duration-500 flex flex-col justify-center">
-      <div class="text-sm uppercase transition-colors duration-500 opacity-80 mb-2">Today's Focus</div>
-      <div class="text-3xl font-bold transition-colors duration-500">${(data.todayFocusMinutes / 60).toFixed(1)}h</div>
+    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 flex flex-col justify-center">
+      <div class="text-sm uppercase opacity-80 mb-2">Today's Focus</div>
+      <div class="text-3xl font-bold">${(data.todayFocusMinutes / 60).toFixed(1)}h</div>
     </div>
-    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 transition-colors duration-500 flex flex-col justify-center">
-      <div class="text-sm uppercase transition-colors duration-500 opacity-80 mb-2">Day Streak</div>
-      <div class="text-3xl font-bold transition-colors duration-500">${data.streakDays}</div>
+    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 flex flex-col justify-center">
+      <div class="text-sm uppercase opacity-80 mb-2">Day Streak</div>
+      <div class="text-3xl font-bold">${data.streakDays}</div>
     </div>
-    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 transition-colors duration-500 flex flex-col justify-center">
-      <div class="text-sm uppercase transition-colors duration-500 opacity-80 mb-2">Living Trees</div>
-      <div class="text-3xl font-bold transition-colors duration-500">${data.livingTrees}</div>
+    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 flex flex-col justify-center">
+      <div class="text-sm uppercase opacity-80 mb-2">Living Trees</div>
+      <div class="text-3xl font-bold">${data.livingTrees}</div>
     </div>
-    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 transition-colors duration-500 flex flex-col justify-center">
-      <div class="text-sm uppercase transition-colors duration-500 opacity-80 mb-2">Total Withered</div>
-      <div class="text-3xl font-bold transition-colors duration-500">${data.deadTrees}</div>
+    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 flex flex-col justify-center">
+      <div class="text-sm uppercase opacity-80 mb-2">Total Withered</div>
+      <div class="text-3xl font-bold">${data.deadTrees}</div>
     </div>
-    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 transition-colors duration-500 flex flex-col justify-center">
-      <div class="text-sm uppercase transition-colors duration-500 opacity-80 mb-2">Total Focus</div>
-      <div class="text-3xl font-bold transition-colors duration-500">${(data.totalFocusMinutes / 60).toFixed(1)}h</div>
+    <div class="rounded-3xl bg-white/85 border shadow-lg p-5 flex flex-col justify-center">
+      <div class="text-sm uppercase opacity-80 mb-2">Total Focus</div>
+      <div class="text-3xl font-bold">${(data.totalFocusMinutes / 60).toFixed(1)}h</div>
     </div>
   `;
 }
@@ -1226,8 +1682,8 @@ function applyTheme() {
   const isNight = data.theme === 'night';
   const isRain = data.theme === 'rain';
 
-  document.body.className = `min-h-screen bg-gradient-to-b ${gradient.join(' ')} ${isNight ? 'text-slate-100' : 'text-slate-800'} transition-colors duration-500 ${document.fullscreenElement ? 'overflow-hidden' : ''}`;
-  root.className = `w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b ${gradient.join(' ')} p-6 md:p-10 transition-all duration-500 relative overflow-hidden flex flex-col items-center ${document.fullscreenElement ? 'fullscreen-active' : ''}`;
+  document.body.className = `min-h-screen bg-gradient-to-b ${gradient.join(' ')} ${isNight ? 'text-slate-100' : 'text-slate-800'} ${document.fullscreenElement ? 'overflow-hidden' : ''}`;
+  root.className = `w-full max-w-5xl min-h-[calc(100vh-2rem)] rounded-3xl bg-gradient-to-b ${gradient.join(' ')} p-6 md:p-10 relative overflow-hidden flex flex-col items-center ${document.fullscreenElement ? 'fullscreen-active' : ''}`;
 
   const cardClass = isNight
     ? 'bg-gradient-to-br from-slate-900/92 via-slate-900/88 to-indigo-950/90 border border-indigo-300/20 shadow-2xl backdrop-blur-xl'
@@ -1239,20 +1695,20 @@ function applyTheme() {
     const baseClasses = Array.from(section.classList).filter((cls) =>
       ['page-section', 'page-hidden', 'hidden', 'w-full', 'rounded-3xl', 'p-6', 'max-w-3xl', 'max-w-xl', 'mx-auto', 'space-y-4', 'mb-8', 'md:mb-12', 'lg:mb-16', 'space-y-5'].includes(cls)
     );
-    section.className = [...baseClasses, cardClass, 'transition-colors', 'duration-500'].join(' ');
+    section.className = [...baseClasses, cardClass].join(' ');
   });
 
   const dashboardCards = document.querySelectorAll('#dashboardGrid > div');
   dashboardCards.forEach((card) => {
     if (isNight) {
-      card.className = 'rounded-3xl bg-gradient-to-br from-slate-900/92 via-slate-900/88 to-indigo-950/90 border border-indigo-300/20 shadow-2xl backdrop-blur-xl p-5 transition-colors duration-500 flex flex-col justify-center';
+      card.className = 'rounded-3xl bg-gradient-to-br from-slate-900/92 via-slate-900/88 to-indigo-950/90 border border-indigo-300/20 shadow-2xl backdrop-blur-xl p-5 flex flex-col justify-center';
     } else {
-      card.className = 'rounded-3xl bg-white/85 border shadow-lg p-5 transition-colors duration-500 flex flex-col justify-center';
+      card.className = 'rounded-3xl bg-white/85 border shadow-lg p-5 flex flex-col justify-center';
     }
   });
 
   const timer = el('timer');
-  if (timer) timer.className = 'text-5xl md:text-6xl font-mono font-bold transition-colors duration-500 ' + (isNight ? 'text-violet-50 drop-shadow-[0_0_18px_rgba(167,139,250,0.45)]' : 'text-slate-800');
+  if (timer) timer.className = 'text-5xl md:text-6xl font-mono font-bold ' + (isNight ? 'text-violet-50 drop-shadow-[0_0_18px_rgba(167,139,250,0.45)]' : 'text-slate-800');
 
   const progressRingBg = el('progressRingBg');
   if (progressRingBg) {
@@ -1267,73 +1723,84 @@ function applyTheme() {
 
   const startPauseBtn = el('startPauseBtn');
   if (startPauseBtn) {
-    startPauseBtn.className = 'btn-interactive px-6 py-3 rounded-2xl text-white font-semibold transition-all duration-200 ' + (
+    startPauseBtn.className = 'btn-interactive px-6 py-3 rounded-2xl text-white font-semibold ' + (
       isNight ? 'bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 shadow-xl shadow-violet-900/40 hover:brightness-110' :
       isRain ? 'bg-sky-500 hover:bg-sky-600' : 'bg-emerald-500 hover:bg-emerald-600');
   }
 
   const phaseLabel = el('phaseLabel');
-  if (phaseLabel) phaseLabel.className = 'text-sm uppercase tracking-[0.18em] font-semibold transition-colors duration-500 ' + (isNight ? 'text-violet-200' : 'text-emerald-700');
+  if (phaseLabel) phaseLabel.className = 'text-sm uppercase tracking-[0.18em] font-semibold ' + (isNight ? 'text-violet-200' : 'text-emerald-700');
 
   const progressLabel = el('progressLabel');
-  if (progressLabel) progressLabel.className = 'mt-2 text-sm transition-colors duration-500 ' + (isNight ? 'text-slate-300' : 'text-slate-500');
+  if (progressLabel) progressLabel.className = 'mt-2 text-sm ' + (isNight ? 'text-slate-300' : 'text-slate-500');
+
+  const flipProgressLabel = el('flipProgressLabel');
+  if (flipProgressLabel) flipProgressLabel.className = 'mt-6 text-sm text-center ' + (isNight ? 'text-slate-300' : 'text-slate-500');
 
   const brandTitle = el('brandTitle');
   if (brandTitle) {
-    brandTitle.className = 'brand-title text-4xl md:text-6xl transition-colors duration-500 ';
+    brandTitle.className = 'brand-title text-4xl md:text-6xl ';
     if (isNight) brandTitle.className += 'brand-title-night text-violet-50';
     else if (isRain) brandTitle.className += 'brand-title-rain text-slate-800';
     else brandTitle.className += 'text-emerald-900';
   }
 
   const subtitle = document.querySelector('header p');
-  if (subtitle) subtitle.className = 'mt-2 transition-colors duration-500 ' + (isNight ? 'text-slate-300' : 'text-slate-600');
+  if (subtitle) subtitle.className = 'mt-2 ' + (isNight ? 'text-slate-300' : 'text-slate-600');
 
   const message = el('message');
-  if (message) message.className = 'mt-6 italic transition-colors duration-500 ' + (isNight ? 'text-[#c4b5fd]/70' : 'text-slate-500');
+  if (message) message.className = 'mt-6 italic ' + (isNight ? 'text-[#c4b5fd]/70' : 'text-slate-500');
 
   const ambientVolumeLabel = el('ambientVolumeLabel');
-  if (ambientVolumeLabel) ambientVolumeLabel.className = 'text-sm font-medium transition-colors duration-500 ' + (isNight ? 'text-[#c4b5fd]/80' : 'text-slate-500');
+  if (ambientVolumeLabel) ambientVolumeLabel.className = 'text-sm font-medium ' + (isNight ? 'text-[#c4b5fd]/80' : 'text-slate-500');
 
   const fullscreenBtn = el('fullscreenBtn');
   if (fullscreenBtn) {
-    fullscreenBtn.className = 'fixed top-6 right-6 z-[2000] backdrop-blur-md btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl transition-all duration-200 ' + (
-      isNight ? 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-lg hover:bg-slate-800/80' : 'bg-white/85 text-slate-800 hover:bg-white');
+    fullscreenBtn.className = 'fixed top-6 right-6 z-[2000] backdrop-blur-md btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl ' + (
+      isNight ? 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-lg hover:bg-slate-800/80' : 'border-slate-200 bg-white/85 text-slate-800 hover:bg-white');
   }
   
+  const fcFullscreenBtn = el('fcFullscreenBtn');
+  if (fcFullscreenBtn) {
+    const isHidden = fcFullscreenBtn.classList.contains('hidden');
+    fcFullscreenBtn.className = 'fixed top-[76px] right-[28px] z-[2000] backdrop-blur-md btn-interactive w-9 h-9 flex items-center justify-center rounded-xl border text-lg ' + (
+      isNight ? 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-lg hover:bg-slate-800/80' : 'border-slate-200 bg-white/85 text-slate-800 hover:bg-white');
+    if (isHidden) fcFullscreenBtn.classList.add('hidden');
+  }
+
   const pipBtn = el('pipBtn');
   if (pipBtn) {
-    pipBtn.className = 'fixed top-6 left-6 z-[2000] backdrop-blur-md btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl transition-all duration-200 ' + (
-      isNight ? 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-lg hover:bg-slate-800/80' : 'bg-white/85 text-slate-800 hover:bg-white');
+    pipBtn.className = 'fixed top-6 left-6 z-[2000] backdrop-blur-md btn-interactive w-11 h-11 flex items-center justify-center rounded-2xl border text-xl ' + (
+      isNight ? 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-lg hover:bg-slate-800/80' : 'border-slate-200 bg-white/85 text-slate-800 hover:bg-white');
   }
 
   const witherBtn = el('witherBtn');
   if (witherBtn) {
-    witherBtn.className = 'btn-interactive px-6 py-3 rounded-2xl text-white font-semibold transition-all duration-200 ' + (
+    witherBtn.className = 'btn-interactive px-6 py-3 rounded-2xl text-white font-semibold ' + (
       isNight ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 shadow-xl shadow-orange-900/35 hover:brightness-110' :
       isRain ? 'bg-gradient-to-r from-slate-500 to-slate-600 shadow-lg hover:brightness-110' : 'bg-amber-500 hover:bg-amber-600');
   }
 
   const resetBtn = el('resetBtn');
   if (resetBtn) {
-    resetBtn.className = 'btn-interactive px-6 py-3 rounded-2xl border transition-all duration-200 font-medium ' + (
+    resetBtn.className = 'btn-interactive px-6 py-3 rounded-2xl border font-medium ' + (
       isNight ? 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-lg hover:bg-slate-800/80' :
       isRain ? 'border-sky-200 bg-white/90 text-slate-700 hover:bg-sky-50' : 'bg-white hover:bg-emerald-50');
   }
 
   const focusLabel = document.querySelector('#focusControls label');
-  if (focusLabel) focusLabel.className = 'font-medium transition-colors duration-500 ' + (isNight ? 'text-slate-300' : 'text-slate-600');
+  if (focusLabel) focusLabel.className = 'font-medium ' + (isNight ? 'text-slate-300' : 'text-slate-600');
 
   const settingsLabels = document.querySelectorAll('#settingsPage span.settings-label');
   settingsLabels.forEach((label) => {
-    label.className = 'font-medium settings-label transition-colors duration-500 ' + (isNight ? 'text-slate-300' : 'text-slate-700');
+    label.className = 'font-medium settings-label ' + (isNight ? 'text-slate-300' : 'text-slate-700');
   });
 
-  const inputs = ['focusMinutesInput', 'breakMinutesInput', 'mindfulnessIntervalInput', 'themeSelect', 'soundscapeSelect'];
+  const inputs = ['focusMinutesInput', 'breakMinutesInput', 'mindfulnessIntervalInput', 'themeSelect', 'soundscapeSelect', 'timerDisplaySelect'];
   inputs.forEach(id => {
     const input = el(id);
     if(input) {
-      input.className = 'w-full mt-2 rounded-xl border px-3 py-3 transition-colors duration-500 focus:outline-none focus:ring-2 cursor-pointer ' + (
+      input.className = 'w-full mt-2 rounded-xl border px-3 py-3 focus:outline-none focus:ring-2 cursor-pointer ' + (
         isNight ? 'border-indigo-300/20 bg-slate-900/70 text-slate-100 shadow-inner focus:ring-indigo-500/50' :
         isRain ? 'border-sky-200 bg-white/90 text-slate-800 focus:ring-sky-400/50' : 'border-emerald-200 bg-white text-slate-800 focus:ring-emerald-400/50');
       if(id === 'focusMinutesInput') input.classList.replace('w-full', 'w-24');
@@ -1350,27 +1817,77 @@ function applyTheme() {
        isRain ? 'bg-white/85 border-sky-200 shadow-sky-900/10 text-slate-800' : 'bg-white/85 border-emerald-200 shadow-emerald-900/10 text-slate-800');
   }
 
+  // Set CSS Custom Properties for theme UI & Break Phase Tinting
+  const isBreak = phase === 'break';
+
   if (isNight) {
     document.documentElement.style.setProperty('--range-track', 'rgba(255, 255, 255, 0.08)');
     document.documentElement.style.setProperty('--range-thumb', '#a78bfa');
     document.documentElement.style.setProperty('--range-glow', '0 0 12px rgba(167, 139, 250, 0.5)');
     document.documentElement.style.setProperty('--range-ring', 'rgba(167, 139, 250, 0.25)');
+    
+    document.documentElement.style.setProperty('--fc-bg-top', isBreak ? '#2d244a' : '#1e293b');
+    document.documentElement.style.setProperty('--fc-bg-bottom', isBreak ? '#1b1435' : '#0f172a');
+    document.documentElement.style.setProperty('--fc-text', isBreak ? '#fbcfe8' : '#e2e8f0');
+    document.documentElement.style.setProperty('--fc-split', '#020617');
+    document.documentElement.style.setProperty('--fc-border', isBreak ? 'rgba(244,114,182,0.3)' : 'rgba(139,92,246,0.3)');
+    document.documentElement.style.setProperty('--fc-shadow', '0 10px 25px -5px rgba(0,0,0,0.6)');
   } else if (isRain) {
     document.documentElement.style.setProperty('--range-track', 'rgba(14, 165, 233, 0.15)');
     document.documentElement.style.setProperty('--range-thumb', '#0ea5e9');
     document.documentElement.style.setProperty('--range-glow', '0 0 12px rgba(14, 165, 233, 0.4)');
     document.documentElement.style.setProperty('--range-ring', 'rgba(14, 165, 233, 0.25)');
+
+    document.documentElement.style.setProperty('--fc-bg-top', isBreak ? '#fffbeb' : '#f0f9ff');
+    document.documentElement.style.setProperty('--fc-bg-bottom', isBreak ? '#fef3c7' : '#e0f2fe');
+    document.documentElement.style.setProperty('--fc-text', isBreak ? '#b45309' : '#075985');
+    document.documentElement.style.setProperty('--fc-split', isBreak ? 'rgba(180,83,9,0.15)' : 'rgba(12,74,110,0.15)');
+    document.documentElement.style.setProperty('--fc-border', isBreak ? 'rgba(245,158,11,0.3)' : 'rgba(14,165,233,0.3)');
+    document.documentElement.style.setProperty('--fc-shadow', '0 10px 25px -5px rgba(12,74,110,0.2)');
   } else {
     document.documentElement.style.setProperty('--range-track', 'rgba(16, 185, 129, 0.15)');
     document.documentElement.style.setProperty('--range-thumb', '#10b981');
     document.documentElement.style.setProperty('--range-glow', '0 0 12px rgba(16, 185, 129, 0.4)');
     document.documentElement.style.setProperty('--range-ring', 'rgba(16, 185, 129, 0.25)');
+
+    document.documentElement.style.setProperty('--fc-bg-top', isBreak ? '#fffbeb' : '#f0fdf4');
+    document.documentElement.style.setProperty('--fc-bg-bottom', isBreak ? '#fef3c7' : '#ecfdf5');
+    document.documentElement.style.setProperty('--fc-text', isBreak ? '#b45309' : '#065f46');
+    document.documentElement.style.setProperty('--fc-split', isBreak ? 'rgba(180,83,9,0.15)' : 'rgba(6,78,59,0.15)');
+    document.documentElement.style.setProperty('--fc-border', isBreak ? 'rgba(245,158,11,0.3)' : 'rgba(16,185,129,0.25)');
+    document.documentElement.style.setProperty('--fc-shadow', '0 10px 25px -5px rgba(6,78,59,0.15)');
   }
 
   updateRain();
   updateNightSky();
   updateThemeParticles();
   soundEngine.setVolume(data.ambientVolume / 100);
+}
+
+function switchThemeWithSignature(newTheme) {
+  if (data.theme === newTheme) return;
+  triggerHaptic('light');
+  
+  document.documentElement.setAttribute('data-transition-to', newTheme);
+
+  const applyUpdate = () => {
+    data.theme = newTheme;
+    save();
+    applyTheme();
+    render();
+  };
+
+  if (document.startViewTransition) {
+    const transition = document.startViewTransition(applyUpdate);
+    transition.finished.finally(() => {
+      document.documentElement.removeAttribute('data-transition-to');
+    });
+  } else {
+    applyUpdate();
+    setTimeout(() => {
+      document.documentElement.removeAttribute('data-transition-to');
+    }, 950);
+  }
 }
 
 function render() {
@@ -1383,6 +1900,7 @@ function render() {
   if (el('mindfulnessIntervalInput')) el('mindfulnessIntervalInput').value = data.mindfulnessInterval;
   if (el('themeSelect')) el('themeSelect').value = data.theme;
   if (el('soundscapeSelect')) el('soundscapeSelect').value = data.soundscape;
+  if (el('timerDisplaySelect')) el('timerDisplaySelect').value = data.timerDisplay;
   if (el('ambientSoundToggle')) el('ambientSoundToggle').checked = data.ambientSoundEnabled;
   if (el('ambientVolumeInput')) el('ambientVolumeInput').value = data.ambientVolume ?? 50;
   if (el('ambientVolumeLabel')) el('ambientVolumeLabel').textContent = `${data.ambientVolume ?? 50}%`;
@@ -1398,6 +1916,7 @@ function render() {
 
 function startTimer() {
   if (isRunning) return;
+  triggerHaptic('medium');
   isRunning = true;
   const endTimestamp = Date.now() + secondsLeft * 1000;
   let previousSeconds = secondsLeft;
@@ -1411,6 +1930,7 @@ function startTimer() {
         const intervalSecs = data.mindfulnessInterval * 60;
         if (elapsed > 0 && elapsed % intervalSecs === 0) {
             playMindfulnessSound();
+            triggerHaptic('light');
         }
     }
     previousSeconds = secondsLeft;
@@ -1418,6 +1938,7 @@ function startTimer() {
     if (secondsLeft <= 0) {
       clearInterval(intervalId); intervalId = null; isRunning = false;
       playCompletionSound();
+      triggerHaptic('success');
 
       if (phase === 'focus') {
         data.livingTrees += healthyTrees; data.totalFocusMinutes += data.focusMinutes;
@@ -1437,20 +1958,23 @@ function startTimer() {
         showToast('Break time is over. Ready to focus?', 'info');
         setMessage('New saplings are ready to grow.');
       }
+      applyTheme();
     }
-    render(); 
+    renderFocus(); 
   }, 250);
-  render();
+  renderFocus();
 }
 
 function pauseTimer() {
-  isRunning = false; clearInterval(intervalId); render();
+  triggerHaptic('light');
+  isRunning = false; clearInterval(intervalId); renderFocus();
 }
 
 function resetAllData() {
   showConfirmModal('Reset ALL saved data?', 'This will permanently remove your forest and all statistics.', () => {
-    const { theme, soundscape, ambientSoundEnabled, ambientVolume, focusMinutes, breakMinutes, breaksEnabled } = data;
-    data = { ...DEFAULTS, theme, soundscape, ambientSoundEnabled, ambientVolume, focusMinutes, breakMinutes, breaksEnabled };
+    triggerHaptic('heavy');
+    const { theme, soundscape, ambientSoundEnabled, ambientVolume, focusMinutes, breakMinutes, breaksEnabled, timerDisplay } = data;
+    data = { ...DEFAULTS, theme, soundscape, ambientSoundEnabled, ambientVolume, focusMinutes, breakMinutes, breaksEnabled, timerDisplay };
     save(); resetTimer(); switchPage('focus');
     showToast('A new forest begins.', 'info');
     setMessage('A new forest begins.'); render();
@@ -1458,10 +1982,13 @@ function resetAllData() {
 }
 
 function resetTimer() {
+  triggerHaptic('light');
   pauseTimer(); phase = 'focus';
   healthyTrees = Math.max(1, Math.ceil(data.focusMinutes / 10));
   secondsLeft = data.focusMinutes * 60;
-  setMessage('A calm mind nurtures strong roots.'); render();
+  setMessage('A calm mind nurtures strong roots.'); 
+  applyTheme();
+  render();
 }
 
 function bindEvents() {
@@ -1470,6 +1997,24 @@ function bindEvents() {
   el('resetBtn')?.addEventListener('click', resetTimer);
   el('resetAllBtn')?.addEventListener('click', resetAllData);
   el('pipBtn')?.addEventListener('click', togglePiP);
+
+  el('flipClockContainer')?.addEventListener('click', () => {
+    if (isFcFullscreen) {
+      isRunning ? pauseTimer() : startTimer();
+    }
+  });
+
+  el('fcFullscreenBtn')?.addEventListener('click', async () => {
+    isFcFullscreen = true;
+    triggerHaptic('light');
+    const root = el('appRoot'); 
+    if (!document.fullscreenElement) {
+      await root.requestFullscreen().catch(() => {});
+    } else {
+      document.body.classList.add('fc-fullscreen-active');
+      renderFocus();
+    }
+  });
 
   el('focusMinutesInput')?.addEventListener('input', (e) => {
     const value = e.target.value.trim(); if (value === '') return;
@@ -1504,10 +2049,23 @@ function bindEvents() {
 
   el('mindfulnessIntervalInput')?.addEventListener('blur', (e) => { if (e.target.value.trim() === '') e.target.value = data.mindfulnessInterval; });
 
-  el('themeSelect')?.addEventListener('change', (e) => { data.theme = e.target.value; save(); render(); });
+  el('themeSelect')?.addEventListener('change', (e) => { 
+    switchThemeWithSignature(e.target.value);
+  });
   
   el('soundscapeSelect')?.addEventListener('change', (e) => {
-    data.soundscape = e.target.value; save(); soundEngine.apply(data.soundscape, data.ambientSoundEnabled); render();
+    data.soundscape = e.target.value; 
+    save(); 
+    triggerHaptic('light');
+    soundEngine.apply(data.soundscape, data.ambientSoundEnabled); 
+    render();
+  });
+
+  el('timerDisplaySelect')?.addEventListener('change', (e) => {
+    data.timerDisplay = e.target.value; 
+    save(); 
+    triggerHaptic('light');
+    renderFocus(); 
   });
 
   el('ambientSoundToggle')?.addEventListener('change', (e) => {
@@ -1520,6 +2078,8 @@ function bindEvents() {
   });
 
   el('fullscreenBtn')?.addEventListener('click', async () => {
+    isFcFullscreen = false;
+    triggerHaptic('light');
     const root = el('appRoot'); if (!root) return;
     if (!document.fullscreenElement) { await root.requestFullscreen().catch(() => {}); } 
     else { await document.exitFullscreen().catch(() => {}); }
@@ -1543,15 +2103,24 @@ function bindEvents() {
   el('importFileInput')?.addEventListener('change', (e) => { const file = e.target.files?.[0]; if (file) importBackup(file); });
 
   document.addEventListener('fullscreenchange', () => {
-    const isFs = !!document.fullscreenElement; document.body.classList.toggle('fullscreen-active', isFs);
-    el('appRoot').classList.toggle('fullscreen-active', isFs); render();
+    const isFs = !!document.fullscreenElement; 
+    document.body.classList.toggle('fullscreen-active', isFs);
+    el('appRoot').classList.toggle('fullscreen-active', isFs); 
+
+    if (isFs && isFcFullscreen) {
+      document.body.classList.add('fc-fullscreen-active');
+    } else if (!isFs) {
+      document.body.classList.remove('fc-fullscreen-active');
+      isFcFullscreen = false;
+    }
+    renderFocus();
   });
 }
 
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden && audioUnlocked) {
     if(soundEngine.ctx && soundEngine.ctx.state === 'suspended') soundEngine.ctx.resume();
-    render();
+    renderFocus();
   }
 });
 
